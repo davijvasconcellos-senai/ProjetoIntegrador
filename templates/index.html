@@ -1,11 +1,254 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Dashboard - PredictivePulse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/index.css">
 </head>
 <body>
-    
+    <div class="app-container">
+        <!-- Menu Lateral -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <div class="logo-icon">⚡</div>
+                    <h1 class="logo-text">Predictive Pulse</h1>
+                </div>
+                <button class="toggle-btn" id="toggleBtn">
+                    <span class="toggle-icon">‹</span>
+                </button>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="menu-section">1. Aí</li>
+                <li class="menu-item active">
+                    <span class="menu-icon">📊</span>
+                    <span class="menu-text">Pressa do cliente</span>
+                </li>
+                <li class="menu-item">
+                    <span class="menu-icon">🏠</span>
+                    <span class="menu-text">Página inicial</span>
+                </li>
+                <li class="menu-item">
+                    <span class="menu-icon">💬</span>
+                    <span class="menu-text">Caixa de mensagens</span>
+                </li>
+                <li class="menu-item">
+                    <span class="menu-icon">🔔</span>
+                    <span class="menu-text">Notificações</span>
+                </li>
+                <li class="menu-item">
+                    <span class="menu-icon">📈</span>
+                    <span class="menu-text">Monitoração</span>
+                </li>
+            </ul>
+
+            <div class="sidebar-separator"></div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-section">Configurações</li>
+                <li class="menu-item">
+                    <span class="menu-icon">⚙️</span>
+                    <span class="menu-text">Ajuda</span>
+                </li>
+                <li class="menu-item">
+                    <span class="menu-icon">🚪</span>
+                    <span class="menu-text">Sair da conta</span>
+                </li>
+            </ul>
+
+            <div class="sidebar-separator"></div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-section">Gráficos De Sensores</li>
+                <li class="menu-item">
+                    <span class="menu-icon">🌡️</span>
+                    <span class="menu-text">Temperatura</span>
+                </li>
+                <li class="menu-item">
+                    <span class="menu-icon">📳</span>
+                    <span class="menu-text">Vibração</span>
+                </li>
+                <li class="menu-item">
+                    <span class="menu-icon">🔊</span>
+                    <span class="menu-text">Ruído</span>
+                </li>
+            </ul>
+
+            <!-- Ícone de Expandir quando menu estiver recolhido -->
+            <div class="expand-indicator" id="expandIndicator">
+                <div class="expand-icon">☰</div>
+                <span class="expand-text">Expandir Menu</span>
+            </div>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content" id="mainContent">
+            <header class="main-header">
+                <button class="menu-toggle" id="menuToggle">
+                    <span>☰</span>
+                </button>
+                <div class="header-title">
+                    <h2>Dashboard Principal</h2>
+                </div>
+                <div class="user-menu">
+                    <span>Usuário</span>
+                    <div class="user-avatar">U</div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <!-- Gráficos de Sensores -->
+                <section class="sensors-section">
+                    <h3>Gráficos De Sensores</h3>
+                    <div class="sensors-grid">
+                        <div class="sensor-card">
+                            <div class="sensor-icon">🌡️</div>
+                            <h4>Temperatura</h4>
+                            <div class="sensor-graph"></div>
+                        </div>
+                        <div class="sensor-card">
+                            <div class="sensor-icon">📳</div>
+                            <h4>Vibração</h4>
+                            <div class="sensor-graph"></div>
+                        </div>
+                        <div class="sensor-card">
+                            <div class="sensor-icon">🔊</div>
+                            <h4>Ruído</h4>
+                            <div class="sensor-graph"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="separator"></div>
+
+                <!-- Avisos Importantes -->
+                <section class="warnings-section">
+                    <h3>Avisos Importantes</h3>
+                    <div class="warnings-list">
+                        <div class="warning-item">Temperatura acima de 80 °C (Laser 2)</div>
+                        <div class="warning-item">Falha ou Queda no Fluxo de Água (Laser 1)</div>
+                        <div class="warning-item">Corrente do laser acima do seguro (Laser 2)</div>
+                        <div class="warning-item">Oscilação Elétrica Detectada (Laser 4)</div>
+                        <div class="warning-item">Temperatura acima de 80 °C (Laser 2)</div>
+                        <div class="warning-item">Falha ou Queda no Fluxo de Água (Laser 1)</div>
+                        <div class="warning-item">Corrente do laser acima do seguro (Laser 2)</div>
+                        <div class="warning-item">Oscilação Elétrica Detectada (Laser 4)</div>
+                    </div>
+                </section>
+
+                <div class="separator"></div>
+
+                <!-- Histórico de Falhas -->
+                <section class="failures-section">
+                    <h3>Histórico de Falhas e Status</h3>
+                    <div class="failures-table-container">
+                        <table class="failures-table">
+                            <thead>
+                                <tr>
+                                    <th>Máquina</th>
+                                    <th>Última Falha</th>
+                                    <th>Status</th>
+                                    <th>Tempo de Parada</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Laser 1</td>
+                                    <td>02/12/2025</td>
+                                    <td><span class="status-badge falha">Falha</span></td>
+                                    <td>2h 45min</td>
+                                </tr>
+                                <tr>
+                                    <td>Laser 2</td>
+                                    <td>01/12/2025</td>
+                                    <td><span class="status-badge falha">Falha</span></td>
+                                    <td>2h 45min</td>
+                                </tr>
+                                <tr>
+                                    <td>Laser 3</td>
+                                    <td>30/11/2025</td>
+                                    <td><span class="status-badge falha">Falha</span></td>
+                                    <td>2h 45min</td>
+                                </tr>
+                                <tr>
+                                    <td>Laser 4</td>
+                                    <td>29/11/2025</td>
+                                    <td><span class="status-badge falha">Falha</span></td>
+                                    <td>2h 45min</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <div class="separator"></div>
+
+                <!-- Calendário -->
+                <section class="calendar-section">
+                    <h3>Calendário de Relatórios</h3>
+                    <div class="calendar">
+                        <div class="calendar-header">
+                            <button class="nav-button">&lt;</button>
+                            <h4>Dezembro 2025</h4>
+                            <button class="nav-button">&gt;</button>
+                        </div>
+                        <div class="calendar-weekdays">
+                            <div>DOM</div>
+                            <div>SEG</div>
+                            <div>TER</div>
+                            <div>QUA</div>
+                            <div>QUI</div>
+                            <div>SEX</div>
+                            <div>SÁB</div>
+                        </div>
+                        <div class="calendar-days">
+                            <div class="other-month">30</div>
+                            <div>1</div>
+                            <div>2</div>
+                            <div>3</div>
+                            <div>4</div>
+                            <div>5</div>
+                            <div>6</div>
+                            <div>7</div>
+                            <div>8</div>
+                            <div>9</div>
+                            <div>10</div>
+                            <div>11</div>
+                            <div>12</div>
+                            <div>13</div>
+                            <div>14</div>
+                            <div>15</div>
+                            <div>16</div>
+                            <div>17</div>
+                            <div>18</div>
+                            <div>19</div>
+                            <div>20</div>
+                            <div>21</div>
+                            <div>22</div>
+                            <div>23</div>
+                            <div>24</div>
+                            <div>25</div>
+                            <div>26</div>
+                            <div>27</div>
+                            <div>28</div>
+                            <div>29</div>
+                            <div>30</div>
+                            <div>31</div>
+                            <div class="other-month">1</div>
+                            <div class="other-month">2</div>
+                            <div class="other-month">3</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="../static/js/index.js"></script>
 </body>
 </html>

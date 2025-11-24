@@ -1,0 +1,141 @@
+// Menu Lateral Interativo com Recolhimento e Expandir por Ícone
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('toggleBtn');
+    const expandIndicator = document.getElementById('expandIndicator');
+    const menuToggle = document.getElementById('menuToggle');
+    const mainContent = document.getElementById('mainContent');
+    
+    // Estado do menu (salvo no localStorage)
+    let isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    
+    // Aplicar estado inicial
+    updateSidebarState();
+    setupTooltips();
+    
+    // Botão de recolher/expandir no menu lateral
+    toggleBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        isCollapsed = !isCollapsed;
+        updateSidebarState();
+        saveSidebarState();
+    });
+    
+    // Ícone de expandir quando menu estiver recolhido
+    expandIndicator.addEventListener('click', function(e) {
+        e.stopPropagation();
+        isCollapsed = false;
+        updateSidebarState();
+        saveSidebarState();
+    });
+    
+    // Botão de toggle no header (para mobile)
+    menuToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+    });
+    
+    // Fechar menu ao clicar fora (mobile)
+    document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 1024) {
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickOnMenuToggle = menuToggle.contains(event.target);
+            
+            if (!isClickInsideSidebar && !isClickOnMenuToggle && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        }
+    });
+    
+    // Expandir menu ao passar o mouse (apenas desktop)
+    sidebar.addEventListener('mouseenter', function() {
+        if (window.innerWidth > 1024 && isCollapsed) {
+            // Opcional: expandir automaticamente ao passar mouse
+            // isCollapsed = false;
+            // updateSidebarState();
+        }
+    });
+    
+    // Atualizar estado do menu lateral
+    function updateSidebarState() {
+        if (isCollapsed) {
+            sidebar.classList.add('collapsed');
+            mainContent.style.marginLeft = '70px';
+        } else {
+            sidebar.classList.remove('collapsed');
+            mainContent.style.marginLeft = '280px';
+        }
+        
+        // Ajustar para mobile
+        if (window.innerWidth <= 1024) {
+            mainContent.style.marginLeft = '0';
+            if (!isCollapsed) {
+                sidebar.classList.add('active');
+            }
+        }
+    }
+    
+    // Configurar tooltips para os ícones do menu
+    function setupTooltips() {
+        const menuItems = document.querySelectorAll('.menu-item');
+        const tooltips = {
+            '📊': 'Pressa do cliente',
+            '🏠': 'Página inicial',
+            '💬': 'Caixa de mensagens',
+            '🔔': 'Notificações',
+            '📈': 'Monitoração',
+            '⚙️': 'Ajuda',
+            '🚪': 'Sair da conta',
+            '🌡️': 'Temperatura',
+            '📳': 'Vibração',
+            '🔊': 'Ruído'
+        };
+        
+        menuItems.forEach(item => {
+            const icon = item.querySelector('.menu-icon').textContent;
+            if (tooltips[icon]) {
+                item.setAttribute('data-tooltip', tooltips[icon]);
+            }
+        });
+    }
+    
+    // Salvar estado no localStorage
+    function saveSidebarState() {
+        localStorage.setItem('sidebarCollapsed', isCollapsed);
+    }
+    
+    // Navegação do menu
+    const menuItems = document.querySelectorAll('.menu-item');
+    menuItems.forEach(item => {
+        item.addEventListener('click', function() {
+            menuItems.forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Fechar menu no mobile após clique
+            if (window.innerWidth <= 1024) {
+                sidebar.classList.remove('active');
+            }
+            
+            const menuText = this.querySelector('.menu-text').textContent;
+            console.log('Menu clicado:', menuText);
+        });
+    });
+    
+    // Navegação do calendário
+    const prevButton = document.querySelector('.nav-button:first-child');
+    const nextButton = document.querySelector('.nav-button:last-child');
+    
+    if (prevButton && nextButton) {
+        prevButton.addEventListener('click', function() {
+            console.log('Mês anterior');
+        });
+        
+        nextButton.addEventListener('click', function() {
+            console.log('Próximo mês');
+        });
+    }
+    
+    // Ajustar layout na redimensionamento da janela
+    window.addEventListener('resize', function() {
+        updateSidebarState();
+    });
+});
