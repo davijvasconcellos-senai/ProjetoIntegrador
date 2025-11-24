@@ -1,0 +1,164 @@
+/* Reset e configurações globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Container principal */
+.container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 50px 40px;
+    width: 100%;
+    max-width: 440px;
+    text-align: center;
+}
+
+.entrar {
+height: auto;
+margin-bottom: 50px;
+}
+
+/* Logo */
+.logo {
+    width: 390px;
+    height: auto;
+    margin-bottom: 60px;
+}
+
+/* Título */
+h1 {
+    color: #1a1a1a;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    letter-spacing: 0.5px;
+}
+
+/* Grupos de formulário */
+.form-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 18px 20px;
+    border: none;
+    background: #f0f2f5;
+    border-radius: 25px;
+    font-size: 16px;
+    color: #1a1a1a;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    background: #e8eaed;
+}
+
+.form-group input::placeholder {
+    color: #666;
+}
+
+/* Toggle de senha */
+.password-toggle {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s ease;
+}
+
+.password-toggle:hover {
+    color: #003d82;
+}
+
+/* Link criar conta */
+.create-account {
+    text-align: right;
+    margin-bottom: 30px;
+    margin-top: 10px;
+}
+
+.create-account a {
+    color: #0099ff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.create-account a:hover {
+    color: #0077cc;
+}
+
+/* Botão Entrar */
+.btn-entrar {
+    width: 100%;
+    max-width: 200px;
+    padding: 14px 40px;
+    background: #003d82;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-entrar:hover {
+    background: #002a5c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 61, 130, 0.3);
+}
+
+.btn-entrar:active {
+    transform: translateY(0);
+}
+
+/* Footer */
+.footer {
+    margin-top: 40px;
+    color: #666;
+    font-size: 12px;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .container {
+        padding: 40px 30px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .logo {
+        width: 120px;
+    }
+
+    .form-group input {
+        padding: 16px 18px;
+        font-size: 15px;
+    }
+
+    .btn-entrar {
+        padding: 12px 30px;
+        font-size: 15px;
+    }
+}

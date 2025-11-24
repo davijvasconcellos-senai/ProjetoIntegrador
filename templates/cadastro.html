@@ -1,11 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Criar Conta - PredictivePulse</title>
+    <link rel="stylesheet" href="../static/css/cadastro.css">
 </head>
 <body>
-    
+    <div class="container">
+        <div class="logo">
+            <img src="../static/images/logo.png" alt="Logo PredictivePulse">
+        </div>
+        
+        <h1>PredictivePulse</h1>
+        <h2>CRIAR CONTA</h2>
+        
+        <form class="form-cadastro" id="cadastroForm">
+            <div class="campo">
+                <label for="nome">Nome Completo</label>
+                <input type="text" id="nome" name="nome">
+            </div>
+            
+            <div class="campo">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email">
+            </div>
+            
+            <div class="campo senha-container">
+                <label for="senha">Senha</label>
+                <div class="input-with-icon">
+                    <input type="password" id="senha" name="senha">
+                    <span class="eye-icon" id="eye-icon-password" onclick="togglePassword()">👁️</span>
+                </div>
+            </div>
+            
+            <div class="campo senha-container">
+                <label for="confirmarSenha">Confirmar Senha</label>
+                <div class="input-with-icon">
+                    <input type="password" id="confirmarSenha" name="confirmarSenha">
+                    <span class="eye-icon" id="eye-icon-confirm" onclick="toggleConfirmPassword()">👁️</span>
+                </div>
+            </div>
+            
+            <div class="tipo-usuario">
+                <p>Tipo de Usuário:</p>
+                <div class="opcoes">
+                    <label class="opcao">
+                        <input type="radio" name="tipoUsuario" value="tecnico">
+                        <span class="checkmark"></span>
+                        Técnico
+                    </label>
+                    
+                    <label class="opcao">
+                        <input type="radio" name="tipoUsuario" value="supervisor">
+                        <span class="checkmark"></span>
+                        Supervisor
+                    </label>
+                    
+                    <label class="opcao">
+                        <input type="radio" name="tipoUsuario" value="administrador">
+                        <span class="checkmark"></span>
+                        Administrador
+                    </label>
+                </div>
+            </div>
+            
+            <div class="separador"></div>
+            
+            <button type="submit" class="btn-criar-conta">Criar conta</button>
+            
+            <div class="login-link">
+                <a href="login.html">Já tem uma conta? Entrar</a>
+            </div>
+        </form>
+        
+        <footer>
+            <p>© 2025 PredictivePulse - Monitoramento Inteligente</p>
+        </footer>
+    </div>
+
+    <script src="../static/js/cadastro.js"></script>
 </body>
 </html>

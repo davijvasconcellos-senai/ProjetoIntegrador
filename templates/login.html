@@ -4,11 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PredictivePulse - Monitoramento Inteligente</title>
+    <link rel="stylesheet" href="../static/css/login.css">
 </head>
 <body>
     <div class="container">
-        <img src="../static/images/logo.png">
-        <h1>Entrar </h1>
+        <img src="../static/images/logo.png" alt="PredictivePulse Logo" class="logo">
+
+        <h1 class="entrar">ENTRAR NA CONTA</h1>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <input type="email" id="email" placeholder="Email" required>
+            </div>
+
+            <div class="form-group">
+                <input type="password" id="senha" placeholder="Senha" required>
+                <svg class="password-toggle" onclick="togglePassword()" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path id="eye-icon" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle id="eye-circle" cx="12" cy="12" r="3"></circle>
+                </svg>
+            </div>
+
+            <div class="create-account">
+                <a href="cadastro.html">criar conta</a>
+            </div>
+
+            <button type="submit" class="btn-entrar">Entrar</button>
+        </form>
+
+        <div class="footer">
+            © 2025 PredictivePulse - Monitoramento Inteligente
+        </div>
     </div>
+
+    <script src="../static/js/login.js"></script>
 </body>
 </html>
