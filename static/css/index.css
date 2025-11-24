@@ -37,6 +37,7 @@ body {
     align-items: center;
     border-bottom: 1px solid #34495e;
     height: 80px;
+    position: relative;
 }
 
 .logo-container {
@@ -70,32 +71,94 @@ body {
     white-space: nowrap;
 }
 
+/* Botão de Toggle - Posição Ajustada */
 .toggle-btn {
     background: rgba(255, 255, 255, 0.1);
     border: none;
     color: white;
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    position: absolute;
+    right: -16px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1001;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .toggle-btn:hover {
     background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-50%) scale(1.1);
 }
 
 .toggle-icon {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Posição ajustada quando menu está recolhido */
+.sidebar:not(.collapsed) .toggle-btn {
+    right: -16px;
+}
+
+.sidebar.collapsed .toggle-btn {
+    right: -12px;
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Ícone muda conforme o estado do menu */
+.sidebar:not(.collapsed) .toggle-icon {
+    transform: rotate(0deg);
 }
 
 .sidebar.collapsed .toggle-icon {
     transform: rotate(180deg);
+}
+
+/* Tooltip para o botão toggle */
+.toggle-btn::after {
+    content: 'Recolher Menu';
+    position: absolute;
+    left: -140px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #2c3e50;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar:not(.collapsed) .toggle-btn:hover::after {
+    opacity: 1;
+    left: -145px;
+}
+
+.sidebar.collapsed .toggle-btn::after {
+    content: 'Expandir Menu';
+    left: 45px;
+}
+
+.sidebar.collapsed .toggle-btn:hover::after {
+    opacity: 1;
+    left: 50px;
 }
 
 .sidebar-menu {
@@ -177,50 +240,6 @@ body {
     opacity: 0;
 }
 
-/* Expand Indicator */
-.expand-indicator {
-    position: absolute;
-    top: 50%;
-    right: -20px;
-    transform: translateY(-50%);
-    background: #3498db;
-    color: white;
-    padding: 10px 5px;
-    border-radius: 0 10px 10px 0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    opacity: 0;
-    pointer-events: none;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.sidebar.collapsed .expand-indicator {
-    opacity: 1;
-    pointer-events: all;
-    right: -25px;
-}
-
-.expand-indicator:hover {
-    background: #2980b9;
-    right: -22px;
-    padding-right: 8px;
-}
-
-.expand-icon {
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.expand-text {
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-    transition: opacity 0.3s ease;
-}
-
 /* Tooltip para ícones quando menu está recolhido */
 .menu-item::after {
     content: attr(data-tooltip);
@@ -253,10 +272,6 @@ body {
     display: flex;
     flex-direction: column;
     transition: margin-left 0.3s ease;
-}
-
-.main-content.expanded {
-    margin-left: 0;
 }
 
 .main-header {
@@ -564,7 +579,7 @@ h3 {
         transform: translateX(0);
     }
 
-    .expand-indicator {
+    .toggle-btn {
         display: none;
     }
 

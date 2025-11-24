@@ -1,8 +1,7 @@
-// Menu Lateral Interativo com Recolhimento e Expandir por Ícone
+// Menu Lateral Interativo com Botão de Dupla Função
 document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('toggleBtn');
-    const expandIndicator = document.getElementById('expandIndicator');
     const menuToggle = document.getElementById('menuToggle');
     const mainContent = document.getElementById('mainContent');
     
@@ -13,20 +12,10 @@ document.addEventListener('DOMContentLoaded', function() {
     updateSidebarState();
     setupTooltips();
     
-    // Botão de recolher/expandir no menu lateral
+    // Botão de dupla função (recolher/expandir)
     toggleBtn.addEventListener('click', function(e) {
         e.stopPropagation();
-        isCollapsed = !isCollapsed;
-        updateSidebarState();
-        saveSidebarState();
-    });
-    
-    // Ícone de expandir quando menu estiver recolhido
-    expandIndicator.addEventListener('click', function(e) {
-        e.stopPropagation();
-        isCollapsed = false;
-        updateSidebarState();
-        saveSidebarState();
+        toggleSidebar();
     });
     
     // Botão de toggle no header (para mobile)
@@ -46,14 +35,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Expandir menu ao passar o mouse (apenas desktop)
-    sidebar.addEventListener('mouseenter', function() {
-        if (window.innerWidth > 1024 && isCollapsed) {
-            // Opcional: expandir automaticamente ao passar mouse
-            // isCollapsed = false;
-            // updateSidebarState();
-        }
-    });
+    // Função para alternar o menu
+    function toggleSidebar() {
+        isCollapsed = !isCollapsed;
+        updateSidebarState();
+        saveSidebarState();
+    }
     
     // Atualizar estado do menu lateral
     function updateSidebarState() {
@@ -137,5 +124,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Ajustar layout na redimensionamento da janela
     window.addEventListener('resize', function() {
         updateSidebarState();
+    });
+    
+    // Atalho de teclado (opcional): Ctrl + M para alternar menu
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'm') {
+            e.preventDefault();
+            toggleSidebar();
+        }
     });
 });
