@@ -6,8 +6,8 @@
 }
 
 body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f0f2f5;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -26,139 +26,217 @@ body {
     text-align: center;
 }
 
-.entrar {
-height: auto;
-margin-bottom: 50px;
-}
-
 /* Logo */
 .logo {
-    width: 390px;
-    height: auto;
-    margin-bottom: 60px;
+    margin-bottom: 25px;
 }
 
-/* Título */
+.logo img {
+    max-width: 80px;
+    height: auto;
+    border-radius: 10px;
+}
+
+/* Títulos */
 h1 {
-    color: #1a1a1a;
-    font-size: 24px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
     font-weight: 600;
-    margin-bottom: 40px;
-    letter-spacing: 0.5px;
+    color: #666;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* Formulário */
+.form-login {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 /* Grupos de formulário */
 .form-group {
     position: relative;
-    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    letter-spacing: 0.5px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 500;
 }
 
 .form-group input {
     width: 100%;
-    padding: 18px 20px;
-    border: none;
-    background: #f0f2f5;
-    border-radius: 25px;
-    font-size: 16px;
+    padding: 14px 16px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 15px;
     color: #1a1a1a;
     transition: all 0.3s ease;
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .form-group input:focus {
     outline: none;
-    background: #e8eaed;
+    border-color: #667eea;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .form-group input::placeholder {
-    color: #666;
+    color: #999;
+}
+
+/* Container de senha com ícone */
+.senha-container {
+    position: relative;
+}
+
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon input {
+    padding-right: 45px;
 }
 
 /* Toggle de senha */
-.password-toggle {
+.eye-icon {
     position: absolute;
-    right: 20px;
+    right: 15px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
-    color: #666;
-    transition: color 0.3s ease;
+    user-select: none;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    background: none;
+    border: none;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
 }
 
-.password-toggle:hover {
-    color: #003d82;
+.eye-icon:hover {
+    background-color: rgba(102, 126, 234, 0.1);
+    opacity: 0.8;
 }
 
-/* Link criar conta */
-.create-account {
-    text-align: right;
-    margin-bottom: 30px;
-    margin-top: 10px;
-}
-
-.create-account a {
-    color: #0099ff;
-    text-decoration: none;
-    font-size: 14px;
-    transition: color 0.3s ease;
-}
-
-.create-account a:hover {
-    color: #0077cc;
+.eye-icon:active {
+    transform: translateY(-50%) scale(0.95);
 }
 
 /* Botão Entrar */
 .btn-entrar {
     width: 100%;
-    max-width: 200px;
-    padding: 14px 40px;
-    background: #003d82;
+    padding: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    border-radius: 25px;
+    border-radius: 8px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-top: 10px;
 }
 
 .btn-entrar:hover {
-    background: #002a5c;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 61, 130, 0.3);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
 .btn-entrar:active {
     transform: translateY(0);
 }
 
+/* Link criar conta */
+.criar-conta {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.criar-conta a {
+    color: #667eea;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.criar-conta a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
 /* Footer */
-.footer {
-    margin-top: 40px;
-    color: #666;
+footer {
+    margin-top: 30px;
+    text-align: center;
     font-size: 12px;
+    color: #999;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.5px;
 }
 
 /* Responsividade */
 @media (max-width: 480px) {
     .container {
         padding: 40px 30px;
+        border-radius: 15px;
     }
 
     h1 {
-        font-size: 20px;
+        font-size: 24px;
     }
 
-    .logo {
-        width: 120px;
+    h2 {
+        font-size: 16px;
+    }
+
+    .logo img {
+        max-width: 70px;
     }
 
     .form-group input {
-        padding: 16px 18px;
-        font-size: 15px;
+        padding: 12px 14px;
+        font-size: 14px;
     }
 
     .btn-entrar {
-        padding: 12px 30px;
+        padding: 14px;
         font-size: 15px;
     }
 }

@@ -2,10 +2,10 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
     justify-content: center;
@@ -29,25 +29,29 @@ body {
 }
 
 .logo img {
-    max-width: 410px;
+    max-width: 80px;
     height: auto;
     border-radius: 10px;
 }
 
 h1 {
+    font-family: 'Orbitron', sans-serif;
     font-size: 28px;
     font-weight: 700;
     color: #333;
     margin-bottom: 8px;
-    letter-spacing: 0.5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
 }
 
 h2 {
+    font-family: 'Orbitron', sans-serif;
     font-size: 18px;
     font-weight: 600;
     color: #666;
     margin-bottom: 30px;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
 .form-cadastro {
@@ -68,6 +72,8 @@ h2 {
     font-weight: 500;
     color: #555;
     letter-spacing: 0.5px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 500;
 }
 
 .campo input {
@@ -78,6 +84,7 @@ h2 {
     transition: all 0.3s ease;
     background-color: #f8f9fa;
     width: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .campo input:focus {
@@ -94,6 +101,12 @@ h2 {
 
 .input-with-icon {
     position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon input {
+    padding-right: 45px; /* Espaço para o ícone */
 }
 
 .eye-icon {
@@ -103,12 +116,25 @@ h2 {
     transform: translateY(-50%);
     cursor: pointer;
     user-select: none;
-    font-size: 16px;
-    transition: opacity 0.3s ease;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    background: none;
+    border: none;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
 }
 
 .eye-icon:hover {
-    opacity: 0.7;
+    background-color: rgba(102, 126, 234, 0.1);
+    opacity: 0.8;
+}
+
+.eye-icon:active {
+    transform: translateY(-50%) scale(0.95);
 }
 
 .tipo-usuario {
@@ -120,6 +146,8 @@ h2 {
     font-size: 14px;
     font-weight: 500;
     color: #555;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 500;
 }
 
 .opcoes {
@@ -136,6 +164,7 @@ h2 {
     padding-left: 35px;
     font-size: 14px;
     color: #555;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .opcao input {
@@ -200,8 +229,11 @@ h2 {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
 .btn-criar-conta:hover {
@@ -223,6 +255,7 @@ h2 {
     font-size: 14px;
     font-weight: 500;
     transition: color 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .login-link a:hover {
@@ -237,4 +270,7 @@ footer {
     color: #999;
     border-top: 1px solid #eee;
     padding-top: 20px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.5px;
 }
