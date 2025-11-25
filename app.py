@@ -362,8 +362,11 @@ if __name__ == '__main__':
         if should_open:
             print_startup_banner(success=True, host='0.0.0.0', port=5000)
             url = 'http://localhost:5000'
-            thread = threading.Thread(target=open_browser, args=(url,), daemon=True)
-            thread.start()
+            # In-process guard to avoid opening the browser multiple times
+            if os.environ.get('PREDICTIVEPULSE_BROWSER_OPENED') != '1':
+                os.environ['PREDICTIVEPULSE_BROWSER_OPENED'] = '1'
+                thread = threading.Thread(target=open_browser, args=(url,), daemon=True)
+                thread.start()
         else:
             # Processo pai: suprimir banner para evitar duplicação.
             print('Starting Flask (parent) - banner suppressed to avoid duplicates')
