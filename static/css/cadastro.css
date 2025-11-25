@@ -14,6 +14,23 @@ body {
     padding: 20px;
 }
 
+/* Alertas */
+.alert {
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.alert-error {
+    background: #ffe6e6;
+    color: #dc3545;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+}
+
 .container {
     background-color: white;
     border-radius: 15px;

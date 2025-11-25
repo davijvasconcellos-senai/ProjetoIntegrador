@@ -183,6 +183,29 @@ def logout():
     flash('Você saiu da sua conta.', 'info')
     return redirect(url_for('login'))
 
+@app.route('/demo')
+def demo():
+    """Página de demonstração (acesso sem autenticação)"""
+    conn = get_db_connection()
+    
+    # Buscar dados para o dashboard
+    falhas = conn.execute(
+        'SELECT * FROM falhas ORDER BY data_falha DESC LIMIT 10'
+    ).fetchall()
+    
+    sensores = conn.execute(
+        'SELECT * FROM sensores ORDER BY data_leitura DESC LIMIT 100'
+    ).fetchall()
+    
+    conn.close()
+    
+    return render_template('index.html', 
+                         usuario='Visitante (Demo)',
+                         tipo_usuario='visualizador',
+                         falhas=falhas,
+                         sensores=sensores,
+                         demo_mode=True)
+
 # ==================== API ENDPOINTS ====================
 
 @app.route('/api/sensores', methods=['GET'])

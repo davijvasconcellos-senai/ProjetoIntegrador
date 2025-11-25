@@ -97,6 +97,13 @@
                 </div>
             </header>
 
+            {% if demo_mode %}
+            <div class="demo-banner">
+                <span>🔒 Modo Demonstração - Visualização Apenas</span>
+                <a href="{{ url_for('login') }}" class="demo-login-btn">Fazer Login</a>
+            </div>
+            {% endif %}
+
             <div class="dashboard-content">
                 <!-- Gráficos de Sensores -->
                 <section class="sensors-section">

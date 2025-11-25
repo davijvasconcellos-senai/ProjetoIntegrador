@@ -21,7 +21,7 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}" style="padding: 12px; margin-bottom: 20px; border-radius: 8px; background: {% if category == 'error' %}#ffe6e6; color: #dc3545;{% else %}#d4edda; color: #155724;{% endif %}">
+                    <div class="alert alert-{{ category }}">
                         {{ message }}
                     </div>
                 {% endfor %}
@@ -93,5 +93,7 @@
     </div>
 
     <script src="{{ url_for('static', filename='js/cadastro.js') }}"></script>
+</body>
+</html>
 </body>
 </html>

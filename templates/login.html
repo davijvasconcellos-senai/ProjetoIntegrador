@@ -21,7 +21,7 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}" style="padding: 12px; margin-bottom: 20px; border-radius: 8px; background: {% if category == 'error' %}#ffe6e6; color: #dc3545;{% else %}#d4edda; color: #155724;{% endif %}">
+                    <div class="alert alert-{{ category }}">
                         {{ message }}
                     </div>
                 {% endfor %}
@@ -44,6 +44,11 @@
             
             <button type="submit" class="btn-entrar">Entrar</button>
             
+            <div class="demo-section">
+                <p class="demo-text">Quer conhecer a plataforma?</p>
+                <a href="{{ url_for('demo') }}" class="btn-demo">Acesso Demonstração</a>
+            </div>
+            
             <div class="criar-conta">
                 <a href="{{ url_for('cadastro') }}">criar conta</a>
             </div>
@@ -55,5 +60,7 @@
     </div>
 
     <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+</body>
+</html>
 </body>
 </html>

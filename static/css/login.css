@@ -15,6 +15,23 @@ body {
     padding: 20px;
 }
 
+/* Alertas */
+.alert {
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.alert-error {
+    background: #ffe6e6;
+    color: #dc3545;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+}
+
 /* Container principal */
 .container {
     background: white;
@@ -175,6 +192,51 @@ h2 {
 }
 
 .btn-entrar:active {
+    transform: translateY(0);
+}
+
+/* Seção de Demonstração */
+.demo-section {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f0f4ff;
+    border-radius: 8px;
+    border: 2px dashed #667eea;
+}
+
+.demo-text {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.btn-demo {
+    display: inline-block;
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #48d597 0%, #36c985 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+    text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(72, 213, 151, 0.3);
+}
+
+.btn-demo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(72, 213, 151, 0.4);
+}
+
+.btn-demo:active {
     transform: translateY(0);
 }
 

@@ -283,6 +283,35 @@ body {
     gap: 20px;
 }
 
+/* Banner de Demonstração */
+.demo-banner {
+    background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+    color: white;
+    padding: 12px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(255, 140, 0, 0.3);
+}
+
+.demo-login-btn {
+    background: white;
+    color: #ff8c00;
+    padding: 8px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 12px;
+}
+
+.demo-login-btn:hover {
+    background: #ffe6cc;
+    transform: translateY(-2px);
+}
+
 .menu-toggle {
     background: none;
     border: none;
