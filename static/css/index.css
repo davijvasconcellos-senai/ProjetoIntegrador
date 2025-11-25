@@ -108,11 +108,11 @@ body {
 
 /* Posição ajustada quando menu está recolhido */
 .sidebar:not(.collapsed) .toggle-btn {
-    right: -16px;
+    right: 17px;
 }
 
 .sidebar.collapsed .toggle-btn {
-    right: -12px;
+    left: 10px;
     background: rgba(255, 255, 255, 0.15);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
 }
