@@ -383,10 +383,18 @@ if __name__ == '__main__':
                     pid = None
 
                 stale = False
+                # Consider lock stale if PID is missing or process does not exist
                 if pid:
                     try:
                         # signal 0 just checks for existence
                         os.kill(pid, 0)
+                        # process exists; but if the lock file is old, treat as stale
+                        try:
+                            age = time.time() - os.path.getmtime(lock_path)
+                            if age > 300:  # 5 minutes
+                                stale = True
+                        except Exception:
+                            pass
                     except OSError:
                         stale = True
                 else:
