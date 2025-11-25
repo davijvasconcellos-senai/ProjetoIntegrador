@@ -4,6 +4,9 @@ import sqlite3
 from datetime import datetime
 import os
 import sys
+import webbrowser
+import threading
+import time
 
 app = Flask(__name__)
 app.secret_key = 'sua_chave_secreta_super_segura_aqui'  # Mude isso em produção!
@@ -46,6 +49,12 @@ def print_startup_banner(success=True, host='0.0.0.0', port=5000):
         print(f"{Colors.WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Colors.RESET}")
         print(f"{Colors.RED}❌ Verifique se a porta {port} está disponível.{Colors.RESET}")
         print(f"{Colors.CYAN}{'='*70}{Colors.RESET}\n")
+
+def open_browser(url):
+    """Abre o navegador padrão após um pequeno delay para garantir que o servidor esteja rodando"""
+    time.sleep(2)  # Aguarda 2 segundos para o servidor iniciar
+    webbrowser.open(url)
+    print(f"{Colors.GREEN}✓ Navegador aberto automaticamente em {url}{Colors.RESET}\n")
 
 # Configuração do banco de dados
 DATABASE = 'predictivepulse.db'
@@ -343,6 +352,12 @@ def internal_error(e):
 if __name__ == '__main__':
     try:
         print_startup_banner(success=True, host='0.0.0.0', port=5000)
+        
+        # Abre o navegador em uma thread separada para não bloquear o servidor
+        url = 'http://localhost:5000'
+        thread = threading.Thread(target=open_browser, args=(url,), daemon=True)
+        thread.start()
+        
         app.run(debug=True, host='0.0.0.0', port=5000)
     except Exception as e:
         print_startup_banner(success=False)
