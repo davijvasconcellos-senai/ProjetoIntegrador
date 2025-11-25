@@ -294,6 +294,10 @@ footer {
 
 /* ================= Page Transition Overlay ================= */
 .page-transition {
+    --transition-duration: 600ms;
+    --overlay-bg: rgba(10, 10, 10, 0.45);
+    --panel-bg: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,245,255,0.96));
+
     position: fixed;
     inset: 0;
     display: flex;
@@ -302,18 +306,18 @@ footer {
     background: rgba(10, 10, 10, 0.0);
     pointer-events: none;
     opacity: 0;
-    transition: opacity 300ms ease, background 300ms ease;
+    transition: opacity var(--transition-duration) ease, background var(--transition-duration) ease;
     z-index: 9999;
 }
 
 .page-transition.visible {
     pointer-events: auto;
     opacity: 1;
-    background: rgba(10, 10, 10, 0.45);
+    background: var(--overlay-bg);
 }
 
 .page-transition .panel {
-    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,245,255,0.96));
+    background: var(--panel-bg);
     padding: 28px 36px;
     border-radius: 12px;
     box-shadow: 0 12px 40px rgba(0,0,0,0.25);
@@ -322,7 +326,7 @@ footer {
     align-items: center;
     gap: 12px;
     transform: translateY(12px);
-    animation: panelEnter 420ms cubic-bezier(.2,.9,.2,1) forwards;
+    animation: panelEnter calc(var(--transition-duration) * 0.7) cubic-bezier(.2,.9,.2,1) forwards;
 }
 
 .page-transition .loader {
@@ -349,4 +353,25 @@ footer {
 @keyframes panelEnter {
     from { opacity: 0; transform: translateY(18px) scale(0.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Fade mode: hide panel, show subtle pulse */
+.page-transition.fade .panel { display: none; }
+.page-transition.fade {
+    background: transparent;
+}
+.page-transition.fade.visible { background: var(--overlay-bg); }
+.page-transition.fade::after {
+    content: '';
+    width: 120px;
+    height: 6px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.22));
+    animation: fadePulse calc(var(--transition-duration) * 1.2) ease-in-out infinite;
+}
+
+@keyframes fadePulse {
+    0% { transform: scaleX(0.95); opacity: 0.6 }
+    50% { transform: scaleX(1.05); opacity: 1 }
+    100% { transform: scaleX(0.95); opacity: 0.6 }
 }
