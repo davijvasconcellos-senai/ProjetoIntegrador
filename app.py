@@ -351,20 +351,29 @@ def internal_error(e):
 
 if __name__ == '__main__':
     try:
-        print_startup_banner(success=True, host='0.0.0.0', port=5000)
-
         # Evita abrir o navegador duas vezes quando o reloader do Flask está ativo.
         # O reloader executa o script duas vezes: um processo "pai" (WERKZEUG_RUN_MAIN unset)
         # e um processo "filho" (WERKZEUG_RUN_MAIN == 'true'). Queremos abrir o navegador
         # apenas no processo filho, ou quando o modo debug está desativado.
         should_open = (not app.debug) or (os.environ.get('WERKZEUG_RUN_MAIN') == 'true')
+
+        # Mostrar o banner apenas quando realmente iremos abrir o navegador (processo filho).
         if should_open:
+            print_startup_banner(success=True, host='0.0.0.0', port=5000)
             url = 'http://localhost:5000'
             thread = threading.Thread(target=open_browser, args=(url,), daemon=True)
             thread.start()
+        else:
+            # Processo pai: suprimir banner para evitar duplicação.
+            # Exibir mensagem curta e silenciosa para depuração, se necessário.
+            print('Starting Flask (parent) - banner suppressed to avoid duplicates')
 
         app.run(debug=True, host='0.0.0.0', port=5000)
     except Exception as e:
-        print_startup_banner(success=False)
+        # Mostra banner de erro apenas no processo que abriria o navegador
+        if os.environ.get('WERKZEUG_RUN_MAIN') == 'true' or not app.debug:
+            print_startup_banner(success=False)
+        else:
+            print(f"Erro ao iniciar o servidor: {str(e)}")
         print(f"{Colors.RED}Erro: {str(e)}{Colors.RESET}")
         sys.exit(1)
