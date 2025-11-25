@@ -32,11 +32,16 @@ function ensurePageTransitionElement() {
     return el;
 }
 
-function showTransition(duration = 600) {
+function showTransition(duration) {
+    const cfg = window.PAGE_TRANSITION_CONFIG || { duration: 600 };
+    const d = typeof duration === 'number' ? duration : cfg.duration;
     const el = ensurePageTransitionElement();
+    // adapt to type if provided
+    const type = (window.PAGE_TRANSITION_CONFIG && window.PAGE_TRANSITION_CONFIG.type) || document.documentElement.getAttribute('data-transition-type') || 'panel';
+    el.classList.toggle('fade', type === 'fade');
     el.classList.add('visible');
     // remove depois do tempo para evitar overlay persistente em caso de erro de navegação
-    setTimeout(() => el.classList.remove('visible'), duration + 3000);
+    setTimeout(() => el.classList.remove('visible'), d + 3000);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -48,8 +53,20 @@ document.addEventListener('DOMContentLoaded', function() {
         criarContaLink.addEventListener('click', function(e) {
             e.preventDefault();
             const href = this.href;
-            showTransition(600);
-            setTimeout(() => { window.location.href = href; }, 600);
+            const cfg = window.PAGE_TRANSITION_CONFIG || { duration: 600, type: 'panel' };
+
+            if (cfg.type === 'slide') {
+                // mark transition so target page can animate in
+                sessionStorage.setItem('pp_transition', 'login->cadastro');
+                const container = document.querySelector('.container');
+                if (container) {
+                    container.classList.add('slide-out-left');
+                }
+                setTimeout(() => { window.location.href = href; }, cfg.duration);
+            } else {
+                showTransition(cfg.duration);
+                setTimeout(() => { window.location.href = href; }, cfg.duration);
+            }
         });
     }
 
@@ -61,6 +78,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const senha = document.getElementById('senha').value;
 
             if (!email || !senha) {
+    // Play slide-in if coming from other page
+    const trans = sessionStorage.getItem('pp_transition');
+    if (trans === 'cadastro->login') {
+        const container = document.querySelector('.container');
+        if (container) {
+            container.classList.add('slide-in-left');
+            // remove marker so it doesn't play again
+            sessionStorage.removeItem('pp_transition');
+            setTimeout(() => container.classList.remove('slide-in-left'), (window.PAGE_TRANSITION_CONFIG && window.PAGE_TRANSITION_CONFIG.duration) || 600);
+        }
+    }
                 alert('Por favor, preencha todos os campos.');
                 e.preventDefault();
                 return;
@@ -74,7 +102,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Mostrar a transição e deixar o formulário submeter normalmente
-            showTransition(800);
+            const cfg = window.PAGE_TRANSITION_CONFIG || { duration: 800, type: 'panel' };
+            if (cfg.type === 'slide') {
+                // on submit, slide the container up/left as feedback
+                const container = document.querySelector('.container');
+                if (container) container.classList.add('slide-out-left');
+            } else {
+                showTransition(cfg.duration);
+            }
             // pequena espera para que a animação apareça antes do POST
             // não impedir o submit — permitir que o envio ocorra
             // usamos setTimeout apenas se quisermos atrasar o envio; aqui deixamos seguir imediato

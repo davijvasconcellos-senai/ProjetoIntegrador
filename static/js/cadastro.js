@@ -60,9 +60,16 @@ document.addEventListener('DOMContentLoaded', function() {
         entrarLink.addEventListener('click', function(e) {
             e.preventDefault();
             const href = this.href;
-            const cfg = window.PAGE_TRANSITION_CONFIG || { duration: 600 };
-            showTransition(cfg.duration);
-            setTimeout(() => { window.location.href = href; }, cfg.duration);
+            const cfg = window.PAGE_TRANSITION_CONFIG || { duration: 600, type: 'panel' };
+            if (cfg.type === 'slide') {
+                sessionStorage.setItem('pp_transition', 'cadastro->login');
+                const container = document.querySelector('.container');
+                if (container) container.classList.add('slide-out-right');
+                setTimeout(() => { window.location.href = href; }, cfg.duration);
+            } else {
+                showTransition(cfg.duration);
+                setTimeout(() => { window.location.href = href; }, cfg.duration);
+            }
         });
     }
 
@@ -75,6 +82,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const tipoUsuario = document.querySelector('input[name="tipoUsuario"]:checked');
 
             if (!nome || !email || !senha || !confirmarSenha) {
+    // Play slide-in if coming from other page
+    const trans = sessionStorage.getItem('pp_transition');
+    if (trans === 'login->cadastro') {
+        const container = document.querySelector('.container');
+        if (container) {
+            container.classList.add('slide-in-right');
+            sessionStorage.removeItem('pp_transition');
+            setTimeout(() => container.classList.remove('slide-in-right'), (window.PAGE_TRANSITION_CONFIG && window.PAGE_TRANSITION_CONFIG.duration) || 600);
+        }
+    }
                 alert('Por favor, preencha todos os campos.');
                 e.preventDefault();
                 return;
@@ -105,8 +122,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            const cfg = window.PAGE_TRANSITION_CONFIG || { duration: 800 };
-            showTransition(cfg.duration);
+            const cfg = window.PAGE_TRANSITION_CONFIG || { duration: 800, type: 'panel' };
+            if (cfg.type === 'slide') {
+                const container = document.querySelector('.container');
+                if (container) container.classList.add('slide-out-right');
+            } else {
+                showTransition(cfg.duration);
+            }
             // submit proceeds
         });
     }

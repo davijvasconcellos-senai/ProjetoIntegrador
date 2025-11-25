@@ -375,3 +375,41 @@ footer {
     50% { transform: scaleX(1.05); opacity: 1 }
     100% { transform: scaleX(0.95); opacity: 0.6 }
 }
+
+/* ================= Slide menu transitions ================= */
+.container {
+    transform-origin: center;
+    transition: transform var(--transition-duration) ease, opacity var(--transition-duration) ease;
+}
+
+.container.slide-out-left {
+    transform: translateX(-120%);
+    opacity: 0;
+}
+
+.container.slide-out-right {
+    transform: translateX(120%);
+    opacity: 0;
+}
+
+.container.slide-in-right {
+    transform: translateX(120%);
+    opacity: 0;
+    animation: slideInFromRight var(--transition-duration) cubic-bezier(.2,.9,.2,1) forwards;
+}
+
+.container.slide-in-left {
+    transform: translateX(-120%);
+    opacity: 0;
+    animation: slideInFromLeft var(--transition-duration) cubic-bezier(.2,.9,.2,1) forwards;
+}
+
+@keyframes slideInFromRight {
+    from { transform: translateX(120%); opacity: 0 }
+    to { transform: translateX(0); opacity: 1 }
+}
+
+@keyframes slideInFromLeft {
+    from { transform: translateX(-120%); opacity: 0 }
+    to { transform: translateX(0); opacity: 1 }
+}
