@@ -7,32 +7,42 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../static/css/cadastro.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cadastro.css') }}">
 </head>
 <body>
     <div class="container">
         <div class="logo">
-            <img src="../static/images/logo.png" alt="Logo PredictivePulse">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo PredictivePulse">
         </div>
         
         <h1>PredictivePulse</h1>
         <h2>CRIAR CONTA</h2>
         
-        <form class="form-cadastro" id="cadastroForm">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" style="padding: 12px; margin-bottom: 20px; border-radius: 8px; background: {% if category == 'error' %}#ffe6e6; color: #dc3545;{% else %}#d4edda; color: #155724;{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form class="form-cadastro" id="cadastroForm" method="POST" action="{{ url_for('cadastro') }}">
             <div class="campo">
                 <label for="nome">Nome Completo</label>
-                <input type="text" id="nome" name="nome">
+                <input type="text" id="nome" name="nome" required>
             </div>
             
             <div class="campo">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email">
+                <input type="email" id="email" name="email" required>
             </div>
             
             <div class="campo senha-container">
                 <label for="senha">Senha</label>
                 <div class="input-with-icon">
-                    <input type="password" id="senha" name="senha">
+                    <input type="password" id="senha" name="senha" required>
                     <span class="eye-icon" id="eye-icon-password" onclick="togglePassword()">👁️</span>
                 </div>
             </div>
@@ -40,7 +50,7 @@
             <div class="campo senha-container">
                 <label for="confirmarSenha">Confirmar Senha</label>
                 <div class="input-with-icon">
-                    <input type="password" id="confirmarSenha" name="confirmarSenha">
+                    <input type="password" id="confirmarSenha" name="confirmarSenha" required>
                     <span class="eye-icon" id="eye-icon-confirm" onclick="toggleConfirmPassword()">👁️</span>
                 </div>
             </div>
@@ -49,7 +59,7 @@
                 <p>Tipo de Usuário:</p>
                 <div class="opcoes">
                     <label class="opcao">
-                        <input type="radio" name="tipoUsuario" value="tecnico">
+                        <input type="radio" name="tipoUsuario" value="tecnico" required>
                         <span class="checkmark"></span>
                         Técnico
                     </label>
@@ -73,7 +83,7 @@
             <button type="submit" class="btn-criar-conta">Criar conta</button>
             
             <div class="login-link">
-                <a href="login.html">Já tem uma conta? Entrar</a>
+                <a href="{{ url_for('login') }}">Já tem uma conta? Entrar</a>
             </div>
         </form>
         
@@ -82,6 +92,6 @@
         </footer>
     </div>
 
-    <script src="../static/js/cadastro.js"></script>
+    <script src="{{ url_for('static', filename='js/cadastro.js') }}"></script>
 </body>
 </html>

@@ -7,27 +7,37 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../static/css/login.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 </head>
 <body>
     <div class="container">
         <div class="logo">
-            <img src="../static/images/logo.png" alt="Logo PredictivePulse">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo PredictivePulse">
         </div>
         
         <h1>PredictivePulse</h1>
         <h2>ENTRAR NA CONTA</h2>
         
-        <form class="form-login" id="loginForm">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" style="padding: 12px; margin-bottom: 20px; border-radius: 8px; background: {% if category == 'error' %}#ffe6e6; color: #dc3545;{% else %}#d4edda; color: #155724;{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form class="form-login" id="loginForm" method="POST" action="{{ url_for('login') }}">
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Seu email">
+                <input type="email" id="email" name="email" placeholder="Seu email" required>
             </div>
             
             <div class="form-group senha-container">
                 <label for="senha">Senha</label>
                 <div class="input-with-icon">
-                    <input type="password" id="senha" name="senha" placeholder="Sua senha">
+                    <input type="password" id="senha" name="senha" placeholder="Sua senha" required>
                     <span class="eye-icon" id="eye-icon-password" onclick="togglePassword()">👁️</span>
                 </div>
             </div>
@@ -35,7 +45,7 @@
             <button type="submit" class="btn-entrar">Entrar</button>
             
             <div class="criar-conta">
-                <a href="cadastro.html">criar conta</a>
+                <a href="{{ url_for('cadastro') }}">criar conta</a>
             </div>
         </form>
         
@@ -44,6 +54,6 @@
         </footer>
     </div>
 
-    <script src="../static/js/login.js"></script>
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 </body>
 </html>
