@@ -2,7 +2,7 @@
 // window.PAGE_TRANSITION_CONFIG = { type: 'panel'|'fade', duration: 600, overlay: 'rgba(...)', panelGradient: 'linear-gradient(...)' }
 (function(){
     const defaults = {
-        type: 'panel', // 'panel' or 'fade'
+        type: 'slide', // 'panel' | 'fade' | 'slide' (default now 'slide')
         duration: 600,
         overlay: 'rgba(10,10,10,0.45)',
         panelGradient: 'linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,245,255,0.96))'
