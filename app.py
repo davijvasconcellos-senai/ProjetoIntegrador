@@ -374,8 +374,36 @@ if __name__ == '__main__':
                 thread = threading.Thread(target=open_browser, args=(url,), daemon=True)
                 thread.start()
             except FileExistsError:
-                # Lock already exists — another process already opened the browser.
-                print('Browser already opened by another process; skipping automatic open.')
+                # Lock already exists — check whether the owning process is still alive.
+                try:
+                    with open(lock_path, 'r') as f:
+                        pid_txt = f.read().strip()
+                        pid = int(pid_txt) if pid_txt.isdigit() else None
+                except Exception:
+                    pid = None
+
+                stale = False
+                if pid:
+                    try:
+                        # signal 0 just checks for existence
+                        os.kill(pid, 0)
+                    except OSError:
+                        stale = True
+                else:
+                    stale = True
+
+                if stale:
+                    try:
+                        os.remove(lock_path)
+                        fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+                        with os.fdopen(fd, 'w') as f:
+                            f.write(str(os.getpid()))
+                        thread = threading.Thread(target=open_browser, args=(url,), daemon=True)
+                        thread.start()
+                    except Exception:
+                        print('Unable to acquire lock to open browser; skipping.')
+                else:
+                    print('Browser already opened by another active process; skipping automatic open.')
         else:
             # Processo pai: suprimir banner para evitar duplicação.
             # Exibir mensagem curta e silenciosa para depuração, se necessário.
