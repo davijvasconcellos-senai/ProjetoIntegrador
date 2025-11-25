@@ -357,9 +357,11 @@ if __name__ == '__main__':
         # e um processo "filho" (WERKZEUG_RUN_MAIN == 'true'). Queremos abrir o navegador
         # apenas no processo filho, ou quando o modo debug está desativado.
         should_open = (not app.debug) or (os.environ.get('WERKZEUG_RUN_MAIN') == 'true')
+        force_open = os.environ.get('FORCE_OPEN_BROWSER', '').lower() in ('1', 'true', 'yes')
 
-        # Mostrar o banner apenas quando realmente iremos abrir o navegador (processo filho).
-        if should_open:
+        # Mostrar o banner apenas quando realmente iremos abrir o navegador (processo filho),
+        # a menos que o usuário force a abertura via variável de ambiente.
+        if should_open or force_open:
             print_startup_banner(success=True, host='0.0.0.0', port=5000)
             url = 'http://localhost:5000'
             # Use a temp-file lock so even if multiple processes try to open the browser,
