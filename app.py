@@ -357,63 +357,16 @@ if __name__ == '__main__':
         # e um processo "filho" (WERKZEUG_RUN_MAIN == 'true'). Queremos abrir o navegador
         # apenas no processo filho, ou quando o modo debug está desativado.
         should_open = (not app.debug) or (os.environ.get('WERKZEUG_RUN_MAIN') == 'true')
-        force_open = os.environ.get('FORCE_OPEN_BROWSER', '').lower() in ('1', 'true', 'yes')
 
-        # Mostrar o banner apenas quando realmente iremos abrir o navegador (processo filho),
-        # a menos que o usuário force a abertura via variável de ambiente.
-        if should_open or force_open:
+        # Mostrar o banner apenas quando realmente iremos abrir o navegador (processo filho).
+        if should_open:
             print_startup_banner(success=True, host='0.0.0.0', port=5000)
             url = 'http://localhost:5000'
-            # Use a temp-file lock so even if multiple processes try to open the browser,
-            # only the first will actually perform the action.
-            lock_name = f'predictivepulse_open_{5000}.lock'
-            lock_path = os.path.join(tempfile.gettempdir(), lock_name)
-            try:
-                # Try to create the lock file atomically
-                fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-                with os.fdopen(fd, 'w') as f:
-                    f.write(str(os.getpid()))
-                thread = threading.Thread(target=open_browser, args=(url,), daemon=True)
-                thread.start()
-            except FileExistsError:
-                # Lock already exists — check whether the owning process is still alive.
-                try:
-                    with open(lock_path, 'r') as f:
-                        pid_txt = f.read().strip()
-                        pid = int(pid_txt) if pid_txt.isdigit() else None
-                except Exception:
-                    pid = None
-
-                stale = False
-                # Consider lock stale if PID is missing or process does not exist
-                if pid:
-                    try:
-                        # signal 0 just checks for existence
-                        os.kill(pid, 0)
-                        # process exists; but if the lock file is old, treat as stale
-                        try:
-                            age = time.time() - os.path.getmtime(lock_path)
-                            if age > 300:  # 5 minutes
-                                stale = True
-                        except Exception:
-                            pass
-                    except OSError:
-                        stale = True
-                else:
-                    stale = True
-
-                if stale:
-                    try:
-                        os.remove(lock_path)
-                        fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-                        with os.fdopen(fd, 'w') as f:
-                            f.write(str(os.getpid()))
-                        thread = threading.Thread(target=open_browser, args=(url,), daemon=True)
-                        thread.start()
-                    except Exception:
-                        print('Unable to acquire lock to open browser; skipping.')
-                else:
-                    print('Browser already opened by another active process; skipping automatic open.')
+            thread = threading.Thread(target=open_browser, args=(url,), daemon=True)
+            thread.start()
+        else:
+            # Processo pai: suprimir banner para evitar duplicação.
+            print('Starting Flask (parent) - banner suppressed to avoid duplicates')
         else:
             # Processo pai: suprimir banner para evitar duplicação.
             # Exibir mensagem curta e silenciosa para depuração, se necessário.
