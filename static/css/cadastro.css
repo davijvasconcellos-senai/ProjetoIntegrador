@@ -306,7 +306,7 @@ footer {
     background: rgba(10, 10, 10, 0.0);
     pointer-events: none;
     opacity: 0;
-    transition: opacity var(--transition-duration) ease, background var(--transition-duration) ease;
+    transition: opacity var(--transition-duration) var(--transition-easing), background var(--transition-duration) var(--transition-easing);
     z-index: 9999;
 }
 
@@ -326,7 +326,8 @@ footer {
     align-items: center;
     gap: 12px;
     transform: translateY(12px);
-    animation: panelEnter calc(var(--transition-duration) * 0.7) cubic-bezier(.2,.9,.2,1) forwards;
+    /* panel should animate slightly slower relative to the main duration for a smoother feel */
+    animation: panelEnter calc(var(--transition-duration) * 0.85) var(--transition-easing) forwards;
 }
 
 .page-transition .loader {
@@ -367,7 +368,7 @@ footer {
     height: 6px;
     border-radius: 999px;
     background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.22));
-    animation: fadePulse calc(var(--transition-duration) * 1.2) ease-in-out infinite;
+    animation: fadePulse calc(var(--transition-duration) * 1.2) var(--transition-easing) infinite;
 }
 
 @keyframes fadePulse {
@@ -379,7 +380,7 @@ footer {
 /* ================= Slide menu transitions ================= */
 .container {
     transform-origin: center;
-    transition: transform var(--transition-duration) ease, opacity var(--transition-duration) ease;
+    transition: transform var(--transition-duration) var(--transition-easing), opacity var(--transition-duration) var(--transition-easing);
 }
 
 .container.slide-out-left {
@@ -395,7 +396,7 @@ footer {
 .container.slide-in-right {
     transform: translateX(120%);
     opacity: 0;
-    animation: slideInFromRight var(--transition-duration) cubic-bezier(.2,.9,.2,1) forwards;
+    animation: slideInFromRight calc(var(--transition-duration) * 0.95) var(--transition-easing) forwards;
 }
 
 .container.slide-in-left {
