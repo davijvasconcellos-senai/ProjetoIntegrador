@@ -367,10 +367,6 @@ if __name__ == '__main__':
         else:
             # Processo pai: suprimir banner para evitar duplicação.
             print('Starting Flask (parent) - banner suppressed to avoid duplicates')
-        else:
-            # Processo pai: suprimir banner para evitar duplicação.
-            # Exibir mensagem curta e silenciosa para depuração, se necessário.
-            print('Starting Flask (parent) - banner suppressed to avoid duplicates')
 
         app.run(debug=True, host='0.0.0.0', port=5000)
     except Exception as e:
