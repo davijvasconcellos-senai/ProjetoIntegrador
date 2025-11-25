@@ -3,9 +3,49 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 from datetime import datetime
 import os
+import sys
 
 app = Flask(__name__)
 app.secret_key = 'sua_chave_secreta_super_segura_aqui'  # Mude isso em produção!
+
+# ==================== TERMINAL STYLING ====================
+
+class Colors:
+    """ANSI color codes for terminal output"""
+    GREEN = '\033[92m'
+    RED = '\033[91m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    CYAN = '\033[96m'
+    WHITE = '\033[97m'
+    RESET = '\033[0m'
+    BOLD = '\033[1m'
+    
+def print_startup_banner(success=True, host='0.0.0.0', port=5000):
+    """Exibe um banner estilizado de startup da aplicação"""
+    print("\n")
+    print(f"{Colors.CYAN}{'='*70}{Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.CYAN}  🚀 PREDICTIVE PULSE - SISTEMA DE MONITORAMENTO INTELIGENTE{Colors.RESET}")
+    print(f"{Colors.CYAN}{'='*70}{Colors.RESET}")
+    
+    if success:
+        print(f"{Colors.GREEN}{Colors.BOLD}✓ SERVIDOR INICIADO COM SUCESSO!{Colors.RESET}")
+        print(f"{Colors.WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Colors.RESET}")
+        print(f"{Colors.WHITE}  Status: {Colors.GREEN}● Conectado{Colors.RESET}")
+        print(f"{Colors.WHITE}  Host:   {Colors.BLUE}{host}{Colors.RESET}")
+        print(f"{Colors.WHITE}  Porta:  {Colors.BLUE}{port}{Colors.RESET}")
+        print(f"{Colors.WHITE}  URL:    {Colors.BLUE}http://localhost:{port}{Colors.RESET}")
+        print(f"{Colors.WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Colors.RESET}")
+        print(f"{Colors.YELLOW}⚠️  Modo DEBUG: ATIVO | Nunca use isso em produção!{Colors.RESET}")
+        print(f"{Colors.CYAN}{'='*70}{Colors.RESET}\n")
+    else:
+        print(f"{Colors.RED}{Colors.BOLD}✗ ERRO AO INICIAR O SERVIDOR!{Colors.RESET}")
+        print(f"{Colors.WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Colors.RESET}")
+        print(f"{Colors.WHITE}  Status: {Colors.RED}● Desconectado{Colors.RESET}")
+        print(f"{Colors.WHITE}  Motivo: {Colors.RED}Falha ao conectar ao servidor{Colors.RESET}")
+        print(f"{Colors.WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Colors.RESET}")
+        print(f"{Colors.RED}❌ Verifique se a porta {port} está disponível.{Colors.RESET}")
+        print(f"{Colors.CYAN}{'='*70}{Colors.RESET}\n")
 
 # Configuração do banco de dados
 DATABASE = 'predictivepulse.db'
@@ -301,4 +341,10 @@ def internal_error(e):
 # ==================== EXECUÇÃO ====================
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    try:
+        print_startup_banner(success=True, host='0.0.0.0', port=5000)
+        app.run(debug=True, host='0.0.0.0', port=5000)
+    except Exception as e:
+        print_startup_banner(success=False)
+        print(f"{Colors.RED}Erro: {str(e)}{Colors.RESET}")
+        sys.exit(1)
