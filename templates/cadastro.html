@@ -30,23 +30,26 @@
             {% endif %}
         {% endwith %}
         
-        <form class="form-cadastro" id="cadastroForm" method="POST" action="{{ url_for('cadastro') }}">
+        <form class="form-cadastro" id="cadastroForm" method="POST" action="{{ url_for('cadastro') }}" novalidate>
             <div class="campo">
                 <label for="nome">Nome Completo</label>
                 <input type="text" id="nome" name="nome" required autocomplete="name" autofocus>
+                <div class="erro-validacao" id="erro-nome"></div>
             </div>
             
             <div class="campo">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" required autocomplete="email">
+                <div class="erro-validacao" id="erro-email"></div>
             </div>
             
             <div class="campo senha-container">
                 <label for="senha">Senha</label>
                 <div class="input-with-icon">
-                    <input type="password" id="senha" name="senha" required autocomplete="new-password">
+                    <input type="password" id="senha" name="senha" required autocomplete="new-password" minlength="6">
                     <button type="button" class="eye-icon" id="eye-icon-password" aria-pressed="false" aria-label="Mostrar senha">👁️</button>
                 </div>
+                <div class="erro-validacao" id="erro-senha"></div>
             </div>
             
             <div class="campo senha-container">
@@ -55,6 +58,7 @@
                     <input type="password" id="confirmarSenha" name="confirmarSenha" required autocomplete="new-password">
                     <button type="button" class="eye-icon" id="eye-icon-confirm" aria-pressed="false" aria-label="Mostrar confirmação de senha">👁️</button>
                 </div>
+                <div class="erro-validacao" id="erro-confirmar-senha"></div>
             </div>
             
             <fieldset class="tipo-usuario">
@@ -78,11 +82,15 @@
                         Administrador
                     </label>
                 </div>
+                <div class="erro-validacao" id="erro-tipo-usuario"></div>
             </fieldset>
             
             <div class="separador"></div>
             
-            <button type="submit" class="btn-criar-conta">Criar conta</button>
+            <button type="submit" class="btn-criar-conta" id="btn-submit">
+                <span class="btn-text">Criar conta</span>
+                <span class="loading-spinner" style="display: none;"></span>
+            </button>
             
             <div class="login-link">
                 <a href="{{ url_for('login') }}">Já tem uma conta? Entrar</a>
