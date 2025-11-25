@@ -4,6 +4,7 @@ import sqlite3
 from datetime import datetime
 import os
 import sys
+import tempfile
 import webbrowser
 import threading
 import time
@@ -361,8 +362,20 @@ if __name__ == '__main__':
         if should_open:
             print_startup_banner(success=True, host='0.0.0.0', port=5000)
             url = 'http://localhost:5000'
-            thread = threading.Thread(target=open_browser, args=(url,), daemon=True)
-            thread.start()
+            # Use a temp-file lock so even if multiple processes try to open the browser,
+            # only the first will actually perform the action.
+            lock_name = f'predictivepulse_open_{5000}.lock'
+            lock_path = os.path.join(tempfile.gettempdir(), lock_name)
+            try:
+                # Try to create the lock file atomically
+                fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+                with os.fdopen(fd, 'w') as f:
+                    f.write(str(os.getpid()))
+                thread = threading.Thread(target=open_browser, args=(url,), daemon=True)
+                thread.start()
+            except FileExistsError:
+                # Lock already exists — another process already opened the browser.
+                print('Browser already opened by another process; skipping automatic open.')
         else:
             # Processo pai: suprimir banner para evitar duplicação.
             # Exibir mensagem curta e silenciosa para depuração, se necessário.
