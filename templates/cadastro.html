@@ -20,43 +20,45 @@
         
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
+            <div id="flash-messages" aria-live="polite" aria-atomic="true">
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
+                    <div class="alert alert-{{ category }}" role="alert">
                         {{ message }}
                     </div>
                 {% endfor %}
+            </div>
             {% endif %}
         {% endwith %}
         
         <form class="form-cadastro" id="cadastroForm" method="POST" action="{{ url_for('cadastro') }}">
             <div class="campo">
                 <label for="nome">Nome Completo</label>
-                <input type="text" id="nome" name="nome" required>
+                <input type="text" id="nome" name="nome" required autocomplete="name" autofocus>
             </div>
             
             <div class="campo">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" required autocomplete="email">
             </div>
             
             <div class="campo senha-container">
                 <label for="senha">Senha</label>
                 <div class="input-with-icon">
-                    <input type="password" id="senha" name="senha" required>
-                    <span class="eye-icon" id="eye-icon-password" onclick="togglePassword()">👁️</span>
+                    <input type="password" id="senha" name="senha" required autocomplete="new-password">
+                    <button type="button" class="eye-icon" id="eye-icon-password" aria-pressed="false" aria-label="Mostrar senha">👁️</button>
                 </div>
             </div>
             
             <div class="campo senha-container">
                 <label for="confirmarSenha">Confirmar Senha</label>
                 <div class="input-with-icon">
-                    <input type="password" id="confirmarSenha" name="confirmarSenha" required>
-                    <span class="eye-icon" id="eye-icon-confirm" onclick="toggleConfirmPassword()">👁️</span>
+                    <input type="password" id="confirmarSenha" name="confirmarSenha" required autocomplete="new-password">
+                    <button type="button" class="eye-icon" id="eye-icon-confirm" aria-pressed="false" aria-label="Mostrar confirmação de senha">👁️</button>
                 </div>
             </div>
             
-            <div class="tipo-usuario">
-                <p>Tipo de Usuário:</p>
+            <fieldset class="tipo-usuario">
+                <legend>Tipo de Usuário</legend>
                 <div class="opcoes">
                     <label class="opcao">
                         <input type="radio" name="tipoUsuario" value="tecnico" required>
@@ -76,7 +78,7 @@
                         Administrador
                     </label>
                 </div>
-            </div>
+            </fieldset>
             
             <div class="separador"></div>
             
@@ -94,7 +96,5 @@
 
     <script src="{{ url_for('static', filename='js/transition-config.js') }}"></script>
     <script src="{{ url_for('static', filename='js/cadastro.js') }}"></script>
-</body>
-</html>
 </body>
 </html>

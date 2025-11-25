@@ -5,10 +5,10 @@ function togglePassword() {
     if (!senhaInput) return;
     if (senhaInput.type === 'password') {
         senhaInput.type = 'text';
-        if (eyeIcon) { eyeIcon.style.opacity = '0.5'; eyeIcon.textContent = '🔒'; }
+        if (eyeIcon) { eyeIcon.style.opacity = '0.5'; eyeIcon.textContent = '🔒'; eyeIcon.setAttribute('aria-pressed', 'true'); }
     } else {
         senhaInput.type = 'password';
-        if (eyeIcon) { eyeIcon.style.opacity = '1'; eyeIcon.textContent = '👁️'; }
+        if (eyeIcon) { eyeIcon.style.opacity = '1'; eyeIcon.textContent = '👁️'; eyeIcon.setAttribute('aria-pressed', 'false'); }
     }
 }
 
@@ -18,10 +18,10 @@ function toggleConfirmPassword() {
     if (!confirmarSenhaInput) return;
     if (confirmarSenhaInput.type === 'password') {
         confirmarSenhaInput.type = 'text';
-        if (eyeIcon) { eyeIcon.style.opacity = '0.5'; eyeIcon.textContent = '🔒'; }
+        if (eyeIcon) { eyeIcon.style.opacity = '0.5'; eyeIcon.textContent = '🔒'; eyeIcon.setAttribute('aria-pressed', 'true'); }
     } else {
         confirmarSenhaInput.type = 'password';
-        if (eyeIcon) { eyeIcon.style.opacity = '1'; eyeIcon.textContent = '👁️'; }
+        if (eyeIcon) { eyeIcon.style.opacity = '1'; eyeIcon.textContent = '👁️'; eyeIcon.setAttribute('aria-pressed', 'false'); }
     }
 }
 
@@ -55,6 +55,12 @@ function showTransition(duration) {
 document.addEventListener('DOMContentLoaded', function() {
     const cadastroForm = document.getElementById('cadastroForm');
     const entrarLink = document.querySelector('.login-link a');
+
+    // conectar botões de alternância de senha para acessibilidade
+    const eyeBtn = document.getElementById('eye-icon-password');
+    if (eyeBtn) eyeBtn.addEventListener('click', function(e) { togglePassword(); });
+    const eyeConfirmBtn = document.getElementById('eye-icon-confirm');
+    if (eyeConfirmBtn) eyeConfirmBtn.addEventListener('click', function(e) { toggleConfirmPassword(); });
 
     if (entrarLink) {
         entrarLink.addEventListener('click', function(e) {

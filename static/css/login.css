@@ -15,6 +15,14 @@ body {
     padding: 20px;
 }
 
+:root {
+    --transition-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --primary-500: #667eea;
+    --primary-700: #764ba2;
+    --success-500: #36c985;
+    --overlay-bg: rgba(10, 10, 10, 0.45);
+}
+
 /* Alertas */
 .alert {
     padding: 12px;
@@ -49,7 +57,9 @@ body {
 }
 
 .logo img {
-    max-width: 400px;
+    max-width: 150px;
+    max-height: 120px;
+    width: auto;
     height: auto;
     border-radius: 10px;
 }
@@ -134,7 +144,7 @@ h2 {
 }
 
 .input-with-icon input {
-    padding-right: 45px;
+    padding-right: 56px;
 }
 
 /* Toggle de senha */
@@ -149,12 +159,13 @@ h2 {
     transition: all 0.3s ease;
     background: none;
     border: none;
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
+    border-radius: 6px;
+    padding: 0;
 }
 
 .eye-icon:hover {
@@ -238,6 +249,26 @@ h2 {
 
 .btn-demo:active {
     transform: translateY(0);
+}
+
+/* Focus-visible for keyboard users */
+input:focus-visible,
+button:focus-visible,
+.criar-conta a:focus-visible {
+    outline: 3px solid rgba(102,126,234,0.18);
+    outline-offset: 2px;
+}
+
+/* Prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .page-transition,
+    .page-transition .panel,
+    .container,
+    .btn-entrar,
+    .btn-demo {
+        transition: none !important;
+        animation: none !important;
+    }
 }
 
 /* Link criar conta */

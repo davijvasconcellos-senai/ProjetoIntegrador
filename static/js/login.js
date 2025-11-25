@@ -7,10 +7,12 @@ function togglePassword() {
         senhaInput.type = 'text';
         eyeIcon.style.opacity = '0.5';
         eyeIcon.textContent = '🔒';
+        eyeIcon.setAttribute('aria-pressed', 'true');
     } else {
         senhaInput.type = 'password';
         eyeIcon.style.opacity = '1';
         eyeIcon.textContent = '👁️';
+        eyeIcon.setAttribute('aria-pressed', 'false');
     }
 }
 
@@ -45,6 +47,15 @@ function showTransition(duration) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // conectar o botão de alternância de senha (se presente)
+    const eyeBtn = document.getElementById('eye-icon-password');
+    if (eyeBtn) {
+        eyeBtn.addEventListener('click', function(e) {
+            // chama a função global definida acima
+            togglePassword();
+        });
+    }
+
     const loginForm = document.getElementById('loginForm');
     const criarContaLink = document.querySelector('.criar-conta a');
 
