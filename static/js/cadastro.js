@@ -1,3 +1,79 @@
+// Função para mostrar/ocultar senha (reaproveitada)
+function togglePassword() {
+    const senhaInput = document.getElementById('senha');
+    const eyeIcon = document.getElementById('eye-icon-password');
+    
+    if (senhaInput && senhaInput.type === 'password') {
+        senhaInput.type = 'text';
+        if (eyeIcon) { eyeIcon.style.opacity = '0.5'; eyeIcon.textContent = '🔒'; }
+    } else if (senhaInput) {
+        senhaInput.type = 'password';
+        if (eyeIcon) { eyeIcon.style.opacity = '1'; eyeIcon.textContent = '👁️'; }
+    }
+}
+
+// Cria o overlay de transição se necessário
+function ensurePageTransitionElement() {
+    let el = document.getElementById('page-transition');
+    if (!el) {
+        el = document.createElement('div');
+        el.id = 'page-transition';
+        el.className = 'page-transition';
+        el.innerHTML = `
+            <div class="panel">
+                <div class="loader"></div>
+                <p>Carregando...</p>
+            </div>
+        `;
+        document.body.appendChild(el);
+    }
+    return el;
+}
+
+function showTransition(duration = 600) {
+    const el = ensurePageTransitionElement();
+    el.classList.add('visible');
+    setTimeout(() => el.classList.remove('visible'), duration + 3000);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const cadastroForm = document.getElementById('cadastroForm');
+    const entrarLink = document.querySelector('.login-link a');
+
+    if (entrarLink) {
+        entrarLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            const href = this.href;
+            showTransition(600);
+            setTimeout(() => { window.location.href = href; }, 600);
+        });
+    }
+
+    if (cadastroForm) {
+        cadastroForm.addEventListener('submit', function(e) {
+            // Basic client-side checks
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const confirmar = document.getElementById('confirmarSenha') ? document.getElementById('confirmarSenha').value : '';
+
+            if (!nome || !email || !senha) {
+                alert('Por favor, preencha todos os campos.');
+                e.preventDefault();
+                return;
+            }
+
+            if (senha !== confirmar) {
+                alert('As senhas não coincidem.');
+                e.preventDefault();
+                return;
+            }
+
+            showTransition(800);
+            // allow submit to proceed
+        });
+    }
+});
 // Função para mostrar/ocultar senha
 function togglePassword() {
     const senhaInput = document.getElementById('senha');

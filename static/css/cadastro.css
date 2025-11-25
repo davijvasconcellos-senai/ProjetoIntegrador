@@ -291,3 +291,62 @@ footer {
     font-weight: 400;
     letter-spacing: 0.5px;
 }
+
+/* ================= Page Transition Overlay ================= */
+.page-transition {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 10, 10, 0.0);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 300ms ease, background 300ms ease;
+    z-index: 9999;
+}
+
+.page-transition.visible {
+    pointer-events: auto;
+    opacity: 1;
+    background: rgba(10, 10, 10, 0.45);
+}
+
+.page-transition .panel {
+    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,245,255,0.96));
+    padding: 28px 36px;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    transform: translateY(12px);
+    animation: panelEnter 420ms cubic-bezier(.2,.9,.2,1) forwards;
+}
+
+.page-transition .loader {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 5px solid rgba(102,126,234,0.18);
+    border-top-color: #667eea;
+    animation: spin 1s linear infinite;
+}
+
+.page-transition .panel p {
+    margin: 0;
+    font-weight: 600;
+    color: #333;
+    font-family: 'Orbitron', sans-serif;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes panelEnter {
+    from { opacity: 0; transform: translateY(18px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
