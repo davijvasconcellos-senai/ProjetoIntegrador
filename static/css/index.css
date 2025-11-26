@@ -1,3 +1,34 @@
+.dashboard-row>.failures-section {
+    margin-left: 0;
+}
+
+@media (max-width: 1024px) {
+    .dashboard-row>.failures-section {
+        margin-left: 0;
+    }
+}
+
+/* Dashboard: Histórico de Falhas e Calendário lado a lado */
+.dashboard-row {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 32px;
+    justify-content: center;
+}
+
+.dashboard-row>.failures-section,
+.dashboard-row>.calendar-section {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+@media (max-width: 1024px) {
+    .dashboard-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
 /* Ícone customizado para Área do Cliente (primeiro ícone do sprite icons.png) */
 .icon-area-cliente {
     display: inline-block;

@@ -1,3 +1,6 @@
+# === DEBUG: INÍCIO DO APP.PY ===
+print('=== INICIANDO APP.PY (DEBUG) ===')
+
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
@@ -8,6 +11,37 @@ import tempfile
 import webbrowser
 import threading
 import time
+
+app = Flask(__name__)
+app.secret_key = 'sua_chave_secreta_super_segura_aqui'  # Mude isso em produção!
+
+# --- Simulação em memória para DuploTech Laser 6040Z ---
+sim_data = {
+    'valor': 0,
+    'data_leitura': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+    'status': 'ativa',
+    'tempo_parada': '0h 00min',
+}
+    
+# ==================== API DE SIMULAÇÃO ====================
+
+@app.route('/api/simulacao', methods=['GET'])
+def api_simulacao():
+    """API para retornar dados simulados da DuploTech Laser 6040Z"""
+    print('=== /api/simulacao ACIONADO (DEBUG) ===')
+    return jsonify(sim_data)
+def simulate_machine():
+    import random, time
+    while True:
+        sim_data['valor'] = round(random.uniform(10, 90), 2)
+        sim_data['data_leitura'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        sim_data['status'] = random.choice(['ativa', 'resolvida'])
+        sim_data['tempo_parada'] = f"{random.randint(0,3)}h {random.randint(0,59):02d}min"
+        time.sleep(3)
+
+# Iniciar thread de simulação ao iniciar a plataforma
+sim_thread = threading.Thread(target=simulate_machine, daemon=True)
+sim_thread.start()
 
 app = Flask(__name__)
 app.secret_key = 'sua_chave_secreta_super_segura_aqui'  # Mude isso em produção!
@@ -190,6 +224,19 @@ def init_db():
     ''')
     
     conn.commit()
+
+    # Inserir máquina fixa 'DuploTech Laser 6040Z' se não existir
+    # Sensores
+    exists = cursor.execute("SELECT 1 FROM sensores WHERE tipo = ?", ('DuploTech Laser 6040Z',)).fetchone()
+    if not exists:
+        cursor.execute("INSERT INTO sensores (tipo, valor, unidade) VALUES (?, ?, ?)",
+                       ('DuploTech Laser 6040Z', 0, 'unidade'))
+    # Falhas
+    exists_falha = cursor.execute("SELECT 1 FROM falhas WHERE maquina = ?", ('DuploTech Laser 6040Z',)).fetchone()
+    if not exists_falha:
+        cursor.execute("INSERT INTO falhas (maquina, descricao, status, tempo_parada) VALUES (?, ?, ?, ?)",
+                       ('DuploTech Laser 6040Z', 'Sistema iniciado', 'ativa', '0'))
+    conn.commit()
     conn.close()
 
 # Inicializar o banco de dados ao iniciar a aplicação
@@ -303,11 +350,29 @@ def dashboard():
     
     conn.close()
     
+    sensores_sim = []
+    for s in sensores:
+        if s['tipo'] == 'DuploTech Laser 6040Z':
+            s_sim = dict(s)
+            s_sim['valor'] = sim_data['valor']
+            s_sim['data_leitura'] = sim_data['data_leitura']
+            sensores_sim.append(s_sim)
+        else:
+            sensores_sim.append(s)
+    falhas_sim = []
+    for f in falhas:
+        if f['maquina'] == 'DuploTech Laser 6040Z':
+            f_sim = dict(f)
+            f_sim['status'] = sim_data['status']
+            f_sim['tempo_parada'] = sim_data['tempo_parada']
+            falhas_sim.append(f_sim)
+        else:
+            falhas_sim.append(f)
     return render_template('index.html', 
                          usuario=session['user_nome'],
                          tipo_usuario=session['user_tipo'],
-                         falhas=falhas,
-                         sensores=sensores)
+                         falhas=falhas_sim,
+                         sensores=sensores_sim)
 
 @app.route('/logout')
 def logout():

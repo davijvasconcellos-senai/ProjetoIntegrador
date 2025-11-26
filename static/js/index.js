@@ -1,5 +1,9 @@
 // Menu Lateral Interativo com Botão de Dupla Função
 document.addEventListener('DOMContentLoaded', function () {
+    console.log('JS index.js carregado');
+    console.log('JS carregado!');
+    // Alerta para garantir carregamento do JS (remova depois de testar)
+    // alert('JS carregado!');
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('toggleBtn');
     const menuToggle = document.getElementById('menuToggle');
@@ -179,4 +183,5 @@ document.addEventListener('DOMContentLoaded', function () {
             toggleSidebar();
         }
     });
+    // Valores fixos exibidos diretamente no HTML dos cards (ver index.html)
 });
