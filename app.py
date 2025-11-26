@@ -29,7 +29,7 @@ def print_startup_banner(success=True, host='0.0.0.0', port=5000):
     """Exibe um banner estilizado de startup da aplicação"""
     print("\n")
     print(f"{Colors.CYAN}{'='*70}{Colors.RESET}")
-    print(f"{Colors.BOLD}{Colors.CYAN}  🚀 PREDICTIVE PULSE - SISTEMA DE MONITORAMENTO INTELIGENTE{Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.CYAN}  PREDICTIVE PULSE - SISTEMA DE MONITORAMENTO INTELIGENTE{Colors.RESET}")
     print(f"{Colors.CYAN}{'='*70}{Colors.RESET}")
     
     if success:
