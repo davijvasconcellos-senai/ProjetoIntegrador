@@ -12,6 +12,89 @@ import time
 app = Flask(__name__)
 app.secret_key = 'sua_chave_secreta_super_segura_aqui'  # Mude isso em produção!
 
+# === INTEGRAÇÃO OAUTH GOOGLE E MICROSOFT ===
+from flask_dance.contrib.google import make_google_blueprint, google
+from flask_dance.contrib.azure import make_azure_blueprint, azure
+import os
+
+# Carregar credenciais do ambiente
+GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', 'COLOQUE_SUA_GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', 'COLOQUE_SUA_GOOGLE_CLIENT_SECRET')
+MICROSOFT_CLIENT_ID = os.environ.get('MICROSOFT_CLIENT_ID', 'COLOQUE_SUA_MICROSOFT_CLIENT_ID')
+MICROSOFT_CLIENT_SECRET = os.environ.get('MICROSOFT_CLIENT_SECRET', 'COLOQUE_SUA_MICROSOFT_CLIENT_SECRET')
+
+# Blueprint Google
+google_bp = make_google_blueprint(
+    client_id=GOOGLE_CLIENT_ID,
+    client_secret=GOOGLE_CLIENT_SECRET,
+    scope=["profile", "email"],
+    redirect_url="/login/google/authorized"
+)
+app.register_blueprint(google_bp, url_prefix="/login")
+
+# Blueprint Microsoft (Azure)
+azure_bp = make_azure_blueprint(
+    client_id=MICROSOFT_CLIENT_ID,
+    client_secret=MICROSOFT_CLIENT_SECRET,
+    redirect_url="/login/microsoft/authorized",
+    scope=["User.Read"]
+)
+app.register_blueprint(azure_bp, url_prefix="/login")
+
+# Rota para iniciar login Google
+@app.route('/auth/google')
+def auth_google():
+    if not google.authorized:
+        return redirect(url_for('google.login'))
+    resp = google.get("/oauth2/v2/userinfo")
+    if not resp.ok:
+        flash('Erro ao autenticar com Google.', 'error')
+        return redirect(url_for('cadastro'))
+    info = resp.json()
+    return social_login_or_register(info.get('email'), info.get('name'), 'google')
+
+# Rota para iniciar login Microsoft
+@app.route('/auth/microsoft')
+def auth_microsoft():
+    if not azure.authorized:
+        return redirect(url_for('azure.login'))
+    resp = azure.get("/v1.0/me")
+    if not resp.ok:
+        flash('Erro ao autenticar com Microsoft.', 'error')
+        return redirect(url_for('cadastro'))
+    info = resp.json()
+    return social_login_or_register(info.get('mail') or info.get('userPrincipalName'), info.get('displayName'), 'microsoft')
+
+# Função auxiliar para login/cadastro social
+def social_login_or_register(email, nome, provider):
+    if not email:
+        flash('Não foi possível obter o email do provedor.', 'error')
+        return redirect(url_for('cadastro'))
+    conn = get_db_connection()
+    usuario = conn.execute('SELECT * FROM usuarios WHERE email = ?', (email,)).fetchone()
+    if usuario:
+        # Login
+        session['user_id'] = usuario['id']
+        session['user_nome'] = usuario['nome']
+        session['user_tipo'] = usuario['tipo_usuario']
+        conn.close()
+        flash('Login social realizado com sucesso!', 'success')
+        return redirect(url_for('dashboard'))
+    else:
+        # Cadastro rápido: tipo_usuario = 'tecnico' por padrão
+        conn.execute(
+            'INSERT INTO usuarios (nome, email, senha, tipo_usuario) VALUES (?, ?, ?, ?)',
+            (nome or 'Usuário '+provider, email, '', 'tecnico')
+        )
+        conn.commit()
+        usuario = conn.execute('SELECT * FROM usuarios WHERE email = ?', (email,)).fetchone()
+        session['user_id'] = usuario['id']
+        session['user_nome'] = usuario['nome']
+        session['user_tipo'] = usuario['tipo_usuario']
+        conn.close()
+        flash('Conta criada com sucesso via '+provider.title()+'!', 'success')
+        return redirect(url_for('dashboard'))
+
 # ==================== TERMINAL STYLING ====================
 
 class Colors:

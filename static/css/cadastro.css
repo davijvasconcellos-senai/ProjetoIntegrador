@@ -5,13 +5,69 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Garet', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     padding: 20px;
+}
+
+/* Social Signup Buttons */
+.social-signup {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.btn-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #fff;
+    background: #4285f4;
+    box-shadow: 0 2px 8px rgba(66, 133, 244, 0.08);
+    transition: background 0.2s, box-shadow 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-social .icon-social {
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    margin-right: 8px;
+}
+
+.btn-google {
+    background: #fff;
+    color: #222;
+    border: 1px solid #e0e0e0;
+}
+
+.btn-google:hover {
+    background: #f5f5f5;
+    box-shadow: 0 4px 16px rgba(66, 133, 244, 0.10);
+}
+
+.btn-microsoft {
+    background: #2F2F2F;
+    color: #fff;
+    border: 1px solid #222;
+}
+
+.btn-microsoft:hover {
+    background: #1a1a1a;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
+}
 }
 
 :root {
@@ -158,7 +214,8 @@ h2 {
 }
 
 .input-with-icon input {
-    padding-right: 56px; /* Espaço para o ícone */
+    padding-right: 56px;
+    /* Espaço para o ícone */
 }
 
 .eye-icon {
@@ -194,12 +251,13 @@ h2 {
 input:focus-visible,
 button:focus-visible,
 .opcao a:focus-visible {
-    outline: 3px solid rgba(102,126,234,0.18);
+    outline: 3px solid rgba(102, 126, 234, 0.18);
     outline-offset: 2px;
 }
 
 /* Prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
+
     .page-transition,
     .page-transition .panel,
     .container,
@@ -260,12 +318,12 @@ button:focus-visible,
     transition: all 0.3s ease;
 }
 
-.opcao:hover input ~ .checkmark {
+.opcao:hover input~.checkmark {
     background-color: #f0f0f0;
     border-color: #667eea;
 }
 
-.opcao input:checked ~ .checkmark {
+.opcao input:checked~.checkmark {
     background-color: #667eea;
     border-color: #667eea;
 }
@@ -276,7 +334,7 @@ button:focus-visible,
     display: none;
 }
 
-.opcao input:checked ~ .checkmark:after {
+.opcao input:checked~.checkmark:after {
     display: block;
 }
 
@@ -346,8 +404,13 @@ button:focus-visible,
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .login-link {
@@ -384,7 +447,7 @@ footer {
 .page-transition {
     --transition-duration: 600ms;
     --overlay-bg: rgba(10, 10, 10, 0.45);
-    --panel-bg: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,245,255,0.96));
+    --panel-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 245, 255, 0.96));
 
     position: fixed;
     inset: 0;
@@ -408,7 +471,7 @@ footer {
     background: var(--panel-bg);
     padding: 28px 36px;
     border-radius: 12px;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -422,7 +485,7 @@ footer {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    border: 5px solid rgba(102,126,234,0.18);
+    border: 5px solid rgba(102, 126, 234, 0.18);
     border-top-color: #667eea;
     animation: spin 1s linear infinite;
 }
@@ -434,24 +497,42 @@ footer {
     font-family: 'Orbitron', sans-serif;
 }
 
-.page-transition.fade .panel { display: none; }
+.page-transition.fade .panel {
+    display: none;
+}
+
 .page-transition.fade {
     background: transparent;
 }
-.page-transition.fade.visible { background: var(--overlay-bg); }
+
+.page-transition.fade.visible {
+    background: var(--overlay-bg);
+}
+
 .page-transition.fade::after {
     content: '';
     width: 120px;
     height: 6px;
     border-radius: 999px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.22));
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.22));
     animation: fadePulse calc(var(--transition-duration) * 1.2) var(--transition-easing) infinite;
 }
 
 @keyframes fadePulse {
-    0% { transform: scaleX(0.95); opacity: 0.6 }
-    50% { transform: scaleX(1.05); opacity: 1 }
-    100% { transform: scaleX(0.95); opacity: 0.6 }
+    0% {
+        transform: scaleX(0.95);
+        opacity: 0.6
+    }
+
+    50% {
+        transform: scaleX(1.05);
+        opacity: 1
+    }
+
+    100% {
+        transform: scaleX(0.95);
+        opacity: 0.6
+    }
 }
 
 /* ================= Slide menu transitions ================= */
@@ -479,17 +560,31 @@ footer {
 .container.slide-in-left {
     transform: translateX(-120%);
     opacity: 0;
-    animation: slideInFromLeft var(--transition-duration) cubic-bezier(.2,.9,.2,1) forwards;
+    animation: slideInFromLeft var(--transition-duration) cubic-bezier(.2, .9, .2, 1) forwards;
 }
 
 @keyframes slideInFromRight {
-    from { transform: translateX(120%); opacity: 0 }
-    to { transform: translateX(0); opacity: 1 }
+    from {
+        transform: translateX(120%);
+        opacity: 0
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
 }
 
 @keyframes slideInFromLeft {
-    from { transform: translateX(-120%); opacity: 0 }
-    to { transform: translateX(0); opacity: 1 }
+    from {
+        transform: translateX(-120%);
+        opacity: 0
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1
+    }
 }
 
 /* ================= Responsividade ================= */
@@ -498,24 +593,24 @@ footer {
         padding: 30px 25px;
         margin: 10px;
     }
-    
+
     .logo img {
         max-width: 120px;
     }
-    
+
     h1 {
         font-size: 24px;
     }
-    
+
     h2 {
         font-size: 16px;
     }
-    
+
     .campo input {
         padding: 12px 14px;
         font-size: 14px;
     }
-    
+
     .btn-criar-conta {
         padding: 14px;
         font-size: 15px;
@@ -526,19 +621,19 @@ footer {
     .container {
         padding: 25px 20px;
     }
-    
+
     .logo img {
         max-width: 100px;
     }
-    
+
     h1 {
         font-size: 22px;
     }
-    
+
     h2 {
         font-size: 15px;
     }
-    
+
     .form-cadastro {
         gap: 15px;
     }

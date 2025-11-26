@@ -1,66 +1,91 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Criar Conta - PredictivePulse</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/garet" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/cadastro.css') }}">
 </head>
+
 <body>
     <div class="container">
         <div class="logo">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo PredictivePulse">
         </div>
-        
+
         <h1>PredictivePulse</h1>
         <h2>CRIAR CONTA</h2>
-        
+        <div class="social-signup">
+            <a href="{{ url_for('auth_google') }}" class="btn-social btn-google">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google"
+                    class="icon-social"> Continuar com Google
+            </a>
+            <a href="{{ url_for('auth_microsoft') }}" class="btn-social btn-microsoft">
+                <span class="icon-social"
+                    style="display:inline-block;width:24px;height:24px;vertical-align:middle;margin-right:8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                        <g>
+                            <rect x="1" y="1" width="10" height="10" fill="#f35325" />
+                            <rect x="13" y="1" width="10" height="10" fill="#81bc06" />
+                            <rect x="1" y="13" width="10" height="10" fill="#05a6f0" />
+                            <rect x="13" y="13" width="10" height="10" fill="#ffba08" />
+                        </g>
+                    </svg>
+                </span>
+                Continuar com Microsoft
+            </a>
+        </div>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            <div id="flash-messages" aria-live="polite" aria-atomic="true">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}" role="alert">
-                        {{ message }}
-                    </div>
-                {% endfor %}
+        {% if messages %}
+        <div id="flash-messages" aria-live="polite" aria-atomic="true">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
             </div>
-            {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
         {% endwith %}
-        
+
         <form class="form-cadastro" id="cadastroForm" method="POST" action="{{ url_for('cadastro') }}" novalidate>
             <div class="campo">
                 <label for="nome">Nome Completo</label>
                 <input type="text" id="nome" name="nome" required autocomplete="name" autofocus>
                 <div class="erro-validacao" id="erro-nome"></div>
             </div>
-            
+
             <div class="campo">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" required autocomplete="email">
                 <div class="erro-validacao" id="erro-email"></div>
             </div>
-            
+
             <div class="campo senha-container">
                 <label for="senha">Senha</label>
                 <div class="input-with-icon">
                     <input type="password" id="senha" name="senha" required autocomplete="new-password" minlength="6">
-                    <button type="button" class="eye-icon" id="eye-icon-password" aria-pressed="false" aria-label="Mostrar senha">👁️</button>
+                    <button type="button" class="eye-icon" id="eye-icon-password" aria-pressed="false"
+                        aria-label="Mostrar senha">👁️</button>
                 </div>
                 <div class="erro-validacao" id="erro-senha"></div>
             </div>
-            
+
             <div class="campo senha-container">
                 <label for="confirmarSenha">Confirmar Senha</label>
                 <div class="input-with-icon">
-                    <input type="password" id="confirmarSenha" name="confirmarSenha" required autocomplete="new-password">
-                    <button type="button" class="eye-icon" id="eye-icon-confirm" aria-pressed="false" aria-label="Mostrar confirmação de senha">👁️</button>
+                    <input type="password" id="confirmarSenha" name="confirmarSenha" required
+                        autocomplete="new-password">
+                    <button type="button" class="eye-icon" id="eye-icon-confirm" aria-pressed="false"
+                        aria-label="Mostrar confirmação de senha">👁️</button>
                 </div>
                 <div class="erro-validacao" id="erro-confirmar-senha"></div>
             </div>
-            
+
             <fieldset class="tipo-usuario">
                 <legend>Tipo de Usuário</legend>
                 <div class="opcoes">
@@ -69,13 +94,13 @@
                         <span class="checkmark"></span>
                         Técnico
                     </label>
-                    
+
                     <label class="opcao">
                         <input type="radio" name="tipoUsuario" value="supervisor">
                         <span class="checkmark"></span>
                         Supervisor
                     </label>
-                    
+
                     <label class="opcao">
                         <input type="radio" name="tipoUsuario" value="administrador">
                         <span class="checkmark"></span>
@@ -84,19 +109,19 @@
                 </div>
                 <div class="erro-validacao" id="erro-tipo-usuario"></div>
             </fieldset>
-            
+
             <div class="separador"></div>
-            
+
             <button type="submit" class="btn-criar-conta" id="btn-submit">
                 <span class="btn-text">Criar conta</span>
                 <span class="loading-spinner" style="display: none;"></span>
             </button>
-            
+
             <div class="login-link">
                 <a href="{{ url_for('login') }}">Já tem uma conta? Entrar</a>
             </div>
         </form>
-        
+
         <footer>
             <p>© 2025 PredictivePulse - Monitoramento Inteligente</p>
         </footer>
@@ -105,4 +130,5 @@
     <script src="{{ url_for('static', filename='js/transition-config.js') }}"></script>
     <script src="{{ url_for('static', filename='js/cadastro.js') }}"></script>
 </body>
+
 </html>

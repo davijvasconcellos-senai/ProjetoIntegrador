@@ -1,61 +1,86 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - PredictivePulse</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/garet" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 </head>
+
 <body>
     <div class="container">
         <div class="logo">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo PredictivePulse">
         </div>
-        
+
         <h1>PredictivePulse</h1>
         <h2>ENTRAR NA CONTA</h2>
-        
+        <div class="social-signup">
+            <a href="{{ url_for('auth_google') }}" class="btn-social btn-google">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google"
+                    class="icon-social"> Entrar com Google
+            </a>
+            <a href="{{ url_for('auth_microsoft') }}" class="btn-social btn-microsoft">
+                <span class="icon-social"
+                    style="display:inline-block;width:24px;height:24px;vertical-align:middle;margin-right:8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                        <g>
+                            <rect x="1" y="1" width="10" height="10" fill="#f35325" />
+                            <rect x="13" y="1" width="10" height="10" fill="#81bc06" />
+                            <rect x="1" y="13" width="10" height="10" fill="#05a6f0" />
+                            <rect x="13" y="13" width="10" height="10" fill="#ffba08" />
+                        </g>
+                    </svg>
+                </span>
+                Entrar com Microsoft
+            </a>
+        </div>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            <div id="flash-messages" aria-live="polite" aria-atomic="true">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}" role="alert">
-                        {{ message }}
-                    </div>
-                {% endfor %}
+        {% if messages %}
+        <div id="flash-messages" aria-live="polite" aria-atomic="true">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
             </div>
-            {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
         {% endwith %}
-        
+
         <form class="form-login" id="loginForm" method="POST" action="{{ url_for('login') }}">
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="Seu email" required autocomplete="email" autofocus>
+                <input type="email" id="email" name="email" placeholder="Seu email" required autocomplete="email"
+                    autofocus>
             </div>
-            
+
             <div class="form-group senha-container">
                 <label for="senha">Senha</label>
                 <div class="input-with-icon">
-                    <input type="password" id="senha" name="senha" placeholder="Sua senha" required autocomplete="current-password">
-                    <button type="button" class="eye-icon" id="eye-icon-password" aria-pressed="false" aria-label="Mostrar senha">👁️</button>
+                    <input type="password" id="senha" name="senha" placeholder="Sua senha" required
+                        autocomplete="current-password">
+                    <button type="button" class="eye-icon" id="eye-icon-password" aria-pressed="false"
+                        aria-label="Mostrar senha">👁️</button>
                 </div>
             </div>
-            
+
             <button type="submit" class="btn-entrar">Entrar</button>
-            
+
             <div class="demo-section">
                 <p class="demo-text">Quer conhecer a plataforma?</p>
                 <a href="{{ url_for('demo') }}" class="btn-demo">Acesso Demonstração</a>
             </div>
-            
+
             <div class="criar-conta">
                 <a href="{{ url_for('cadastro') }}">criar conta</a>
             </div>
         </form>
-        
+
         <footer>
             <p>© 2025 PredictivePulse - Monitoramento Inteligente</p>
         </footer>
@@ -64,4 +89,5 @@
     <script src="{{ url_for('static', filename='js/transition-config.js') }}"></script>
     <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 </body>
+
 </html>
