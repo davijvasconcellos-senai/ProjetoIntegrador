@@ -1,3 +1,16 @@
+/* Ícone customizado para Área do Cliente (primeiro ícone do sprite icons.png) */
+.icon-area-cliente {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-image: url('../images/icons.png');
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: 100% auto;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
 /* Ajuste do container da seção de sensores quando sidebar recolhido */
 .sidebar.collapsed~.main-content .sensors-section,
 .main-content.sidebar-collapsed .sensors-section {
