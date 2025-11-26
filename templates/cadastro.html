@@ -19,26 +19,6 @@
 
         <h1>PredictivePulse</h1>
         <h2>CRIAR CONTA</h2>
-        <div class="social-signup">
-            <a href="{{ url_for('auth_google') }}" class="btn-social btn-google">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google"
-                    class="icon-social"> Continuar com Google
-            </a>
-            <a href="{{ url_for('auth_microsoft') }}" class="btn-social btn-microsoft">
-                <span class="icon-social"
-                    style="display:inline-block;width:24px;height:24px;vertical-align:middle;margin-right:8px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                        <g>
-                            <rect x="1" y="1" width="10" height="10" fill="#f35325" />
-                            <rect x="13" y="1" width="10" height="10" fill="#81bc06" />
-                            <rect x="1" y="13" width="10" height="10" fill="#05a6f0" />
-                            <rect x="13" y="13" width="10" height="10" fill="#ffba08" />
-                        </g>
-                    </svg>
-                </span>
-                Continuar com Microsoft
-            </a>
-        </div>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
