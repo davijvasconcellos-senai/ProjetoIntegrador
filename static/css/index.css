@@ -20,9 +20,11 @@ body.dark-mode .user-avatar,
 body.dark-mode .sidebar-menu .menu-icon {
     color: #fff !important;
 }
+
 #themeToggleBtn .menu-text {
     margin-left: 10px;
 }
+
 /* Theme Toggle Button (Sidebar) */
 #themeToggleBtn {
     position: relative;
@@ -39,7 +41,7 @@ body.dark-mode .sidebar-menu .menu-icon {
     vertical-align: middle;
     margin-right: 10px;
     transition: background 0.3s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 
@@ -51,13 +53,14 @@ body.dark-mode .sidebar-menu .menu-icon {
     position: absolute;
     top: 2px;
     left: 2px;
-    transition: left 0.3s cubic-bezier(.4,2.2,.2,1), background 0.3s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    transition: left 0.3s cubic-bezier(.4, 2.2, .2, 1), background 0.3s;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
 }
 
 #themeToggleBtn .theme-toggle-slider.active {
     background: #222;
 }
+
 #themeToggleBtn .theme-toggle-slider.active .theme-toggle-thumb {
     left: 20px;
     background: #ffd700;
@@ -136,6 +139,7 @@ body.dark-mode .demo-login-btn {
 body.dark-mode .demo-login-btn:hover {
     background: #fffbe6;
 }
+
 * {
     margin: 0;
     padding: 0;
@@ -310,13 +314,16 @@ body {
     font-size: 18px;
     min-height: 48px;
 }
+
 .sidebar-menu .menu-icon {
     font-size: 24px;
     width: 28px;
 }
+
 .sidebar-menu .menu-text {
     font-size: 18px;
 }
+
 .sidebar-menu .menu-section {
     font-size: 14px;
 }

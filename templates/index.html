@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - PredictivePulse</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 </head>
+
 <body>
     <div class="app-container">
         <!-- Menu Lateral -->
@@ -76,7 +79,8 @@
                     <span class="menu-text">Modo Escuro</span>
                 </li>
                 <li class="menu-item">
-                    <a href="{{ url_for('logout') }}" style="display: flex; align-items: center; text-decoration: none; color: inherit; width: 100%;">
+                    <a href="{{ url_for('logout') }}"
+                        style="display: flex; align-items: center; text-decoration: none; color: inherit; width: 100%;">
                         <span class="menu-icon">🚪</span>
                         <span class="menu-text">Sair da conta</span>
                     </a>
@@ -274,4 +278,5 @@
 
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
+
 </html>
