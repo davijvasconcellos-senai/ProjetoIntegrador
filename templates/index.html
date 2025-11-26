@@ -70,21 +70,14 @@
                     <span class="menu-icon">⚙️</span>
                     <span class="menu-text">Ajuda</span>
                 </li>
-                <li class="menu-item" id="themeToggleBtn">
-                    <span class="menu-icon">
-                        <span class="theme-toggle-slider">
-                            <span class="theme-toggle-thumb"></span>
-                        </span>
-                    </span>
-                    <span class="menu-text">Modo Escuro</span>
-                </li>
-                <li class="menu-item">
-                    <a href="{{ url_for('logout') }}"
-                        style="display: flex; align-items: center; text-decoration: none; color: inherit; width: 100%;">
-                        <span class="menu-icon">🚪</span>
-                        <span class="menu-text">Sair da conta</span>
-                    </a>
-                </li>
+                <!-- Apenas uma instância do botão 'Sair da conta' -->
+                    <li class="menu-item">
+                        <a href="{{ url_for('logout') }}"
+                            style="display: flex; align-items: center; text-decoration: none; color: inherit; width: 100%;">
+                            <span class="menu-icon">🚪</span>
+                            <span class="menu-text">Sair da conta</span>
+                        </a>
+                    </li>
             </ul>
 
             <div class="sidebar-separator"></div>
