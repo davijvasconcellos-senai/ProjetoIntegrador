@@ -1,3 +1,35 @@
+.logo-img-large {
+    height: 160px;
+    width: auto;
+    display: block;
+    margin: 18px auto 20px auto;
+    background: transparent !important;
+    box-shadow: none !important;
+    /* Centralização absoluta para sidebar extendida */
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: height 0.3s, margin 0.3s;
+}
+.sidebar.collapsed .logo-img-large {
+    height: 70px;
+    margin: 8px auto 8px auto;
+}
+
+.sidebar.collapsed .logo-img-large {
+    height: 60px;
+    margin: 0 auto 8px auto;
+}
+
+.logo-img {
+    height: 60px;
+    width: auto;
+    display: block;
+    margin-right: 10px;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
 body.dark-mode,
 body.dark-mode h1,
 body.dark-mode h2,
@@ -161,7 +193,7 @@ body {
 /* Sidebar */
 .sidebar {
     width: 280px;
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    background: #051148;
     color: white;
     transition: all 0.3s ease;
     position: relative;
