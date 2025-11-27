@@ -1191,7 +1191,7 @@ h3 {
     }
 
     /* Manter botão desktop visível em tablet */
-    .toggle-btn-mobile {
+    .mobile-menu-btn {
         display: none;
     }
 
@@ -1296,14 +1296,20 @@ h3 {
         width: 280px;
         height: 100vh;
         z-index: 9999;
-        transition: left 0.3s ease;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
+        box-shadow: none;
     }
 
     .sidebar.mobile-open {
         left: 0;
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Dark mode para sidebar mobile */
+    .dark-mode .sidebar.mobile-open {
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.6);
     }
 
     .sidebar.collapsed {
@@ -1344,34 +1350,64 @@ h3 {
         margin: 12px 0;
     }
 
-    /* Toggle button mobile - fixo no topo */
-    .toggle-btn-mobile {
+    /* Botão hamburger mobile */
+    .mobile-menu-btn {
         position: fixed;
-        top: 12px;
-        left: 12px;
-        z-index: 10000;
+        top: 16px;
+        left: 16px;
+        z-index: 10001;
+        width: 48px;
+        height: 48px;
         background: var(--primary-500, #667eea);
-        color: white;
         border: none;
-        border-radius: 8px;
-        width: 44px;
-        height: 44px;
+        border-radius: 12px;
+        cursor: pointer;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        font-size: 24px;
-        touch-action: manipulation;
+        gap: 5px;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s ease;
+        padding: 0;
     }
 
-    .toggle-btn-mobile:active {
+    .hamburger-line {
+        width: 24px;
+        height: 3px;
+        background: white;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+
+    .mobile-menu-btn.active .hamburger-line:nth-child(1) {
+        transform: rotate(45deg) translateY(8px);
+    }
+
+    .mobile-menu-btn.active .hamburger-line:nth-child(2) {
+        opacity: 0;
+    }
+
+    .mobile-menu-btn.active .hamburger-line:nth-child(3) {
+        transform: rotate(-45deg) translateY(-8px);
+    }
+
+    .mobile-menu-btn:active {
         transform: scale(0.95);
     }
 
-    /* Overlay */
-    .sidebar-overlay {
-        display: none;
+    /* Dark mode para botão mobile */
+    .dark-mode .mobile-menu-btn {
+        background: var(--dark-bg-tertiary, #21262d);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    }
+
+    .dark-mode .hamburger-line {
+        background: var(--data-blue, #58a6ff);
+    }
+
+    /* Overlay mobile */
+    .mobile-overlay {
         position: fixed;
         top: 0;
         left: 0;
@@ -1379,18 +1415,22 @@ h3 {
         height: 100%;
         background: rgba(0, 0, 0, 0.5);
         z-index: 9998;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
         backdrop-filter: blur(2px);
     }
 
-    .sidebar-overlay.active {
-        display: block;
+    .mobile-overlay.active {
+        opacity: 1;
+        visibility: visible;
     }
 
     /* Main content */
     .main-content {
         margin-left: 0 !important;
         width: 100%;
-        padding: 70px 12px 20px 12px;
+        padding: 80px 12px 20px 12px;
     }
 
     /* Header */
@@ -1742,10 +1782,11 @@ h3 {
         font-size: 12px;
     }
 
-    .toggle-btn-mobile {
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
+    .mobile-menu-btn {
+        width: 44px;
+        height: 44px;
+        top: 12px;
+        left: 12px;
     }
 }
 
@@ -1827,7 +1868,7 @@ h3 {
     .menu-item:active,
     .nav-button:active,
     .toggle-btn:active,
-    .toggle-btn-mobile:active {
+    .mobile-menu-btn:active {
         transform: scale(0.95);
         transition: transform 0.1s ease;
     }
@@ -1880,8 +1921,8 @@ h3 {
 
     .sidebar,
     .toggle-btn,
-    .toggle-btn-mobile,
-    .sidebar-overlay {
+    .mobile-menu-btn,
+    .mobile-overlay {
         transition: none !important;
     }
 }
@@ -1890,8 +1931,8 @@ h3 {
 @media print {
     .sidebar,
     .toggle-btn,
-    .toggle-btn-mobile,
-    .sidebar-overlay,
+    .mobile-menu-btn,
+    .mobile-overlay,
     .demo-banner,
     .search-bar,
     .user-menu {
