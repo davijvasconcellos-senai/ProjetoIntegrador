@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.cdnfonts.com/css/garet" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/transitions.css') }}">
 </head>
 
 <body>
@@ -57,7 +58,7 @@
             </div>
 
             <div class="criar-conta">
-                <a href="{{ url_for('cadastro') }}">criar conta</a>
+                <a href="{{ url_for('cadastro') }}" class="to-cadastro" data-transition-link>Criar conta</a>
             </div>
         </form>
 
@@ -68,6 +69,8 @@
 
     <script src="{{ url_for('static', filename='js/transition-config.js') }}"></script>
     <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/page-transitions.js') }}"></script>
+    <script>PageTransitions.init();</script>
 </body>
 
 </html>

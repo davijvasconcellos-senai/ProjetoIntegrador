@@ -1,0 +1,51 @@
+/* Page transition animations for login <-> cadastro */
+:root {
+  --transition-duration: 220ms; /* timing tweak per request */
+  --transition-ease: ease-out; /* smoother deceleration */
+}
+
+.page-transition-enter {
+  opacity: 0.01;
+  transform: translateX(12px); /* horizontal slide in */
+}
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--transition-duration) var(--transition-ease),
+              transform var(--transition-duration) var(--transition-ease);
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+.page-transition-exit-active {
+  opacity: 0.01;
+  transform: translateX(-12px); /* horizontal slide out */
+  transition: opacity var(--transition-duration) var(--transition-ease),
+              transform var(--transition-duration) var(--transition-ease);
+}
+
+/* Optional subtle overlay during transition */
+.page-transition-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay-bg, rgba(0,0,0,0.06));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-duration) ease;
+}
+.page-transition-overlay.active { opacity: 1; }
+
+/* Reduced-motion support */
+@media (prefers-reduced-motion: reduce) {
+  .page-transition-enter,
+  .page-transition-enter-active,
+  .page-transition-exit,
+  .page-transition-exit-active {
+    transform: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+  }
+  .page-transition-overlay { display: none !important; }
+}

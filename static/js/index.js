@@ -11,10 +11,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Estado do menu (salvo no localStorage)
     let isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
 
-    // Estado do tema (dark/light)
-    let isDarkMode = localStorage.getItem('darkMode') === 'true';
-    updateTheme();
-
+    // Estado do tema (dark/light) - Começar sempre em modo claro se não houver preferência salva
+    let darkModeValue = localStorage.getItem('darkMode');
+    let isDarkMode = darkModeValue === 'true';
+    
+    console.log('Dark mode localStorage:', darkModeValue, 'isDarkMode:', isDarkMode);
+    
     // Aplicar estado inicial (apenas desktop)
     if (window.innerWidth > 768) {
         updateSidebarState();
@@ -24,8 +26,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // Estado visual do botão de tema
     if (isDarkMode) {
         themeToggleBtn.classList.add('active');
+        updateTheme();
     } else {
         themeToggleBtn.classList.remove('active');
+        // Garantir que body não tenha dark-mode se não estiver ativo
+        document.body.classList.remove('dark-mode');
     }
     
     // Alternância de tema ao clicar no botão
@@ -122,131 +127,11 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('sidebarCollapsed', isCollapsed);
     }
 
-    // ==================== FUNCIONALIDADE MOBILE ====================
-    
-    let mobileMenuOpen = false;
-    let mobileButton = null;
-    let mobileOverlay = null;
+    // ==================== FUNCIONALIDADE MOBILE (DESABILITADA - USAR MOBILE.JS) ====================
+    // Todo código mobile foi movido para mobile.js para evitar conflitos
+    // O mobile.js agora controla 100% das funcionalidades mobile
 
-    // Criar elementos mobile
-    function createMobileElements() {
-        // Criar botão hamburger
-        if (!mobileButton) {
-            mobileButton = document.createElement('button');
-            mobileButton.className = 'mobile-menu-btn';
-            mobileButton.innerHTML = `
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            `;
-            mobileButton.setAttribute('aria-label', 'Menu');
-            document.body.appendChild(mobileButton);
-            
-            mobileButton.addEventListener('click', function(e) {
-                e.stopPropagation();
-                toggleMobileMenu();
-            });
-        }
-        
-        // Criar overlay
-        if (!mobileOverlay) {
-            mobileOverlay = document.createElement('div');
-            mobileOverlay.className = 'mobile-overlay';
-            document.body.appendChild(mobileOverlay);
-            
-            mobileOverlay.addEventListener('click', function() {
-                closeMobileMenu();
-            });
-        }
-    }
-
-    // Remover elementos mobile
-    function removeMobileElements() {
-        if (mobileButton) {
-            mobileButton.remove();
-            mobileButton = null;
-        }
-        if (mobileOverlay) {
-            mobileOverlay.remove();
-            mobileOverlay = null;
-        }
-        closeMobileMenu();
-    }
-
-    // Abrir/fechar menu mobile
-    function toggleMobileMenu() {
-        if (mobileMenuOpen) {
-            closeMobileMenu();
-        } else {
-            openMobileMenu();
-        }
-    }
-
-    function openMobileMenu() {
-        mobileMenuOpen = true;
-        sidebar.classList.add('mobile-open');
-        if (mobileOverlay) mobileOverlay.classList.add('active');
-        if (mobileButton) mobileButton.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        console.log('Menu mobile aberto');
-    }
-
-    function closeMobileMenu() {
-        mobileMenuOpen = false;
-        sidebar.classList.remove('mobile-open');
-        if (mobileOverlay) mobileOverlay.classList.remove('active');
-        if (mobileButton) mobileButton.classList.remove('active');
-        document.body.style.overflow = '';
-        console.log('Menu mobile fechado');
-    }
-
-    // Detectar mudança de tamanho
-    function handleResize() {
-        if (window.innerWidth <= 768) {
-            // Modo mobile
-            createMobileElements();
-            mainContent.style.marginLeft = '0';
-            sidebar.classList.remove('collapsed');
-            if (toggleBtn) toggleBtn.style.display = 'none';
-        } else {
-            // Modo desktop
-            removeMobileElements();
-            if (toggleBtn) toggleBtn.style.display = '';
-            updateSidebarState();
-        }
-    }
-
-    // Inicializar
-    handleResize();
-
-    // Listener de resize
-    window.addEventListener('resize', handleResize);
-
-    // Suporte a swipe para fechar menu mobile
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    sidebar.addEventListener('touchstart', function(e) {
-        touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-
-    sidebar.addEventListener('touchend', function(e) {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    }, { passive: true });
-
-    function handleSwipe() {
-        if (window.innerWidth <= 768 && mobileMenuOpen) {
-            // Swipe da direita para esquerda (fechar menu)
-            if (touchStartX - touchEndX > 50) {
-                closeMobileMenu();
-            }
-        }
-    }
-
-    // ==================== FIM FUNCIONALIDADE MOBILE ====================
-
-    // Navegação do menu
+    // Navegação do menu (desktop only)
     const menuItems = document.querySelectorAll('.menu-item');
     menuItems.forEach(item => {
         item.addEventListener('click', function () {
@@ -260,15 +145,10 @@ document.addEventListener('DOMContentLoaded', function () {
             if (menuText) {
                 console.log('Menu clicado:', menuText.textContent);
             }
-            
-            // Fechar menu no mobile após clique
-            if (window.innerWidth <= 768) {
-                closeMobileMenu();
-            }
         });
     });
 
-    // Navegação do calendário
+    // Navegação do calendário (funciona em desktop e mobile)
     const prevButton = document.querySelector('.nav-button:first-child');
     const nextButton = document.querySelector('.nav-button:last-child');
 
@@ -282,15 +162,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Atalho de teclado (opcional): Ctrl + M para alternar menu
+    // Atalho de teclado (desktop only): Ctrl + M para alternar menu
     document.addEventListener('keydown', function (e) {
-        if (e.ctrlKey && e.key === 'm') {
+        if (e.ctrlKey && e.key === 'm' && window.innerWidth > 768) {
             e.preventDefault();
-            if (window.innerWidth > 768) {
-                toggleSidebar();
-            } else {
-                toggleMobileMenu();
-            }
+            toggleSidebar();
         }
     });
 

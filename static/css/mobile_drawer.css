@@ -1,0 +1,139 @@
+/* ==================== MOBILE STYLES (Drawer Pattern) ==================== */
+/* Navegação off-canvas acessível; reduz !important e conflitos. */
+
+/* Variáveis para micro-animações performáticas e consistentes */
+:root {
+  --drawer-duration: 280ms;
+  --drawer-ease: cubic-bezier(.4,0,.2,1);
+  --hamburger-duration: 200ms;
+  --hamburger-ease: cubic-bezier(.4,0,.2,1);
+  --drawer-bounce-ease: cubic-bezier(.34,1.56,.64,1); /* somente abertura */
+  --overlay-delay-open: 12ms; /* redução do atraso para menor sensação de atraso */
+}
+
+/* --------- HAMBURGER BUTTON --------- */
+.hamburger {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 1100;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: #051148;
+  color: #fff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition: background .25s ease, transform .25s ease;
+}
+.hamburger:hover { background: #06206e; }
+.hamburger:active { transform: scale(.95); }
+.hamburger:focus-visible { outline: 2px solid #58a6ff; outline-offset: 3px; }
+.hamburger-box { display: flex; flex-direction: column; gap: 5px; }
+.hamburger-line { width: 22px; height: 2px; background:#fff; border-radius:2px; transition: transform var(--hamburger-duration) var(--hamburger-ease), opacity var(--hamburger-duration) var(--hamburger-ease); }
+body.drawer-open .hamburger-line:nth-child(1){ transform: translateY(7px) rotate(45deg); }
+body.drawer-open .hamburger-line:nth-child(2){ opacity:0; }
+body.drawer-open .hamburger-line:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
+
+/* --------- OVERLAY --------- */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  /* Removido blur que desfocava menu: se quiser blur só do conteúdo, use backdrop-filter em container específico */
+  /* backdrop-filter: blur(2px); */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--drawer-duration) var(--drawer-ease);
+  z-index: 900; /* abaixo da sidebar (1000) para não cobrir opções */
+}
+body.drawer-open .drawer-overlay { opacity:1; pointer-events:auto; }
+
+/* Bloqueia scroll do body ao drawer aberto (apenas mobile) */
+@media (max-width:768px){ body.drawer-open { overflow:hidden; } }
+
+/* --------- SIDEBAR AS DRAWER (≤768px) --------- */
+@media (max-width:768px){
+  .app-container { flex-direction: column; }
+  .sidebar { position: fixed; top:0; left:0; height:100vh; transform: translateX(-100%); transition: transform var(--drawer-duration) var(--drawer-ease); box-shadow: 4px 0 18px rgba(0,0,0,.25); overflow-y:auto; -webkit-overflow-scrolling:touch; z-index:1000; }
+  /* Abertura aplica leve bounce; fechamento usa somente transition padrão */
+  body.drawer-opening .sidebar { transform: translateX(0); animation: drawerEnter var(--drawer-duration) var(--drawer-bounce-ease); }
+  body.drawer-open .sidebar { transform: translateX(0); }
+  .toggle-btn { display:none; }
+  .sidebar.collapsed .menu-text { opacity:1; width:auto; }
+  .main-content { margin-left:0 !important; }
+  /* Evitar que o conteúdo atrás receba foco pelo leitor de tela quando drawer aberto */
+  body.drawer-open .main-content { pointer-events:none; }
+  body.drawer-open .main-header { pointer-events:none; }
+  .main-header { padding:16px 16px 12px; margin-top:56px; }
+  .dashboard-content { padding:16px 12px 48px; }
+  .menu-item { min-height:48px; font-size:15px; }
+  .menu-icon { width:32px; }
+  .menu-text { font-size:15px; }
+  section { padding:20px; }
+  .sensors-grid { display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:8px; }
+  .sensor-card { min-width:160px; scroll-snap-align:start; }
+  /* Animação de entrada suave do drawer */
+  @keyframes drawerEnter {
+    0% { transform: translateX(-102%); }
+    75% { transform: translateX(0); }
+    90% { transform: translateX(-6px); }
+    100% { transform: translateX(0); }
+  }
+  /* Reduz atraso da overlay e aplica somente durante abertura */
+  body.drawer-opening .drawer-overlay { transition-delay: var(--overlay-delay-open); }
+  body.drawer-open .drawer-overlay { transition-delay: 0ms; }
+}
+
+/* Esconde hamburger em telas desktop para não interferir com toggle padrão */
+@media (min-width:769px){
+  .hamburger { display:none; }
+}
+
+/* Pequenos ajustes para telas muito estreitas */
+@media (max-width:480px){
+  .hamburger { top:10px; left:10px; width:40px; height:40px; }
+  .main-header { margin-top:52px; }
+  .dashboard-content { padding:12px 10px 40px; }
+  .menu-item,.menu-text { font-size:14px; }
+  section { padding:16px; }
+}
+
+/* Landscape baixo */
+@media (max-height:500px) and (orientation:landscape) and (max-width:768px){
+  .main-header { margin-top:48px; padding:12px 14px; }
+  .menu-item { min-height:40px; padding:10px 14px; }
+  .sensor-card { min-width:140px; }
+}
+
+/* Touch optimizations */
+@media (hover:none) and (pointer:coarse){
+  .menu-item, .nav-button, button { min-height:44px; }
+  .menu-item:active, .nav-button:active, button:active { opacity:.75; }
+}
+
+/* Dark mode ajustes para drawer */
+@media (max-width:768px){
+  body.dark-mode .sidebar { background: linear-gradient(135deg, var(--dark-bg-primary,#0d1117) 0%, var(--dark-bg-secondary,#161b22) 100%); }
+  body.dark-mode .hamburger { background: var(--dark-bg-secondary,#161b22); }
+  body.dark-mode .hamburger:hover { background: var(--dark-bg-tertiary,#21262d); }
+  body.dark-mode .drawer-overlay { background: rgba(0,0,0,.6); }
+}
+
+/* Acessibilidade: remover movimento para usuários que preferem redução */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .drawer-overlay,
+  .hamburger-line {
+    transition: none !important;
+    animation: none !important;
+  }
+  body.drawer-open .drawer-overlay { transition-delay: 0ms; }
+}
+
+/* Print */
+@media print { .hamburger, .drawer-overlay, .sidebar { display:none !important; } .main-content{ margin:0 !important; padding:0 !important; } }
