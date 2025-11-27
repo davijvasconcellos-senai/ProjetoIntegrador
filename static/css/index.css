@@ -1190,7 +1190,8 @@ h3 {
         transform: translateX(0);
     }
 
-    .toggle-btn {
+    /* Manter botão desktop visível em tablet */
+    .toggle-btn-mobile {
         display: none;
     }
 
@@ -1243,5 +1244,670 @@ h3 {
     .calendar-days div {
         padding: 8px 2px;
         font-size: 11px;
+    }
+}
+
+/* ==================== RESPONSIVIDADE COMPLETA DO DASHBOARD ==================== */
+
+/* Tablet (769px - 1024px) */
+@media screen and (max-width: 1024px) and (min-width: 769px) {
+    .sidebar {
+        width: 240px;
+    }
+
+    .sidebar.collapsed {
+        width: 60px;
+    }
+
+    .main-content {
+        margin-left: 240px;
+    }
+
+    .sidebar.collapsed ~ .main-content {
+        margin-left: 60px;
+    }
+
+    .sensors-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+    }
+
+    .sensor-card {
+        padding: 16px;
+    }
+
+    .dashboard-row {
+        gap: 20px;
+    }
+}
+
+/* Mobile (até 768px) */
+@media screen and (max-width: 768px) {
+    /* Layout geral */
+    .app-container {
+        flex-direction: column;
+    }
+
+    /* Sidebar mobile */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 280px;
+        height: 100vh;
+        z-index: 9999;
+        transition: left 0.3s ease;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .sidebar.mobile-open {
+        left: 0;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .sidebar.collapsed {
+        left: -100%;
+        width: 280px;
+    }
+
+    .sidebar-header {
+        height: 60px;
+        padding: 12px 16px;
+    }
+
+    .logo-img-large {
+        height: 80px !important;
+        margin: 10px auto !important;
+    }
+
+    .sidebar-menu {
+        padding: 8px;
+    }
+
+    .menu-item {
+        padding: 14px 16px;
+        font-size: 15px;
+        border-radius: 8px;
+    }
+
+    .menu-icon {
+        font-size: 20px;
+        width: 24px;
+    }
+
+    .menu-text {
+        font-size: 15px;
+    }
+
+    .sidebar-separator {
+        margin: 12px 0;
+    }
+
+    /* Toggle button mobile - fixo no topo */
+    .toggle-btn-mobile {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 10000;
+        background: var(--primary-500, #667eea);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        font-size: 24px;
+        touch-action: manipulation;
+    }
+
+    .toggle-btn-mobile:active {
+        transform: scale(0.95);
+    }
+
+    /* Overlay */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9998;
+        backdrop-filter: blur(2px);
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
+
+    /* Main content */
+    .main-content {
+        margin-left: 0 !important;
+        width: 100%;
+        padding: 70px 12px 20px 12px;
+    }
+
+    /* Header */
+    .main-header {
+        padding: 12px 16px;
+        flex-wrap: wrap;
+        gap: 12px;
+        border-radius: 12px;
+    }
+
+    .page-title {
+        font-size: 20px;
+        width: 100%;
+        order: 1;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+        order: 2;
+    }
+
+    .search-bar {
+        flex: 1;
+        max-width: 60%;
+    }
+
+    .search-bar input {
+        font-size: 14px;
+        padding: 8px 12px 8px 36px;
+        height: 40px;
+    }
+
+    .search-icon {
+        font-size: 16px;
+        left: 12px;
+    }
+
+    .user-menu {
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 20px;
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+
+    /* Banner demo */
+    .demo-banner {
+        padding: 12px 16px;
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+        border-radius: 12px;
+    }
+
+    .demo-text {
+        font-size: 14px;
+    }
+
+    .demo-login-btn {
+        width: 100%;
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    /* Dashboard content */
+    .dashboard-content {
+        padding: 16px 8px;
+        gap: 16px;
+    }
+
+    /* Dashboard row - empilhar verticalmente */
+    .dashboard-row {
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .dashboard-row > .failures-section,
+    .dashboard-row > .calendar-section {
+        width: 100%;
+        min-width: 100%;
+    }
+
+    /* Seções */
+    section {
+        margin-bottom: 16px;
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    section h3 {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+
+    /* Sensores */
+    .sensors-section {
+        margin-bottom: 16px;
+    }
+
+    .sensors-grid {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 8px;
+        /* Esconder scrollbar mas manter funcionalidade */
+        scrollbar-width: thin;
+    }
+
+    .sensors-grid::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .sensors-grid::-webkit-scrollbar-track {
+        background: var(--dark-bg-tertiary, #e9ecef);
+        border-radius: 2px;
+    }
+
+    .sensors-grid::-webkit-scrollbar-thumb {
+        background: var(--data-blue, #667eea);
+        border-radius: 2px;
+    }
+
+    .sensor-card {
+        min-width: 160px;
+        max-width: 160px;
+        flex-shrink: 0;
+        padding: 14px;
+        scroll-snap-align: start;
+    }
+
+    .sensor-icon {
+        font-size: 28px;
+        width: 44px;
+        height: 44px;
+        margin-bottom: 8px;
+    }
+
+    .sensor-value {
+        font-size: 22px;
+        margin: 8px 0 4px;
+    }
+
+    .sensor-label {
+        font-size: 12px;
+    }
+
+    .sensor-graph {
+        height: 60px;
+        margin-top: 10px;
+    }
+
+    /* Tabela de falhas */
+    .failures-section {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .failures-table-container {
+        overflow-x: auto;
+    }
+
+    .failures-table {
+        min-width: 600px;
+        font-size: 13px;
+    }
+
+    .failures-table th {
+        padding: 12px 10px;
+        font-size: 11px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .failures-table td {
+        padding: 12px 10px;
+    }
+
+    .status-badge {
+        padding: 4px 10px;
+        font-size: 10px;
+    }
+
+    /* Calendário */
+    .calendar-section {
+        padding: 16px;
+    }
+
+    .calendar {
+        padding: 16px;
+    }
+
+    .calendar-header {
+        margin-bottom: 12px;
+    }
+
+    .calendar-header h4 {
+        font-size: 16px;
+    }
+
+    .nav-button {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+
+    .calendar-weekdays {
+        font-size: 12px;
+        padding: 8px 0;
+    }
+
+    .calendar-days {
+        font-size: 13px;
+    }
+
+    .calendar-days div {
+        height: 36px;
+        line-height: 36px;
+        font-size: 12px;
+    }
+
+    /* Warnings */
+    .warnings-list {
+        max-height: 250px;
+        gap: 8px;
+    }
+
+    .warning-item {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    /* Separator */
+    .separator {
+        margin: 16px 0;
+    }
+}
+
+/* Mobile pequeno (até 480px) */
+@media screen and (max-width: 480px) {
+    .main-content {
+        padding: 60px 8px 16px 8px;
+    }
+
+    .main-header {
+        padding: 10px 12px;
+    }
+
+    .page-title {
+        font-size: 18px;
+    }
+
+    .search-bar {
+        max-width: 55%;
+    }
+
+    .search-bar input {
+        font-size: 13px;
+        padding: 6px 10px 6px 32px;
+        height: 36px;
+    }
+
+    .user-menu {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    .user-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+
+    .dashboard-content {
+        padding: 12px 4px;
+    }
+
+    section {
+        padding: 12px;
+    }
+
+    section h3 {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .sensor-card {
+        min-width: 140px;
+        max-width: 140px;
+        padding: 12px;
+    }
+
+    .sensor-icon {
+        font-size: 24px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .sensor-value {
+        font-size: 20px;
+    }
+
+    .sensor-label {
+        font-size: 11px;
+    }
+
+    .sensor-graph {
+        height: 50px;
+    }
+
+    .failures-table {
+        font-size: 12px;
+        min-width: 550px;
+    }
+
+    .failures-table th,
+    .failures-table td {
+        padding: 10px 8px;
+    }
+
+    .status-badge {
+        padding: 3px 8px;
+        font-size: 9px;
+    }
+
+    .calendar-days div {
+        height: 32px;
+        line-height: 32px;
+        font-size: 11px;
+    }
+
+    .nav-button {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+
+    .warning-item {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .toggle-btn-mobile {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+}
+
+/* Landscape mobile (altura < 500px) */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .main-content {
+        padding: 60px 16px 12px 16px;
+    }
+
+    .main-header {
+        padding: 8px 16px;
+    }
+
+    .page-title {
+        font-size: 16px;
+    }
+
+    .dashboard-content {
+        gap: 12px;
+    }
+
+    section {
+        padding: 12px;
+    }
+
+    section h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    .sensor-card {
+        min-width: 140px;
+        max-width: 140px;
+        padding: 10px;
+    }
+
+    .sensor-value {
+        font-size: 18px;
+        margin: 6px 0 3px;
+    }
+
+    .calendar {
+        padding: 12px;
+    }
+
+    .calendar-days div {
+        height: 28px;
+        line-height: 28px;
+    }
+
+    .sidebar {
+        max-height: 100vh;
+        overflow-y: auto;
+    }
+
+    .logo-img-large {
+        height: 60px !important;
+        margin: 8px auto !important;
+    }
+
+    .menu-item {
+        padding: 10px 14px;
+    }
+}
+
+/* Touch-specific optimizations */
+@media (hover: none) and (pointer: coarse) {
+    /* Aumentar área de toque */
+    button,
+    a,
+    .menu-item,
+    .nav-button,
+    .sensor-card {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Melhorar feedback tátil */
+    .menu-item:active,
+    .nav-button:active,
+    .toggle-btn:active,
+    .toggle-btn-mobile:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+    }
+
+    /* Remover hover states */
+    .menu-item:hover,
+    .sensor-card:hover,
+    .nav-button:hover {
+        transform: none;
+    }
+
+    .menu-item:hover {
+        background: transparent;
+    }
+
+    /* Focus visível */
+    button:focus,
+    a:focus,
+    input:focus {
+        outline: 2px solid var(--primary-500, #667eea);
+        outline-offset: 2px;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .sensor-card,
+    .calendar,
+    section {
+        border-width: 2px;
+    }
+
+    .status-badge {
+        border-width: 2px;
+    }
+
+    .failures-table th,
+    .failures-table td {
+        border-width: 2px;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .sidebar,
+    .toggle-btn,
+    .toggle-btn-mobile,
+    .sidebar-overlay {
+        transition: none !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    .sidebar,
+    .toggle-btn,
+    .toggle-btn-mobile,
+    .sidebar-overlay,
+    .demo-banner,
+    .search-bar,
+    .user-menu {
+        display: none !important;
+    }
+
+    .main-content {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    section {
+        page-break-inside: avoid;
+    }
+
+    .failures-table {
+        font-size: 10px;
     }
 }

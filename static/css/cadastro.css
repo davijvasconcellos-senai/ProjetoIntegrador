@@ -638,3 +638,360 @@ footer {
         gap: 15px;
     }
 }
+
+/* ==================== RESPONSIVIDADE APRIMORADA ==================== */
+
+/* Tablet (769px - 1024px) */
+@media screen and (max-width: 1024px) and (min-width: 769px) {
+    .container {
+        max-width: 650px;
+        padding: 40px 35px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    .tipo-usuario .opcoes {
+        gap: 16px;
+    }
+}
+
+/* Mobile (até 768px) */
+@media screen and (max-width: 768px) {
+    body {
+        padding: 10px;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 100%;
+        width: 100%;
+        padding: 24px 20px;
+        margin: 10px;
+        border-radius: 16px;
+    }
+
+    .logo img {
+        max-height: 80px;
+        width: auto;
+        margin-bottom: 16px;
+    }
+
+    h1 {
+        font-size: 24px !important;
+        margin: 16px 0 8px !important;
+    }
+
+    h2 {
+        font-size: 16px !important;
+        margin-bottom: 20px !important;
+    }
+
+    /* Formulário */
+    .form-cadastro {
+        width: 100%;
+        gap: 16px;
+    }
+
+    .campo {
+        margin-bottom: 16px;
+    }
+
+    .campo label {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+
+    .campo input {
+        font-size: 16px; /* Previne zoom no iOS */
+        padding: 12px 14px;
+        height: 48px;
+    }
+
+    /* Senha com ícone */
+    .senha-container .input-with-icon input {
+        padding-right: 50px;
+    }
+
+    .eye-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+        right: 0;
+    }
+
+    /* Tipo de usuário - empilhar verticalmente */
+    .tipo-usuario {
+        margin: 20px 0;
+    }
+
+    .tipo-usuario legend {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .tipo-usuario .opcoes {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .tipo-usuario .opcao {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 15px;
+        min-height: 48px;
+    }
+
+    .tipo-usuario .opcao .checkmark {
+        width: 20px;
+        height: 20px;
+    }
+
+    .tipo-usuario .opcao .checkmark::after {
+        top: 4px;
+        left: 7px;
+        width: 6px;
+        height: 11px;
+    }
+
+    /* Botão */
+    .btn-criar-conta {
+        font-size: 16px;
+        padding: 14px;
+        height: 50px;
+        touch-action: manipulation;
+    }
+
+    .btn-criar-conta .btn-text {
+        font-size: 16px;
+    }
+
+    .loading-spinner {
+        width: 20px;
+        height: 20px;
+        border-width: 3px;
+    }
+
+    /* Separador */
+    .separador {
+        margin: 20px 0;
+    }
+
+    /* Links */
+    .login-link {
+        margin-top: 16px;
+        font-size: 14px;
+    }
+
+    .login-link a {
+        padding: 8px 12px;
+        display: inline-block;
+        min-height: 44px;
+        line-height: 28px;
+    }
+
+    /* Footer */
+    footer {
+        margin-top: 24px;
+    }
+
+    footer p {
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+    /* Alertas */
+    .alert {
+        padding: 10px 12px;
+        font-size: 13px;
+        margin-bottom: 16px;
+        border-radius: 8px;
+    }
+
+    /* Erro de validação */
+    .erro-validacao {
+        font-size: 12px;
+        margin-top: 4px;
+        padding: 4px 8px;
+    }
+}
+
+/* Mobile pequeno (até 480px) */
+@media screen and (max-width: 480px) {
+    body {
+        padding: 8px;
+    }
+
+    .container {
+        padding: 20px 16px;
+        margin: 5px;
+        border-radius: 12px;
+    }
+
+    h1 {
+        font-size: 22px !important;
+        margin: 12px 0 6px !important;
+    }
+
+    h2 {
+        font-size: 14px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .logo img {
+        max-height: 70px;
+        margin-bottom: 12px;
+    }
+
+    .campo input {
+        font-size: 15px;
+        padding: 11px 12px;
+        height: 46px;
+    }
+
+    .btn-criar-conta {
+        font-size: 15px;
+        padding: 12px;
+        height: 46px;
+    }
+
+    .tipo-usuario .opcao {
+        padding: 10px 14px;
+        font-size: 14px;
+        min-height: 44px;
+    }
+
+    footer p {
+        font-size: 11px;
+    }
+}
+
+/* Landscape mobile (altura < 500px) */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    body {
+        padding: 10px 20px;
+        align-items: flex-start;
+    }
+
+    .container {
+        margin: 10px auto;
+        padding: 16px 20px;
+        max-height: 95vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .logo img {
+        max-height: 50px;
+        margin-bottom: 8px;
+    }
+
+    h1 {
+        font-size: 20px !important;
+        margin: 8px 0 4px !important;
+    }
+
+    h2 {
+        font-size: 14px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .campo,
+    .tipo-usuario {
+        margin-bottom: 12px;
+    }
+
+    .tipo-usuario .opcoes {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .tipo-usuario .opcao {
+        width: calc(50% - 5px);
+        padding: 8px 12px;
+        font-size: 13px;
+        min-height: 40px;
+    }
+
+    footer {
+        margin-top: 16px;
+    }
+
+    footer p {
+        font-size: 11px;
+    }
+}
+
+/* Touch-specific optimizations */
+@media (hover: none) and (pointer: coarse) {
+    /* Aumentar área de toque */
+    button,
+    a,
+    input[type="submit"],
+    .tipo-usuario .opcao {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Melhorar feedback tátil */
+    .btn-criar-conta:active,
+    .login-link a:active,
+    .tipo-usuario .opcao:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
+
+    /* Remover hover states em touch devices */
+    .btn-criar-conta:hover,
+    .tipo-usuario .opcao:hover {
+        transform: none;
+    }
+
+    /* Focus mais visível em touch */
+    input:focus,
+    select:focus {
+        outline: 3px solid var(--primary-500);
+        outline-offset: 2px;
+    }
+}
+
+/* Acessibilidade - High Contrast Mode */
+@media (prefers-contrast: high) {
+    .campo input,
+    .tipo-usuario .opcao {
+        border-width: 2px;
+    }
+
+    .erro-validacao {
+        border-left: 4px solid var(--error-color);
+        padding-left: 8px;
+    }
+}
+
+/* Modo escuro do sistema */
+@media (prefers-color-scheme: dark) {
+    /* Opcional: adaptar cores se o usuário preferir modo escuro no sistema */
+}
+
+/* Print styles */
+@media print {
+    body {
+        background: white;
+    }
+
+    .container {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+
+    .separador,
+    footer {
+        display: none;
+    }
+}

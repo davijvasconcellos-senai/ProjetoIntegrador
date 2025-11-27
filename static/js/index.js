@@ -174,6 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Ajustar layout na redimensionamento da janela
     window.addEventListener('resize', function () {
         updateSidebarState();
+        handleMobileLayout();
     });
 
     // Atalho de teclado (opcional): Ctrl + M para alternar menu
@@ -183,5 +184,117 @@ document.addEventListener('DOMContentLoaded', function () {
             toggleSidebar();
         }
     });
+
+    // ==================== FUNCIONALIDADE MOBILE ====================
+    
+    // Detectar se é mobile
+    function isMobile() {
+        return window.innerWidth <= 768;
+    }
+
+    // Layout mobile
+    function handleMobileLayout() {
+        if (isMobile()) {
+            // Criar overlay se não existir
+            let overlay = document.querySelector('.sidebar-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.className = 'sidebar-overlay';
+                document.body.appendChild(overlay);
+                
+                // Fechar sidebar ao clicar no overlay
+                overlay.addEventListener('click', closeMobileSidebar);
+            }
+
+            // Criar botão toggle mobile se não existir
+            let mobileToggle = document.querySelector('.toggle-btn-mobile');
+            if (!mobileToggle) {
+                mobileToggle = document.createElement('button');
+                mobileToggle.className = 'toggle-btn toggle-btn-mobile';
+                mobileToggle.innerHTML = '☰';
+                mobileToggle.setAttribute('aria-label', 'Abrir menu');
+                document.body.appendChild(mobileToggle);
+                
+                // Abrir sidebar ao clicar no botão mobile
+                mobileToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    openMobileSidebar();
+                });
+            }
+            
+            // Esconder botão desktop toggle no mobile
+            if (toggleBtn) {
+                toggleBtn.style.display = 'none';
+            }
+        } else {
+            // Remover elementos mobile no desktop
+            const mobileToggle = document.querySelector('.toggle-btn-mobile');
+            if (mobileToggle) {
+                mobileToggle.remove();
+            }
+            
+            const overlay = document.querySelector('.sidebar-overlay');
+            if (overlay) {
+                overlay.remove();
+            }
+            
+            // Restaurar botão desktop toggle
+            if (toggleBtn) {
+                toggleBtn.style.display = '';
+            }
+            
+            // Limpar classes mobile
+            sidebar.classList.remove('mobile-open');
+            document.body.style.overflow = '';
+        }
+    }
+
+    // Abrir sidebar mobile
+    function openMobileSidebar() {
+        if (isMobile()) {
+            sidebar.classList.add('mobile-open');
+            const overlay = document.querySelector('.sidebar-overlay');
+            if (overlay) {
+                overlay.classList.add('active');
+            }
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    // Fechar sidebar mobile
+    function closeMobileSidebar() {
+        if (isMobile()) {
+            sidebar.classList.remove('mobile-open');
+            const overlay = document.querySelector('.sidebar-overlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+            }
+            document.body.style.overflow = '';
+        }
+    }
+
+    // Fechar sidebar ao clicar em item do menu (mobile)
+    menuItems.forEach(item => {
+        const originalClickHandler = item.onclick;
+        item.addEventListener('click', function() {
+            if (isMobile()) {
+                closeMobileSidebar();
+            }
+        });
+    });
+
+    // Inicializar layout mobile
+    handleMobileLayout();
+
+    // Fechar sidebar mobile ao mudar orientação
+    window.addEventListener('orientationchange', function() {
+        setTimeout(() => {
+            handleMobileLayout();
+            if (isMobile()) {
+                closeMobileSidebar();
+            }
+        }, 100);
+    });
+
     // Valores fixos exibidos diretamente no HTML dos cards (ver index.html)
 });
