@@ -158,9 +158,68 @@ body.dark-mode .sidebar-menu .menu-icon {
     background: #ffd700;
 }
 
+/* ==================== DARK MODE - SISTEMA DE CORES ==================== */
+
+/* Variáveis CSS para escala de cores de visualização de dados no modo escuro */
 body.dark-mode {
-    background: #181c24;
-    color: #e0e0e0;
+    /* Cores de fundo */
+    --dark-bg-primary: #0d1117;
+    --dark-bg-secondary: #161b22;
+    --dark-bg-tertiary: #21262d;
+    --dark-bg-elevated: #2d333b;
+    
+    /* Cores de texto */
+    --dark-text-primary: #e6edf3;
+    --dark-text-secondary: #8b949e;
+    --dark-text-muted: #6e7681;
+    
+    /* Cores de borda */
+    --dark-border-default: #30363d;
+    --dark-border-muted: #21262d;
+    
+    /* Escala de cores para dados - Alta Visibilidade */
+    --data-blue: #58a6ff;
+    --data-green: #3fb950;
+    --data-yellow: #d29922;
+    --data-orange: #f0883e;
+    --data-red: #f85149;
+    --data-purple: #bc8cff;
+    --data-pink: #ff7eb6;
+    --data-cyan: #39c5cf;
+    
+    /* Cores secundárias para dados */
+    --data-blue-soft: #1f6feb;
+    --data-green-soft: #238636;
+    --data-yellow-soft: #9e6a03;
+    --data-orange-soft: #bd561d;
+    --data-red-soft: #da3633;
+    --data-purple-soft: #8957e5;
+    --data-pink-soft: #db61a2;
+    --data-cyan-soft: #2ea043;
+    
+    /* Gradientes para gráficos */
+    --gradient-success: linear-gradient(135deg, #3fb950 0%, #2ea043 100%);
+    --gradient-warning: linear-gradient(135deg, #d29922 0%, #f0883e 100%);
+    --gradient-danger: linear-gradient(135deg, #f85149 0%, #da3633 100%);
+    --gradient-info: linear-gradient(135deg, #58a6ff 0%, #1f6feb 100%);
+    --gradient-neutral: linear-gradient(135deg, #8b949e 0%, #6e7681 100%);
+    
+    /* Backgrounds com transparência para sobreposição */
+    --overlay-blue: rgba(88, 166, 255, 0.15);
+    --overlay-green: rgba(63, 185, 80, 0.15);
+    --overlay-yellow: rgba(210, 153, 34, 0.15);
+    --overlay-red: rgba(248, 81, 73, 0.15);
+    --overlay-purple: rgba(188, 140, 255, 0.15);
+    
+    /* Cores de status específicas */
+    --status-success: #3fb950;
+    --status-warning: #d29922;
+    --status-error: #f85149;
+    --status-info: #58a6ff;
+    --status-neutral: #8b949e;
+    
+    background: var(--dark-bg-primary);
+    color: var(--dark-text-primary);
 }
 
 body.dark-mode section,
@@ -168,53 +227,141 @@ body.dark-mode .main-header,
 body.dark-mode .dashboard-content,
 body.dark-mode .calendar,
 body.dark-mode .sensor-card {
-    background: #232837 !important;
-    color: #e0e0e0 !important;
-    border-color: #232837 !important;
+    background: var(--dark-bg-secondary) !important;
+    color: var(--dark-text-primary) !important;
+    border-color: var(--dark-border-default) !important;
 }
 
 body.dark-mode .sidebar {
-    background: linear-gradient(135deg, #181c24 0%, #232837 100%);
+    background: linear-gradient(135deg, var(--dark-bg-primary) 0%, var(--dark-bg-secondary) 100%);
 }
 
 body.dark-mode .sidebar-menu .menu-item.active,
 body.dark-mode .sidebar-menu .menu-item:hover {
-    background: rgba(52, 152, 219, 0.10);
-    border-left-color: #ffd700;
+    background: var(--overlay-blue);
+    border-left-color: var(--data-blue);
 }
 
 body.dark-mode .sidebar-separator {
-    background: linear-gradient(to right, transparent, #232837, transparent);
+    background: linear-gradient(to right, transparent, var(--dark-border-default), transparent);
 }
 
+/* Tabela de falhas - cores otimizadas para dados */
 body.dark-mode .failures-table th {
-    background: #232837;
-    color: #ffd700;
-    border-bottom: 2px solid #232837;
+    background: var(--dark-bg-tertiary);
+    color: var(--data-cyan);
+    border-bottom: 2px solid var(--dark-border-default);
 }
 
 body.dark-mode .failures-table td {
-    color: #e0e0e0;
-    border-bottom: 1px solid #232837;
+    color: var(--dark-text-primary);
+    border-bottom: 1px solid var(--dark-border-muted);
 }
 
+body.dark-mode .failures-table tr:hover {
+    background: var(--dark-bg-tertiary);
+}
+
+/* Status badges com cores de alta visibilidade */
 body.dark-mode .status-badge.falha {
-    background: #3a1a1a;
-    color: #ff6b6b;
+    background: var(--overlay-red);
+    color: var(--data-red);
+    border: 1px solid var(--data-red-soft);
+}
+
+body.dark-mode .status-badge.resolvida {
+    background: var(--overlay-green);
+    color: var(--data-green);
+    border: 1px solid var(--data-green-soft);
+}
+
+body.dark-mode .status-badge.ativa {
+    background: var(--overlay-yellow);
+    color: var(--data-yellow);
+    border: 1px solid var(--data-yellow-soft);
+}
+
+/* Cards de sensores com gradientes */
+body.dark-mode .sensor-card {
+    background: var(--dark-bg-tertiary) !important;
+    border: 1px solid var(--dark-border-default) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .sensor-card:hover {
+    border-color: var(--data-blue) !important;
+    box-shadow: 0 6px 12px rgba(88, 166, 255, 0.2);
+}
+
+body.dark-mode .sensor-card h4 {
+    color: var(--dark-text-secondary);
+}
+
+body.dark-mode .sensor-value {
+    color: var(--data-blue);
+    text-shadow: 0 0 10px rgba(88, 166, 255, 0.3);
+}
+
+/* Gráfico de sensores */
+body.dark-mode .sensor-graph {
+    background: var(--gradient-info);
+    border: 1px solid var(--data-blue-soft);
+}
+
+/* Warnings com cores específicas */
+body.dark-mode .warning-item {
+    background: var(--overlay-yellow);
+    border: 1px solid var(--data-yellow-soft);
+    border-left: 4px solid var(--data-yellow);
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .warning-item:nth-child(even) {
+    background: var(--overlay-blue);
+    border: 1px solid var(--data-blue-soft);
+    border-left: 4px solid var(--data-cyan);
+    color: var(--dark-text-primary);
+}
+
+/* Calendário com cores otimizadas */
+body.dark-mode .calendar {
+    background: var(--dark-bg-secondary);
+    border: 1px solid var(--dark-border-default);
 }
 
 body.dark-mode .calendar-header h4,
 body.dark-mode .calendar-weekdays {
-    color: #ffd700;
+    color: var(--data-cyan);
+}
+
+body.dark-mode .calendar-days div {
+    color: var(--dark-text-primary);
 }
 
 body.dark-mode .calendar-days div:hover {
-    background: #ffd700;
-    color: #232837;
+    background: var(--data-blue);
+    color: var(--dark-bg-primary);
 }
 
 body.dark-mode .calendar-days .other-month {
-    color: #555;
+    color: var(--dark-text-muted);
+}
+
+body.dark-mode .calendar-days .today {
+    background: var(--overlay-blue);
+    border: 2px solid var(--data-blue);
+    color: var(--data-blue);
+    font-weight: bold;
+}
+
+/* Botões de navegação */
+body.dark-mode .nav-button {
+    background: var(--data-blue);
+    color: var(--dark-bg-primary);
+}
+
+body.dark-mode .nav-button:hover {
+    background: var(--data-cyan);
 }
 
 body.dark-mode .demo-banner {
@@ -230,6 +377,180 @@ body.dark-mode .demo-login-btn {
 
 body.dark-mode .demo-login-btn:hover {
     background: #fffbe6;
+}
+
+/* ==================== ELEMENTOS DE DADOS NO DARK MODE ==================== */
+
+/* Badges de dados numéricos */
+body.dark-mode .data-badge {
+    background: var(--dark-bg-elevated);
+    color: var(--dark-text-primary);
+    border: 1px solid var(--dark-border-default);
+}
+
+body.dark-mode .data-badge.positive {
+    color: var(--data-green);
+    border-color: var(--data-green-soft);
+}
+
+body.dark-mode .data-badge.negative {
+    color: var(--data-red);
+    border-color: var(--data-red-soft);
+}
+
+body.dark-mode .data-badge.neutral {
+    color: var(--data-blue);
+    border-color: var(--data-blue-soft);
+}
+
+/* Progress bars */
+body.dark-mode .progress-bar {
+    background: var(--dark-bg-tertiary);
+    border: 1px solid var(--dark-border-default);
+}
+
+body.dark-mode .progress-fill {
+    background: var(--gradient-info);
+}
+
+body.dark-mode .progress-fill.success {
+    background: var(--gradient-success);
+}
+
+body.dark-mode .progress-fill.warning {
+    background: var(--gradient-warning);
+}
+
+body.dark-mode .progress-fill.danger {
+    background: var(--gradient-danger);
+}
+
+/* Tooltips e informações */
+body.dark-mode .tooltip,
+body.dark-mode .info-box {
+    background: var(--dark-bg-elevated);
+    color: var(--dark-text-primary);
+    border: 1px solid var(--dark-border-default);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Gráficos e visualizações */
+body.dark-mode canvas,
+body.dark-mode .chart-container {
+    background: var(--dark-bg-secondary);
+    border-radius: 8px;
+}
+
+/* Links e textos interativos */
+body.dark-mode a:not(.btn) {
+    color: var(--data-blue);
+}
+
+body.dark-mode a:not(.btn):hover {
+    color: var(--data-cyan);
+}
+
+/* Inputs e formulários */
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+    background: var(--dark-bg-tertiary);
+    color: var(--dark-text-primary);
+    border: 1px solid var(--dark-border-default);
+}
+
+body.dark-mode input:focus,
+body.dark-mode select:focus,
+body.dark-mode textarea:focus {
+    border-color: var(--data-blue);
+    box-shadow: 0 0 0 3px var(--overlay-blue);
+}
+
+/* Scrollbars customizadas */
+body.dark-mode ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+body.dark-mode ::-webkit-scrollbar-track {
+    background: var(--dark-bg-secondary);
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background: var(--dark-bg-elevated);
+    border-radius: 6px;
+    border: 2px solid var(--dark-bg-secondary);
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: var(--data-blue-soft);
+}
+
+/* Estados de carga e placeholders */
+body.dark-mode .loading,
+body.dark-mode .skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--dark-bg-tertiary) 0%,
+        var(--dark-bg-elevated) 50%,
+        var(--dark-bg-tertiary) 100%
+    );
+    background-size: 200% 100%;
+    animation: loading 1.5s ease-in-out infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Cards de estatísticas */
+body.dark-mode .stat-card {
+    background: var(--dark-bg-tertiary);
+    border: 1px solid var(--dark-border-default);
+}
+
+body.dark-mode .stat-card.highlight-blue {
+    border-left: 4px solid var(--data-blue);
+}
+
+body.dark-mode .stat-card.highlight-green {
+    border-left: 4px solid var(--data-green);
+}
+
+body.dark-mode .stat-card.highlight-red {
+    border-left: 4px solid var(--data-red);
+}
+
+body.dark-mode .stat-card.highlight-yellow {
+    border-left: 4px solid var(--data-yellow);
+}
+
+/* Valores e métricas */
+body.dark-mode .metric-value {
+    color: var(--dark-text-primary);
+    font-weight: 600;
+}
+
+body.dark-mode .metric-value.up {
+    color: var(--data-green);
+}
+
+body.dark-mode .metric-value.down {
+    color: var(--data-red);
+}
+
+body.dark-mode .metric-label {
+    color: var(--dark-text-secondary);
+}
+
+/* Legendas de gráficos */
+body.dark-mode .legend-item {
+    color: var(--dark-text-primary);
+}
+
+body.dark-mode .legend-color {
+    border: 1px solid var(--dark-border-default);
 }
 
 * {
