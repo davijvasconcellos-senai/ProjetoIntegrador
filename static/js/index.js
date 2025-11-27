@@ -68,22 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
         toggleSidebar();
     });
 
-    // Botão de toggle no header (para mobile)
-    menuToggle.addEventListener('click', function () {
-        sidebar.classList.toggle('active');
-    });
-
-    // Fechar menu ao clicar fora (mobile)
-    document.addEventListener('click', function (event) {
-        if (window.innerWidth <= 1024) {
-            const isClickInsideSidebar = sidebar.contains(event.target);
-            const isClickOnMenuToggle = menuToggle.contains(event.target);
-
-            if (!isClickInsideSidebar && !isClickOnMenuToggle && sidebar.classList.contains('active')) {
-                sidebar.classList.remove('active');
-            }
-        }
-    });
+    // Código de toggle mobile foi movido para handleMobileLayout()
 
     // Função para alternar o menu
     function toggleSidebar() {
@@ -94,20 +79,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Atualizar estado do menu lateral
     function updateSidebarState() {
-        if (isCollapsed) {
-            sidebar.classList.add('collapsed');
-            mainContent.style.marginLeft = '70px';
-        } else {
-            sidebar.classList.remove('collapsed');
-            mainContent.style.marginLeft = '280px';
-        }
-
-        // Ajustar para mobile
-        if (window.innerWidth <= 1024) {
-            mainContent.style.marginLeft = '0';
-            if (!isCollapsed) {
-                sidebar.classList.add('active');
+        // Só aplicar no desktop
+        if (window.innerWidth > 768) {
+            if (isCollapsed) {
+                sidebar.classList.add('collapsed');
+                mainContent.style.marginLeft = '70px';
+            } else {
+                sidebar.classList.remove('collapsed');
+                mainContent.style.marginLeft = '280px';
             }
+        } else {
+            // No mobile, sempre margin 0
+            mainContent.style.marginLeft = '0';
         }
     }
 
@@ -140,20 +123,125 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('sidebarCollapsed', isCollapsed);
     }
 
-    // Navegação do menu
+    // ==================== FUNCIONALIDADE MOBILE ====================
+    
+    // Detectar se é mobile
+    function isMobile() {
+        return window.innerWidth <= 768;
+    }
+
+    // Abrir sidebar mobile
+    function openMobileSidebar() {
+        console.log('openMobileSidebar chamado');
+        if (isMobile()) {
+            sidebar.classList.add('mobile-open');
+            const overlay = document.querySelector('.sidebar-overlay');
+            if (overlay) {
+                overlay.classList.add('active');
+            }
+            document.body.style.overflow = 'hidden';
+            console.log('Sidebar aberta');
+        }
+    }
+
+    // Fechar sidebar mobile
+    function closeMobileSidebar() {
+        console.log('closeMobileSidebar chamado');
+        if (isMobile()) {
+            sidebar.classList.remove('mobile-open');
+            const overlay = document.querySelector('.sidebar-overlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+            }
+            document.body.style.overflow = '';
+            console.log('Sidebar fechada');
+        }
+    }
+
+    // Layout mobile
+    function handleMobileLayout() {
+        console.log('handleMobileLayout chamado, isMobile:', isMobile());
+        if (isMobile()) {
+            // Criar overlay se não existir
+            let overlay = document.querySelector('.sidebar-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.className = 'sidebar-overlay';
+                document.body.appendChild(overlay);
+                console.log('Overlay criado');
+            }
+            
+            // Adicionar listener ao overlay (sempre)
+            overlay.onclick = closeMobileSidebar;
+
+            // Criar botão toggle mobile se não existir
+            let mobileToggle = document.querySelector('.toggle-btn-mobile');
+            if (!mobileToggle) {
+                mobileToggle = document.createElement('button');
+                mobileToggle.className = 'toggle-btn toggle-btn-mobile';
+                mobileToggle.innerHTML = '☰';
+                mobileToggle.setAttribute('aria-label', 'Abrir menu');
+                document.body.appendChild(mobileToggle);
+                console.log('Botão mobile criado');
+            }
+            
+            // Adicionar listener ao botão mobile (sempre)
+            mobileToggle.onclick = function(e) {
+                console.log('Botão mobile clicado');
+                e.stopPropagation();
+                openMobileSidebar();
+            };
+            
+            console.log('Listener adicionado ao botão mobile');
+            
+            // Esconder botão desktop toggle no mobile
+            if (toggleBtn) {
+                toggleBtn.style.display = 'none';
+            }
+        } else {
+            // Remover elementos mobile no desktop
+            const mobileToggle = document.querySelector('.toggle-btn-mobile');
+            if (mobileToggle) {
+                mobileToggle.remove();
+            }
+            
+            const overlay = document.querySelector('.sidebar-overlay');
+            if (overlay) {
+                overlay.remove();
+            }
+            
+            // Restaurar botão desktop toggle
+            if (toggleBtn) {
+                toggleBtn.style.display = '';
+            }
+            
+            // Limpar classes mobile
+            sidebar.classList.remove('mobile-open');
+            document.body.style.overflow = '';
+        }
+    }
+
+    // Inicializar layout mobile
+    handleMobileLayout();
+
+    // ==================== FIM FUNCIONALIDADE MOBILE ====================
+
+    // Navegação do menu - CONSOLIDADO
     const menuItems = document.querySelectorAll('.menu-item');
     menuItems.forEach(item => {
         item.addEventListener('click', function () {
+            // Remover active de todos
             menuItems.forEach(i => i.classList.remove('active'));
+            // Adicionar active no clicado
             this.classList.add('active');
-
-            // Fechar menu no mobile após clique
-            if (window.innerWidth <= 1024) {
-                sidebar.classList.remove('active');
-            }
 
             const menuText = this.querySelector('.menu-text').textContent;
             console.log('Menu clicado:', menuText);
+            
+            // Fechar menu no mobile após clique
+            if (window.innerWidth <= 768) {
+                closeMobileSidebar();
+            }
         });
     });
 
@@ -184,107 +272,6 @@ document.addEventListener('DOMContentLoaded', function () {
             toggleSidebar();
         }
     });
-
-    // ==================== FUNCIONALIDADE MOBILE ====================
-    
-    // Detectar se é mobile
-    function isMobile() {
-        return window.innerWidth <= 768;
-    }
-
-    // Layout mobile
-    function handleMobileLayout() {
-        if (isMobile()) {
-            // Criar overlay se não existir
-            let overlay = document.querySelector('.sidebar-overlay');
-            if (!overlay) {
-                overlay = document.createElement('div');
-                overlay.className = 'sidebar-overlay';
-                document.body.appendChild(overlay);
-                
-                // Fechar sidebar ao clicar no overlay
-                overlay.addEventListener('click', closeMobileSidebar);
-            }
-
-            // Criar botão toggle mobile se não existir
-            let mobileToggle = document.querySelector('.toggle-btn-mobile');
-            if (!mobileToggle) {
-                mobileToggle = document.createElement('button');
-                mobileToggle.className = 'toggle-btn toggle-btn-mobile';
-                mobileToggle.innerHTML = '☰';
-                mobileToggle.setAttribute('aria-label', 'Abrir menu');
-                document.body.appendChild(mobileToggle);
-                
-                // Abrir sidebar ao clicar no botão mobile
-                mobileToggle.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    openMobileSidebar();
-                });
-            }
-            
-            // Esconder botão desktop toggle no mobile
-            if (toggleBtn) {
-                toggleBtn.style.display = 'none';
-            }
-        } else {
-            // Remover elementos mobile no desktop
-            const mobileToggle = document.querySelector('.toggle-btn-mobile');
-            if (mobileToggle) {
-                mobileToggle.remove();
-            }
-            
-            const overlay = document.querySelector('.sidebar-overlay');
-            if (overlay) {
-                overlay.remove();
-            }
-            
-            // Restaurar botão desktop toggle
-            if (toggleBtn) {
-                toggleBtn.style.display = '';
-            }
-            
-            // Limpar classes mobile
-            sidebar.classList.remove('mobile-open');
-            document.body.style.overflow = '';
-        }
-    }
-
-    // Abrir sidebar mobile
-    function openMobileSidebar() {
-        if (isMobile()) {
-            sidebar.classList.add('mobile-open');
-            const overlay = document.querySelector('.sidebar-overlay');
-            if (overlay) {
-                overlay.classList.add('active');
-            }
-            document.body.style.overflow = 'hidden';
-        }
-    }
-
-    // Fechar sidebar mobile
-    function closeMobileSidebar() {
-        if (isMobile()) {
-            sidebar.classList.remove('mobile-open');
-            const overlay = document.querySelector('.sidebar-overlay');
-            if (overlay) {
-                overlay.classList.remove('active');
-            }
-            document.body.style.overflow = '';
-        }
-    }
-
-    // Fechar sidebar ao clicar em item do menu (mobile)
-    menuItems.forEach(item => {
-        const originalClickHandler = item.onclick;
-        item.addEventListener('click', function() {
-            if (isMobile()) {
-                closeMobileSidebar();
-            }
-        });
-    });
-
-    // Inicializar layout mobile
-    handleMobileLayout();
 
     // Fechar sidebar mobile ao mudar orientação
     window.addEventListener('orientationchange', function() {
