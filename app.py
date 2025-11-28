@@ -39,6 +39,10 @@ def simulate_machine():
         sim_data['tempo_parada'] = f"{random.randint(0,3)}h {random.randint(0,59):02d}min"
         time.sleep(3)
 
+@app.route("/")
+def welcome():
+    return render_template("welcome.html")
+
 # Iniciar thread de simulação ao iniciar a plataforma
 sim_thread = threading.Thread(target=simulate_machine, daemon=True)
 sim_thread.start()

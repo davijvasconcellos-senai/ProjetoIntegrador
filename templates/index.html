@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile_drawer.css') }}">
 </head>
 
-<body>
+<body style="background:#f5f7fa;">
     <!-- Botão hamburger e overlay para navegação mobile acessível -->
     <button id="drawerToggle" class="hamburger" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false">
         <span class="hamburger-box">
@@ -327,6 +327,7 @@
 
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
     <script src="{{ url_for('static', filename='js/mobile.js') }}"></script>
+    {% include '_footer.html' %}
 </body>
 
 </html>

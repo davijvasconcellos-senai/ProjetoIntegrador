@@ -16,7 +16,9 @@
 <body>
     <div class="container">
         <div class="logo">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo PredictivePulse">
+               <a href="/" aria-label="Voltar para a página de boas-vindas">
+                  <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo PredictivePulse">
+               </a>
         </div>
 
         <h1>PredictivePulse</h1>
@@ -62,6 +64,9 @@
                 <a href="{{ url_for('cadastro') }}" class="to-cadastro" data-transition-link>Criar conta</a>
             </div>
         </form>
+            <div style="margin-top:10px">
+                <a href="/login" aria-label="Esqueci minha senha" style="color:#334155; text-decoration:underline; font-size:14px">Esqueci minha senha</a>
+            </div>
 
         <footer>
             <p>© 2025 PredictivePulse - Monitoramento Inteligente</p>
