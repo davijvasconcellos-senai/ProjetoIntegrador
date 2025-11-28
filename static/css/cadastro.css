@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Garet', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -72,8 +72,6 @@ body {
 
 :root {
     --transition-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
-    --primary-500: #667eea;
-    --primary-700: #764ba2;
     --error-color: #dc3545;
     --success-color: #28a745;
 }
@@ -114,11 +112,30 @@ body {
 }
 
 .logo img {
-    max-width: 150px;
-    max-height: 120px;
+    max-width: 180px;
+    max-height: 140px;
     width: auto;
     height: auto;
     border-radius: 10px;
+    display: inline-block;
+    transform-origin: center;
+    will-change: transform, opacity;
+    animation: logoFloatIn 800ms var(--transition-easing) forwards;
+    box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.14), 0 10px 28px rgba(0, 0, 0, 0.22);
+    filter: drop-shadow(0 8px 22px rgba(var(--primary-rgb), 0.26));
+}
+
+.logo img:hover {
+    transform: translateY(-3px) scale(1.03);
+}
+
+@keyframes logoFloatIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .logo img { animation: none !important; transform: none !important; }
 }
 
 h1 {
@@ -176,9 +193,9 @@ h2 {
 
 .campo input:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: var(--primary-500);
     background-color: white;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    box-shadow: var(--focus-ring-shadow);
 }
 
 /* Validação visual */
@@ -239,7 +256,7 @@ h2 {
 }
 
 .eye-icon:hover {
-    background-color: rgba(102, 126, 234, 0.1);
+    background-color: rgba(var(--primary-rgb), 0.12);
     opacity: 0.8;
 }
 
@@ -251,7 +268,7 @@ h2 {
 input:focus-visible,
 button:focus-visible,
 .opcao a:focus-visible {
-    outline: 3px solid rgba(102, 126, 234, 0.18);
+    outline: 3px solid var(--focus-ring-color);
     outline-offset: 2px;
 }
 
@@ -321,12 +338,12 @@ button:focus-visible,
 
 .opcao:hover input~.checkmark {
     background-color: #f0f0f0;
-    border-color: #667eea;
+    border-color: var(--primary-500);
 }
 
 .opcao input:checked~.checkmark {
-    background-color: #667eea;
-    border-color: #667eea;
+    background-color: var(--primary-500);
+    border-color: var(--primary-500);
 }
 
 .checkmark:after {
@@ -355,7 +372,7 @@ button:focus-visible,
 }
 
 .btn-criar-conta {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
     color: white;
     border: none;
     border-radius: 8px;
@@ -365,7 +382,7 @@ button:focus-visible,
     cursor: pointer;
     transition: all 0.3s ease;
     letter-spacing: 1px;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: var(--btn-shadow);
     font-family: 'Orbitron', sans-serif;
     font-weight: 600;
     text-transform: uppercase;
@@ -378,7 +395,7 @@ button:focus-visible,
 
 .btn-criar-conta:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: var(--btn-shadow-hover);
 }
 
 .btn-criar-conta:active:not(:disabled) {
@@ -419,7 +436,7 @@ button:focus-visible,
 }
 
 .login-link a {
-    color: #667eea;
+    color: var(--link);
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
@@ -428,7 +445,7 @@ button:focus-visible,
 }
 
 .login-link a:hover {
-    color: #764ba2;
+    color: var(--link-hover);
     text-decoration: underline;
 }
 
@@ -486,8 +503,8 @@ footer {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    border: 5px solid rgba(102, 126, 234, 0.18);
-    border-top-color: #667eea;
+    border: 5px solid var(--loader-ring);
+    border-top-color: var(--primary-500);
     animation: spin 1s linear infinite;
 }
 
@@ -596,7 +613,7 @@ footer {
     }
 
     .logo img {
-        max-width: 120px;
+        max-width: 140px;
     }
 
     h1 {
@@ -624,7 +641,7 @@ footer {
     }
 
     .logo img {
-        max-width: 100px;
+        max-width: 112px;
     }
 
     h1 {
@@ -678,9 +695,12 @@ footer {
     }
 
     .logo img {
-        max-height: 80px;
+        max-height: 90px;
         width: auto;
         margin-bottom: 16px;
+        /* sombras mais sutis em telas menores */
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.10), 0 6px 18px rgba(0, 0, 0, 0.16);
+        filter: drop-shadow(0 6px 18px rgba(var(--primary-rgb), 0.20));
     }
 
     h1 {
@@ -846,8 +866,11 @@ footer {
     }
 
     .logo img {
-        max-height: 70px;
+        max-height: 80px;
         margin-bottom: 12px;
+        /* ainda mais discreto no mobile pequeno */
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08), 0 4px 14px rgba(0, 0, 0, 0.14);
+        filter: drop-shadow(0 4px 12px rgba(var(--primary-rgb), 0.16));
     }
 
     .campo input {
@@ -890,7 +913,7 @@ footer {
     }
 
     .logo img {
-        max-height: 50px;
+        max-height: 56px;
         margin-bottom: 8px;
     }
 
@@ -933,7 +956,7 @@ footer {
 
 /* Touch-specific optimizations */
 @media (hover: none) and (pointer: coarse) {
-    /* Aumentar área de toque */
+    /* Touch-specific adjustments */
     button,
     a,
     input[type="submit"],
@@ -955,6 +978,7 @@ footer {
     .tipo-usuario .opcao:hover {
         transform: none;
     }
+    .logo img:hover { transform: none !important; }
 
     /* Focus mais visível em touch */
     input:focus,

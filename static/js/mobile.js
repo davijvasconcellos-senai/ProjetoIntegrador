@@ -6,15 +6,17 @@
   function init(){
     const sidebar=document.getElementById('sidebar');
     const drawerBtn=document.getElementById('drawerToggle');
+    const headerBtn=document.getElementById('menuToggle');
     const overlay=document.getElementById('drawerOverlay');
     const mainContent=document.getElementById('mainContent');
     const themeToggleBtn=document.getElementById('themeToggleBtn');
-    if(!sidebar||!drawerBtn||!overlay){return;}
+    if(!sidebar||!overlay){return;}
 
     // Aplicar estado inicial de tema (já tratado em index.js, aqui só sincroniza em mobile)
     syncDarkMode();
 
-    drawerBtn.addEventListener('click',toggleDrawer);
+    if(drawerBtn){ drawerBtn.addEventListener('click',toggleDrawer); }
+    if(headerBtn){ headerBtn.addEventListener('click',toggleDrawer); }
     overlay.addEventListener('click',closeDrawer);
     document.addEventListener('keydown',function(e){
       if(e.key==='Escape' && isOpen()) { closeDrawer(); }
@@ -49,10 +51,11 @@
       document.body.classList.add('drawer-opening');
       requestAnimationFrame(()=>{
         document.body.classList.add('drawer-open');
-        drawerBtn.setAttribute('aria-expanded','true');
+        if(drawerBtn){ drawerBtn.setAttribute('aria-expanded','true'); }
+        if(headerBtn){ headerBtn.setAttribute('aria-expanded','true'); }
         overlay.setAttribute('aria-hidden','false');
         setTimeout(()=>{ document.body.classList.remove('drawer-opening'); }, 300);
-        drawerBtn.focus();
+        if(headerBtn){ headerBtn.focus(); } else if(drawerBtn){ drawerBtn.focus(); }
       });
     }
     function closeDrawer(){
@@ -62,7 +65,8 @@
       }
       document.body.classList.add('drawer-closing');
       document.body.classList.remove('drawer-open');
-      drawerBtn.setAttribute('aria-expanded','false');
+      if(drawerBtn){ drawerBtn.setAttribute('aria-expanded','false'); }
+      if(headerBtn){ headerBtn.setAttribute('aria-expanded','false'); }
       overlay.setAttribute('aria-hidden','true');
       setTimeout(()=>{ document.body.classList.remove('drawer-closing'); if(mainContent) mainContent.focus(); }, 220);
     }

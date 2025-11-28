@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const menuToggle = document.getElementById('menuToggle');
     const mainContent = document.getElementById('mainContent');
     const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const drawerOverlay = document.getElementById('drawerOverlay');
 
     // Estado do menu (salvo no localStorage)
     let isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
@@ -74,6 +75,67 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+
+    // ==================== TABLET DRAWER (769px–1024px) ====================
+    // O botão `.menu-toggle` no header deve abrir/fechar a sidebar como drawer em tablets.
+    // Reutiliza a overlay existente e evita conflito com mobile.js (que atua apenas <=768px).
+    if (menuToggle && sidebar && drawerOverlay) {
+        menuToggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.innerWidth > 768 && window.innerWidth <= 1024) {
+                toggleTabletDrawer();
+            }
+        });
+
+        // Clique na overlay fecha o drawer em tablets
+        drawerOverlay.addEventListener('click', function () {
+            if (window.innerWidth > 768 && window.innerWidth <= 1024) {
+                closeTabletDrawer();
+            }
+        });
+
+        // ESC fecha o drawer em tablets
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && window.innerWidth > 768 && window.innerWidth <= 1024) {
+                closeTabletDrawer();
+            }
+        });
+    }
+
+    function isTabletDrawerOpen() {
+        return document.body.classList.contains('drawer-open') && sidebar.classList.contains('active');
+    }
+
+    function openTabletDrawer() {
+        document.body.classList.add('drawer-open');
+        sidebar.classList.add('active');
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'true');
+        if (drawerOverlay) drawerOverlay.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeTabletDrawer() {
+        sidebar.classList.remove('active');
+        document.body.classList.remove('drawer-open');
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+        if (drawerOverlay) drawerOverlay.setAttribute('aria-hidden', 'true');
+    }
+
+    function toggleTabletDrawer() {
+        if (isTabletDrawerOpen()) closeTabletDrawer(); else openTabletDrawer();
+    }
+
+    // Limpeza ao redimensionar: garantir estados corretos para cada faixa
+    window.addEventListener('resize', function () {
+        // Saindo de tablet -> fechar drawer tablet
+        if (window.innerWidth <= 768 || window.innerWidth > 1024) {
+            closeTabletDrawer();
+        }
+        // Em desktop, manter lógica de colapso/expand padrão
+        if (window.innerWidth > 768) {
+            updateSidebarState();
+        }
+    });
 
     // Função para alternar o menu (desktop)
     function toggleSidebar() {

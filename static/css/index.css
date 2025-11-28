@@ -891,19 +891,32 @@ body {
 }
 
 .menu-toggle {
-    background: none;
+    background: #051148;
+    color: #fff;
     border: none;
     font-size: 20px;
     cursor: pointer;
-    padding: 8px;
-    border-radius: 5px;
-    transition: background 0.3s ease;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
     display: none;
+    align-items: center;
+    justify-content: center;
+    transition: background .25s ease, transform .25s ease;
+    margin-right: 8px;
 }
 
-.menu-toggle:hover {
-    background: #f0f0f0;
-}
+.menu-toggle:hover { background: #06206e; }
+.menu-toggle:active { transform: scale(.95); }
+.menu-toggle:focus-visible { outline: 2px solid #58a6ff; outline-offset: 3px; }
+
+/* Animated three-line icon for header button */
+:root { --menu-icon-duration: 200ms; --menu-icon-ease: cubic-bezier(.4,0,.2,1); }
+.menu-toggle .menu-box { display: flex; flex-direction: column; gap: 6px; }
+.menu-toggle .menu-line { width: 24px; height: 3px; background: #fff; border-radius: 2px; transition: transform var(--menu-icon-duration) var(--menu-icon-ease), opacity var(--menu-icon-duration) var(--menu-icon-ease); }
+body.drawer-open .menu-toggle .menu-line:nth-child(1){ transform: translateY(9px) rotate(45deg); }
+body.drawer-open .menu-toggle .menu-line:nth-child(2){ opacity: 0; }
+body.drawer-open .menu-toggle .menu-line:nth-child(3){ transform: translateY(-9px) rotate(-45deg); }
 
 .header-title {
     flex: 1;
@@ -1199,9 +1212,7 @@ h3 {
         display: none;
     }
 
-    .menu-toggle {
-        display: block;
-    }
+    /* Não mostrar hamburger em tablets; visível apenas em mobile (≤768px) */
 
     .main-content {
         margin-left: 0 !important;
@@ -1220,7 +1231,13 @@ h3 {
 
     .main-header {
         padding: 15px 20px;
+        margin-top: 0;
+        padding-top: 0 !important;
     }
+
+    /* Mostrar o botão do cabeçalho no mobile e esconder hamburger flutuante */
+    .menu-toggle { display: inline-flex !important; align-items: center; justify-content: center; }
+    .hamburger { display: none !important; }
 
     section {
         padding: 20px;
@@ -1239,6 +1256,8 @@ h3 {
     .failures-table {
         font-size: 12px;
     }
+
+    .menu-toggle { display: inline-flex !important; }
 
     .failures-table th,
     .failures-table td {
@@ -1299,28 +1318,28 @@ h3 {
     .main-content {
         margin-left: 0 !important;
         width: 100%;
-        padding: 80px 12px 20px 12px;
+        /* Subir um pouco mais o conteúdo no mobile */
+        padding: 12px 12px 20px 12px;
     }
 
     /* === HEADER === */
     .main-header {
         padding: 12px 16px;
+        margin-top: 0;
+        padding-top: 0 !important;
         flex-wrap: wrap;
         gap: 12px;
         border-radius: 12px;
     }
 
-    .page-title {
-        font-size: 20px;
-        width: 100%;
-        order: 1;
-    }
+    .page-title { font-size: 20px; flex: 1 1 auto; order: 1; }
+    .menu-toggle { order: 0; width: 44px; height: 44px; font-size: 20px; background: #667eea; color: #fff; }
 
-    .header-actions {
-        width: 100%;
-        justify-content: space-between;
-        order: 2;
-    }
+    /* Mobile-specific color for header hamburger button */
+    .menu-toggle:hover { background: #5a6fd8; }
+    .menu-toggle:focus-visible { outline-color: #5a6fd8; }
+
+    .header-actions { width: 100%; justify-content: space-between; order: 2; }
 
     .search-bar {
         flex: 1;
@@ -1466,8 +1485,12 @@ h3 {
         -webkit-overflow-scrolling: touch;
     }
 
+    /* Igualar altura ao painel de Avisos (warnings) no mobile */
     .failures-table-container {
         overflow-x: auto;
+        max-height: 250px;           /* mesmo valor usado em .warnings-list */
+        overflow-y: auto;            /* scroll vertical para conteúdo excedente */
+        -webkit-overflow-scrolling: touch;
     }
 
     .failures-table {
@@ -1545,16 +1568,25 @@ h3 {
     .separator {
         margin: 16px 0;
     }
+
+    /* Igualar altura total dos painéis (Avisos e Falhas) no mobile */
+    section:has(.warnings-list),
+    .failures-section {
+        /* padding-top (16) + título (18) + margem título (12) + conteúdo (250) + padding-bottom (16) */
+        min-height: calc(16px + 18px + 12px + 250px + 16px);
+    }
 }
 
 /* Mobile pequeno (até 480px) */
 @media screen and (max-width: 480px) {
     .main-content {
-        padding: 60px 8px 16px 8px;
+        padding: 12px 8px 16px 8px;
     }
 
     .main-header {
         padding: 10px 12px;
+        margin-top: 0;
+        padding-top: 0 !important;
     }
 
     .page-title {
@@ -1593,6 +1625,13 @@ h3 {
     section h3 {
         font-size: 16px;
         margin-bottom: 10px;
+    }
+
+    /* Igualar altura total dos painéis (Avisos e Falhas) em telefones pequenos */
+    section:has(.warnings-list),
+    .failures-section {
+        /* padding-top (12) + título (16) + margem título (10) + conteúdo (250) + padding-bottom (12) */
+        min-height: calc(12px + 16px + 10px + 250px + 12px);
     }
 
     .sensor-card {
@@ -1662,12 +1701,17 @@ h3 {
 /* Landscape mobile (altura < 500px) */
 @media screen and (max-height: 500px) and (orientation: landscape) {
     .main-content {
-        padding: 60px 16px 12px 16px;
+        padding: 12px 16px 12px 16px;
     }
 
     .main-header {
         padding: 8px 16px;
+        margin-top: 0;
+        padding-top: 0 !important;
     }
+
+    /* Em landscape baixo, manter apenas hamburger */
+    .menu-toggle { display: inline-flex !important; }
 
     .page-title {
         font-size: 16px;
@@ -1820,4 +1864,19 @@ h3 {
     .failures-table {
         font-size: 10px;
     }
+}
+
+/* Mobile muito pequeno (até 360px) */
+@media screen and (max-width: 360px) {
+    /* Aumentar legibilidade do ícone animado */
+    .menu-toggle .menu-box { gap: 7px; }
+    .menu-toggle .menu-line { width: 26px; height: 3px; }
+    body.drawer-open .menu-toggle .menu-line:nth-child(1){ transform: translateY(10px) rotate(45deg); }
+    body.drawer-open .menu-toggle .menu-line:nth-child(3){ transform: translateY(-10px) rotate(-45deg); }
+
+    /* Ajustes sutis de espaçamento quando o título quebra linha */
+    .main-header { padding: 10px 12px; gap: 10px; }
+    .main-header .menu-toggle { align-self: flex-start; }
+    .header-title h2 { line-height: 1.25; }
+    .header-actions { margin-top: 4px; }
 }

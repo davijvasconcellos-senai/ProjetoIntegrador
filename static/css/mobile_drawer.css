@@ -14,8 +14,8 @@
 /* --------- HAMBURGER BUTTON --------- */
 .hamburger {
   position: fixed;
-  top: 12px;
-  left: 12px;
+  top: calc(8px + env(safe-area-inset-top, 0px));
+  left: calc(8px + env(safe-area-inset-left, 0px));
   z-index: 1100;
   width: 44px;
   height: 44px;
@@ -64,12 +64,18 @@ body.drawer-open .drawer-overlay { opacity:1; pointer-events:auto; }
   body.drawer-opening .sidebar { transform: translateX(0); animation: drawerEnter var(--drawer-duration) var(--drawer-bounce-ease); }
   body.drawer-open .sidebar { transform: translateX(0); }
   .toggle-btn { display:none; }
+  /* Usar o botão do header no mobile; ocultar hamburger flutuante */
+  .menu-toggle { display: inline-flex !important; }
+  .hamburger { display: none !important; }
   .sidebar.collapsed .menu-text { opacity:1; width:auto; }
   .main-content { margin-left:0 !important; }
   /* Evitar que o conteúdo atrás receba foco pelo leitor de tela quando drawer aberto */
   body.drawer-open .main-content { pointer-events:none; }
+  /* Manter o botão de menu clicável mesmo com drawer aberto */
   body.drawer-open .main-header { pointer-events:none; }
-  .main-header { padding:16px 16px 12px; margin-top:56px; }
+  body.drawer-open .main-header .menu-toggle { pointer-events:auto; }
+  /* Aproximar um pouco mais o header do topo no mobile */
+  .main-header { padding:16px 16px 12px; margin-top:6px; }
   .dashboard-content { padding:16px 12px 48px; }
   .menu-item { min-height:48px; font-size:15px; }
   .menu-icon { width:32px; }
@@ -90,14 +96,15 @@ body.drawer-open .drawer-overlay { opacity:1; pointer-events:auto; }
 }
 
 /* Esconde hamburger em telas desktop para não interferir com toggle padrão */
-@media (min-width:769px){
-  .hamburger { display:none; }
-}
+@media (min-width:769px){ .hamburger { display:none; } }
+
+/* Ocultar hamburger também em tablets (até 1024px) */
+@media (max-width:1024px){ .hamburger { display:none !important; } }
 
 /* Pequenos ajustes para telas muito estreitas */
 @media (max-width:480px){
   .hamburger { top:10px; left:10px; width:40px; height:40px; }
-  .main-header { margin-top:52px; }
+  .main-header { margin-top:6px; }
   .dashboard-content { padding:12px 10px 40px; }
   .menu-item,.menu-text { font-size:14px; }
   section { padding:16px; }
@@ -105,7 +112,7 @@ body.drawer-open .drawer-overlay { opacity:1; pointer-events:auto; }
 
 /* Landscape baixo */
 @media (max-height:500px) and (orientation:landscape) and (max-width:768px){
-  .main-header { margin-top:48px; padding:12px 14px; }
+  .main-header { margin-top:8px; padding:12px 14px; }
   .menu-item { min-height:40px; padding:10px 14px; }
   .sensor-card { min-width:140px; }
 }
