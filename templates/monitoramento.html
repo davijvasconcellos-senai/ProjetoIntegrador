@@ -424,7 +424,17 @@
                     maintainAspectRatio: false,
                     scales: {
                         x: { grid: { color: gridColor() }, ticks: { color: textColor() } },
-                        y: { grid: { color: gridColor() }, ticks: { color: textColor() } }
+                        y: {
+                            grid: { color: gridColor() },
+                            ticks: {
+                                color: textColor(),
+                                precision: 0,
+                                callback: (value) => {
+                                    const v = Number.isFinite(value) ? value : 0;
+                                    return Intl.NumberFormat('pt-BR', { maximumFractionDigits: 0 }).format(Math.round(v));
+                                }
+                            }
+                        }
                     },
                     plugins: {
                         legend: { display: false },
