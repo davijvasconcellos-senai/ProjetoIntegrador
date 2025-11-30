@@ -1,16 +1,16 @@
-/*
+/**
  * Arquivo: mobile.js
- * Objetivo: Gerenciar comportamento da interface em dispositivos móveis (<=768px),
- *           fornecendo drawer lateral acessível para navegação.
- * Principais Responsabilidades:
- *  - Exibir/ocultar sidebar como drawer com overlay e classes de estado.
- *  - Sincronizar tema escuro/claro com estado previamente salvo (localStorage).
- *  - Implementar focus trap simples para navegação via teclado quando drawer está aberto.
- *  - Ajustar comportamento ao redimensionar para garantir limpeza ao entrar em desktop.
- * Decisões Técnicas:
- *  - IIFE (Immediately Invoked Function Expression) encapsula escopo e evita poluição global.
+ * Propósito: Gerencia o comportamento da interface em dispositivos móveis (<=768px),
+ *            fornecendo drawer lateral acessível para navegação.
+ * Visão geral:
+ *  - Exibe/oculta sidebar como drawer com overlay e classes de estado.
+ *  - Sincroniza tema escuro/claro com localStorage.
+ *  - Implementa focus trap simples para navegação por teclado quando drawer está aberto.
+ *  - Ajusta comportamento ao redimensionar para garantir limpeza ao entrar em desktop.
+ * Decisões técnicas:
+ *  - IIFE encapsula escopo e evita poluição global.
  *  - 'use strict' reforça boas práticas e evita erros silenciosos.
- *  - focus trap básico suficiente para menu simples; pode ser expandido para acessibilidade avançada.
+ *  - Focus trap básico suficiente para menu simples; pode ser expandido para acessibilidade avançada.
  * Acessibilidade:
  *  - Usa aria-expanded nos botões de disparo.
  *  - Usa aria-hidden na overlay para indicar visibilidade sem remover do DOM.
@@ -39,7 +39,7 @@
       if (e.key === 'Escape' && isOpen()) { closeDrawer(); }
     });
 
-    // Focus trap simples: cicla foco dentro do drawer quando aberto para acessibilidade
+    // Focus trap simples: cicla foco dentro do drawer quando aberto (acessibilidade)
     document.addEventListener('keydown', function (e) {
       if (!isOpen()) return;
       if (e.key !== 'Tab') return;
@@ -92,13 +92,14 @@
     // Ao redimensionar, garante que estados móveis não afetem desktop
     window.addEventListener('resize', () => {
       if (window.innerWidth > 768) {
-        // Garantir estado limpo ao entrar em desktop
+        // Garante estado limpo ao entrar em desktop
         document.body.classList.remove('drawer-open', 'drawer-opening', 'drawer-closing');
         drawerBtn.setAttribute('aria-expanded', 'false');
         overlay.setAttribute('aria-hidden', 'true');
       } else if (window.innerWidth <= 768 && isOpen()) { /* permanece comportamento normal */ }
     });
 
+    // Sincroniza visual do tema escuro/claro com localStorage
     function syncDarkMode() {
       const isDark = localStorage.getItem('darkMode') === 'true';
       if (isDark) document.body.classList.add('dark-mode'); else document.body.classList.remove('dark-mode');

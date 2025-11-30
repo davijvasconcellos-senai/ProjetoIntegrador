@@ -1,17 +1,18 @@
 /**
  * Arquivo: login.js
- * Objetivo: Gerenciar interações da página de login (mostrar/ocultar senha,
- *           transições visuais entre páginas e validação simples antes de envio).
- * Visão Geral:
- *  - togglePassword(): alterna exibição da senha para melhorar usabilidade.
- *  - ensurePageTransitionElement()/showTransition(): criam e exibem overlay animado conforme configuração global.
- *  - Lógica de transição entre login e cadastro: usa sessionStorage para animar entrada/saída consistente.
- *  - Validação cliente: verifica preenchimento e formato básico de email antes de permitir envio.
+ * Propósito: Gerencia as interações da página de login:
+ *            alternância de exibição de senha, transições visuais entre páginas
+ *            e validação simples antes do envio.
+ * Visão geral:
+ *  - togglePassword(): alterna exibição da senha e atualiza ícone/ARIA.
+ *  - ensurePageTransitionElement()/showTransition(): criam/exibem overlay animado conforme configuração global.
+ *  - Transição entre login e cadastro: usa sessionStorage para animar entrada/saída.
+ *  - Validação cliente: verifica preenchimento e formato básico de email antes de enviar.
  * Acessibilidade:
- *  - Ícone da senha utiliza aria-pressed para indicar estado.
- *  - Evita animações excessivas em dispositivos com prefers-reduced-motion (tratado em outros módulos de transição).
+ *  - Ícone da senha usa aria-pressed para indicar estado.
+ *  - Evita animações excessivas em dispositivos com prefers-reduced-motion (tratado em outros módulos).
  */
-// Função para mostrar/ocultar senha (alternar tipo de input e estado visual do ícone)
+// Alterna exibição da senha (tipo de input e ícone/ARIA)
 function togglePassword() {
     const senhaInput = document.getElementById('senha');
     const eyeIcon = document.getElementById('eye-icon-password');
@@ -29,7 +30,7 @@ function togglePassword() {
     }
 }
 
-// Cria o overlay de transição de página dinamicamente
+// Cria o overlay de transição de página dinamicamente, se não existir
 function ensurePageTransitionElement() {
     let el = document.getElementById('page-transition');
     if (!el) {
@@ -47,7 +48,7 @@ function ensurePageTransitionElement() {
     return el;
 }
 
-// Exibe animação de transição usando configuração global PAGE_TRANSITION_CONFIG ou fallback.
+// Exibe animação de transição usando configuração global PAGE_TRANSITION_CONFIG ou valor padrão
 function showTransition(duration) {
     const cfg = window.PAGE_TRANSITION_CONFIG || { duration: 600 };
     const d = typeof duration === 'number' ? duration : cfg.duration;
@@ -60,13 +61,13 @@ function showTransition(duration) {
     setTimeout(() => el.classList.remove('visible'), d + 3000);
 }
 
-// Inicialização principal: registra eventos e prepara transições condicionais.
+// Inicialização principal: registra eventos e prepara transições condicionais
 document.addEventListener('DOMContentLoaded', function () {
     // Conecta botão de alternância de senha (se presente no DOM)
     const eyeBtn = document.getElementById('eye-icon-password');
     if (eyeBtn) {
         eyeBtn.addEventListener('click', function (e) {
-            // chama a função global definida acima
+            // Chama a função global definida acima
             togglePassword();
         });
     }
@@ -127,13 +128,13 @@ document.addEventListener('DOMContentLoaded', function () {
             // Mostra transição e deixa submissão seguir normalmente (sem bloqueio artificial)
             const cfg = window.PAGE_TRANSITION_CONFIG || { duration: 800, type: 'panel' };
             if (cfg.type === 'slide') {
-                // on submit, slide the container up/left as feedback
+                // Ao submeter, anima o container para cima/esquerda como feedback
                 const container = document.querySelector('.container');
                 if (container) container.classList.add('slide-out-left');
             } else {
                 showTransition(cfg.duration);
             }
-            // Observação: nenhuma espera forçada adicionada; animação ocorre enquanto o POST segue.
+            // Observação: nenhuma espera forçada adicionada; animação ocorre enquanto o POST segue
         });
     }
 });
@@ -146,14 +147,14 @@ function validarCamposLoginEmTempoReal() {
     const email = emailEl.value.trim();
     const senha = senhaEl.value;
 
-    // Email
+    // Validação de email
     if (email.length > 0 && !/^([^\s@]+@[^\s@]+\.[^\s@]+)$/.test(email)) {
         mostrarErroLogin('email', 'Email inválido');
     } else {
         limparErroLogin('email');
     }
 
-    // Senha (requisitos básicos)
+    // Validação de senha (mínimo de caracteres)
     if (senha.length > 0 && senha.length < 6) {
         mostrarErroLogin('senha', 'Mínimo 6 caracteres');
     } else {

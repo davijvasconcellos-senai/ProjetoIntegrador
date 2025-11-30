@@ -1,10 +1,10 @@
 /**
  * Arquivo: page-transitions.js
- * Objetivo: Gerenciar transições animadas entre páginas (login, cadastro, etc.).
- * Funções:
+ * Propósito: Gerencia transições animadas entre páginas (login, cadastro, etc.).
+ * Visão geral:
  *  - supportsReducedMotion(): respeita preferência de redução de movimento do usuário.
  *  - addOverlay(): garante criação de overlay visual para camada de transição.
- *  - animateExit(nextUrl): anima saída antes de navegação para URL interna.
+ *  - animateExit(nextUrl): anima saída antes de navegar para URL interna.
  *  - animateEnter(): anima entrada ao carregar página.
  *  - wireLinks(): intercepta cliques em links marcados com data-transition-link.
  * Integração:

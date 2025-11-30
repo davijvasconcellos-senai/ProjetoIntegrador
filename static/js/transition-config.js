@@ -1,6 +1,6 @@
 /**
  * Arquivo: transition-config.js
- * Objetivo: Definir e aplicar configuração padrão para transições de página.
+ * Propósito: Define e aplica configuração padrão para transições de página.
  * Como usar:
  *   window.PAGE_TRANSITION_CONFIG = {
  *      type: 'panel' | 'fade' | 'slide',
@@ -17,7 +17,7 @@
  *  - Usa Object.assign para merge simples evitando mutação direta indesejada.
  *  - Aplica imediatamente se DOM já carregado; caso contrário aguarda DOMContentLoaded.
  * Extensões futuras:
- *  - Poderia validar formato das propriedades (ex: regex para gradient).
+ *  - Pode validar formato das propriedades (ex: regex para gradient).
  */
 (function () {
     const defaults = {

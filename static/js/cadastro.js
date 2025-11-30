@@ -1,21 +1,21 @@
 /**
  * Arquivo: cadastro.js
- * Objetivo: Controlar interações da página de cadastro de usuários (exibição/ocultação de senha,
- *           validação em tempo real, transições de página e estado visual de envio).
- * Visão Geral:
- *  - Funções togglePassword / toggleConfirmPassword: alternam tipo de campo para mostrar/ocultar senha.
- *  - Funções de validação: verificam formato de email, tamanho mínimo de senha e confirmação.
- *  - Funções de feedback: exibem/limpam mensagens de erro e estado de carregamento no botão de enviar.
- *  - Transições: adicionam efeito visual entre páginas usando configuração global PAGE_TRANSITION_CONFIG.
- *  - A submissão final do formulário utiliza a própria action HTML após validação.
- * Notas de Acessibilidade:
- *  - Ícones de olho utilizam atributo aria-pressed para indicar estado.
- *  - Mensagens de erro aparecem dinamicamente, podendo ser associadas a regiões com aria-live (se desejado no HTML).
- *  - Transições evitam bloqueio prolongado e respeitam configuração centralizada.
+ * Propósito: Controlar as interações da página de cadastro de usuários:
+ *            alternância de exibição de senha, validações em tempo real,
+ *            feedback visual e transições entre páginas.
+ * Visão geral:
+ *  - togglePassword / toggleConfirmPassword: mostram/ocultam senha e atualizam ícones/ARIA.
+ *  - Validações: email, matrícula (A-HJ-NP-Z-999), força e confirmação de senha.
+ *  - Feedback: mensagens de erro e estado de carregamento no botão de envio.
+ *  - Transições: efeitos visuais baseados em PAGE_TRANSITION_CONFIG (slide/panel/fade).
+ *  - Submissão: após validação, utiliza a action padrão do formulário.
+ * Acessibilidade:
+ *  - Ícones de olho com aria-pressed para indicar estado.
+ *  - Erros dinâmicos; recomenda-se aria-live nas regiões de mensagem.
+ *  - Transições curtas e configuráveis para evitar bloqueios.
  */
-// Comentário original (EN): "Cleaned cadastro.js: unified handlers and config-aware transitions"
-// Tradução + explicação: Arquivo limpo/unificado com manipuladores de eventos e transições dependentes de configuração.
-// Alterna o campo de senha principal entre texto e password, ajustando ícone e atributos ARIA.
+// Arquivo organizado com manipuladores unificados e transições guiadas por configuração.
+// Alterna o campo de senha principal (texto/password) e atualiza ícone/ARIA.
 function togglePassword() {
     const senhaInput = document.getElementById('senha');
     const eyeIcon = document.getElementById('eye-icon-password');
@@ -37,7 +37,7 @@ function togglePassword() {
     }
 }
 
-// Alterna o campo de confirmação de senha entre texto e password, ajustando ícone e atributos ARIA.
+// Alterna o campo de confirmação de senha (texto/password) e atualiza ícone/ARIA.
 function toggleConfirmPassword() {
     const confirmarSenhaInput = document.getElementById('confirmarSenha');
     const eyeIcon = document.getElementById('eye-icon-confirm');
@@ -59,13 +59,13 @@ function toggleConfirmPassword() {
     }
 }
 
-// Valida formato básico de email usando expressão regular comum.
+// Valida formato básico de email com expressão regular.
 function validarEmail(email) {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
 }
 
-// Exibe mensagem de erro para um campo específico adicionando classe CSS e texto.
+// Exibe mensagem de erro para um campo específico: texto + classe CSS.
 function mostrarErro(campoId, mensagem) {
     const erroElement = document.getElementById(`erro-${campoId}`);
     if (erroElement) {
@@ -88,7 +88,7 @@ function mostrarErro(campoId, mensagem) {
     }
 }
 
-// Limpa/remover mensagem de erro previamente exibida para o campo informado.
+// Limpa mensagem de erro previamente exibida para o campo informado.
 function limparErro(campoId) {
     const erroElement = document.getElementById(`erro-${campoId}`);
     if (erroElement) {
@@ -110,7 +110,7 @@ function limparErro(campoId) {
     }
 }
 
-// Validação acionada em tempo real (input/blur) para fornecer feedback imediato ao usuário.
+// Validação em tempo real (input/blur) para feedback imediato ao usuário.
 function validarCampoEmTempoReal() {
     const nome = document.getElementById('nome').value;
     const matricula = document.getElementById('matricula') ? document.getElementById('matricula').value : '';
@@ -161,7 +161,7 @@ function validarCampoEmTempoReal() {
     updatePasswordStrength(senha);
 }
 
-// Ativa/Desativa estado de loading do botão de submissão para evitar cliques múltiplos.
+// Ativa/Desativa estado de carregamento no botão para evitar cliques múltiplos.
 function mostrarLoading(mostrar = true) {
     const btnSubmit = document.getElementById('btn-submit');
     const btnText = btnSubmit.querySelector('.btn-text');
@@ -178,7 +178,7 @@ function mostrarLoading(mostrar = true) {
     }
 }
 
-// Garante que exista elemento overlay para transição; cria se não existir.
+// Garante que exista o overlay de transição; cria se necessário.
 function ensurePageTransitionElement() {
     let el = document.getElementById('page-transition');
     if (!el) {
@@ -196,7 +196,7 @@ function ensurePageTransitionElement() {
     return el;
 }
 
-// Mostra animação de transição baseada na configuração global, com fallback de duração.
+// Mostra animação de transição baseada na configuração global, com duração padrão.
 function showTransition(duration) {
     const cfg = window.PAGE_TRANSITION_CONFIG || { duration: 600 };
     const d = typeof duration === 'number' ? duration : cfg.duration;
@@ -207,7 +207,7 @@ function showTransition(duration) {
     setTimeout(() => el.classList.remove('visible'), d + 3000);
 }
 
-// Bloco principal de inicialização: registra listeners e prepara animações conforme origem da navegação.
+// Inicialização: registra listeners e prepara animações conforme a origem da navegação.
 document.addEventListener('DOMContentLoaded', function () {
     const cadastroForm = document.getElementById('cadastroForm');
     const entrarLink = document.querySelector('.login-link a');
@@ -231,23 +231,21 @@ document.addEventListener('DOMContentLoaded', function () {
             const allowedControl = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'];
             if (allowedControl.includes(e.key)) return;
             const v = matriculaInput.value;
-            // Posição 0: só letras A-HJ-NP-Z
+            // Posição 0: apenas letras A-HJ-NP-Z
             if (v.length === 0) {
                 if (!/^[A-HJ-NP-Z]$/.test(e.key.toUpperCase())) e.preventDefault();
             } else if (v.length === 1) {
-                // Inserimos hífen via máscara; bloquear qualquer entrada manual (será ajustado em input)
-                // Permitir números para próxima fase (máscara adiciona hífen automática)
-                // Não precisa digitar '-'; será gerado
+                // Hífen é inserido pela máscara automaticamente; bloquear entrada manual.
+                // Permitir números para a próxima fase; não precisa digitar '-'.
             } else {
-                // Após hífen: aceitar apenas dígitos até 3
+                // Após o hífen: aceitar apenas dígitos até 3.
                 const digitCount = v.replace(/^[A-HJ-NP-Z]-?/, '').length;
                 if (!/^[0-9]$/.test(e.key) || digitCount >= 3) e.preventDefault();
             }
         });
     }
 
-    // Play slide-in if coming from other page
-    // Recupera indicador de transição armazenado na sessão para animar entrada.
+    // Recupera indicador de transição da sessão para animar entrada (slide-in).
     const trans = sessionStorage.getItem('pp_transition');
     if (trans === 'login->cadastro') {
         const container = document.querySelector('.container');
@@ -258,14 +256,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Conecta botões de alternância de senha (melhora acessibilidade e usabilidade).
+    // Conecta botões de alternância de senha (acessibilidade e usabilidade).
     const eyeBtn = document.getElementById('eye-icon-password');
     if (eyeBtn) eyeBtn.addEventListener('click', function (e) { togglePassword(); });
 
     const eyeConfirmBtn = document.getElementById('eye-icon-confirm');
     if (eyeConfirmBtn) eyeConfirmBtn.addEventListener('click', function (e) { toggleConfirmPassword(); });
 
-    // Associa eventos para validação em tempo real em campos principais do formulário.
+    // Associa eventos de validação em tempo real aos principais campos do formulário.
     const campos = ['nome', 'matricula', 'email', 'senha', 'confirmarSenha'];
     campos.forEach(campoId => {
         const campo = document.getElementById(campoId);
@@ -277,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (entrarLink) {
         entrarLink.addEventListener('click', function (e) {
-            e.preventDefault(); // Evita navegação imediata para permitir animação.
+            e.preventDefault(); // Evita navegação imediata para permitir a animação.
             const href = this.href;
             const cfg = window.PAGE_TRANSITION_CONFIG || { duration: 600, type: 'panel' };
             if (cfg.type === 'slide') {
@@ -293,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (cadastroForm) {
-        // Intercepta submissão para validar antes de seguir com envio padrão.
+        // Intercepta submissão para validar antes de enviar pelo método padrão.
         cadastroForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
@@ -304,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const confirmarSenha = document.getElementById('confirmarSenha') ? document.getElementById('confirmarSenha').value : '';
             const tipoUsuario = document.querySelector('input[name="tipoUsuario"]:checked');
 
-            // Limpa todos os erros visuais anteriores antes de nova validação.
+            // Limpa todos os erros visuais anteriores antes de validar novamente.
             campos.forEach(campoId => limparErro(campoId.replace('confirmarSenha', 'confirmar-senha')));
             limparErro('tipo-usuario');
 
@@ -358,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             if (!valido) {
-                // Focar no primeiro campo com erro
+                // Foca no primeiro campo com erro.
                 const primeiroErro = document.querySelector('.erro-validacao.mostrar');
                 if (primeiroErro) {
                     const campoId = primeiroErro.id.replace('erro-', '');
