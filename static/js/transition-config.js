@@ -1,26 +1,45 @@
-// Default configuration for page transitions. You can override by setting
-// window.PAGE_TRANSITION_CONFIG = { type: 'panel'|'fade', duration: 600, overlay: 'rgba(...)', panelGradient: 'linear-gradient(...)' }
-(function(){
+/**
+ * Arquivo: transition-config.js
+ * Objetivo: Definir e aplicar configuração padrão para transições de página.
+ * Como usar:
+ *   window.PAGE_TRANSITION_CONFIG = {
+ *      type: 'panel' | 'fade' | 'slide',
+ *      duration: <ms>,
+ *      overlay: 'rgba(...)',
+ *      panelGradient: 'linear-gradient(...)',
+ *      easing: 'cubic-bezier(...)' ou 'ease-in-out'
+ *   };
+ * Se alguma chave estiver ausente, é preenchida com o valor padrão definido em 'defaults'.
+ * Integração:
+ *  - Aplica variáveis CSS (--transition-duration, --transition-easing, --overlay-bg, --panel-bg) para uso em estilos.
+ *  - Adiciona atributo data-transition-type ao <html> para controle condicional em CSS/JS.
+ * Decisões:
+ *  - Usa Object.assign para merge simples evitando mutação direta indesejada.
+ *  - Aplica imediatamente se DOM já carregado; caso contrário aguarda DOMContentLoaded.
+ * Extensões futuras:
+ *  - Poderia validar formato das propriedades (ex: regex para gradient).
+ */
+(function () {
     const defaults = {
-        type: 'slide', // 'panel' | 'fade' | 'slide' (default now 'slide')
-        // Slightly longer duration and a softer easing for more fluid motion
+        type: 'slide', // Tipo padrão de transição: deslizamento lateral
+        // Duração levemente maior e easing suave para fluidez
         duration: 650,
-        // easing used by page transition animations. You can set a different cubic-bezier or use 'ease-in-out'
+        // Easing utilizado para animações; pode ser alterado para outro cubic-bezier ou 'ease-in-out'
         easing: 'cubic-bezier(0.215,0.61,0.355,1)',
         overlay: 'rgba(10,10,10,0.45)',
         panelGradient: 'linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,245,255,0.96))'
     };
 
-    // Ensure there's a global config object
+    // Garante existência do objeto global de configuração (cria se não houver)
     if (!window.PAGE_TRANSITION_CONFIG) {
         window.PAGE_TRANSITION_CONFIG = defaults;
     } else {
-        // fill missing keys
+        // Preenche chaves ausentes misturando defaults e config existente
         window.PAGE_TRANSITION_CONFIG = Object.assign({}, defaults, window.PAGE_TRANSITION_CONFIG);
     }
 
-    // Apply CSS variables so styles react to config
-    function applyCssVars(cfg){
+    // Aplica variáveis CSS para que estilos reajam dinamicamente à configuração
+    function applyCssVars(cfg) {
         const root = document.documentElement;
         root.style.setProperty('--transition-duration', cfg.duration + 'ms');
         root.style.setProperty('--transition-easing', cfg.easing || 'ease');
@@ -29,13 +48,13 @@
         root.setAttribute('data-transition-type', cfg.type);
     }
 
-    // If DOM is ready, apply immediately; otherwise wait
+    // Aplica imediatamente se DOM já estiver pronto; do contrário espera evento de carregamento
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function(){ applyCssVars(window.PAGE_TRANSITION_CONFIG); });
+        document.addEventListener('DOMContentLoaded', function () { applyCssVars(window.PAGE_TRANSITION_CONFIG); });
     } else {
         applyCssVars(window.PAGE_TRANSITION_CONFIG);
     }
 
-    // expose small helper
+    // Expõe helper global para re-aplicar configuração dinamicamente se alterar em runtime
     window.applyPageTransitionConfig = applyCssVars;
 })();

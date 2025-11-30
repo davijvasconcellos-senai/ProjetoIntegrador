@@ -1,3 +1,16 @@
+<!-- =============================================================
+    Arquivo: index.html
+    Objetivo: Dashboard principal com sidebar, cards de sensores, avisos,
+                        histórico de falhas e calendário.
+    Dinâmica:
+        - Variáveis de template: {{ usuario }}, {{ demo_mode }} controlam banner demo.
+        - Navegação e tema controlados por index.js / mobile.js.
+    Acessibilidade:
+        - Sidebar com role="navigation" e aria-label.
+        - Botões de menu possuem aria-expanded para drawer.
+    Observação:
+        - Dados de sensores e falhas nesta versão são estáticos (mock).
+============================================================= -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -148,7 +161,8 @@
         <!-- Conteúdo Principal -->
         <main class="main-content" id="mainContent" tabindex="-1">
             <header class="main-header">
-                <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false">
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-controls="sidebar"
+                    aria-expanded="false">
                     <span class="menu-box">
                         <span class="menu-line"></span>
                         <span class="menu-line"></span>
@@ -182,21 +196,26 @@
                             <div class="sensor-icon">🌡️</div>
                             <h4>Temperatura</h4>
                             <div class="sensor-graph">
-                                <span class="sim-sensor" style="display:block;font-weight:bold;font-size:1.2em;color:#222;background:#fff8;padding:2px 8px;border-radius:6px;">25 °C</span>
+                                <span class="sim-sensor"
+                                    style="display:block;font-weight:bold;font-size:1.2em;color:#222;background:#fff8;padding:2px 8px;border-radius:6px;">25 °C</span>
                             </div>
                         </div>
                         <div class="sensor-card">
                             <div class="sensor-icon">📳</div>
                             <h4>Vibração</h4>
                             <div class="sensor-graph">
-                                <span class="sim-sensor" style="display:block;font-weight:bold;font-size:1.2em;color:#222;background:#fff8;padding:2px 8px;border-radius:6px;">0,3 mm/s</span>
+                                <span class="sim-sensor"
+                                    style="display:block;font-weight:bold;font-size:1.2em;color:#222;background:#fff8;padding:2px 8px;border-radius:6px;">0,3
+                                    mm/s</span>
                             </div>
                         </div>
                         <div class="sensor-card">
                             <div class="sensor-icon">🔊</div>
                             <h4>Ruído</h4>
                             <div class="sensor-graph">
-                                <span class="sim-sensor" style="display:block;font-weight:bold;font-size:1.2em;color:#222;background:#fff8;padding:2px 8px;border-radius:6px;">68 dB</span>
+                                <span class="sim-sensor"
+                                    style="display:block;font-weight:bold;font-size:1.2em;color:#222;background:#fff8;padding:2px 8px;border-radius:6px;">68
+                                    dB</span>
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,17 @@
-/* ==================== MOBILE STYLES - PROJETO INTEGRADOR ==================== */
-/* Arquivo dedicado para estilos mobile - versão otimizada e isolada */
-/* Garante que TODAS as funcionalidades desktop funcionem perfeitamente no mobile */
+/* =============================================================
+ * Arquivo: mobile.css
+ * Objetivo: Regras específicas para experiência mobile (<=768px) mantendo
+ *           consistência com desktop sem duplicar lógica.
+ * Destaques:
+ *   - Sidebar sempre expandida (sem comportamento de colapso).
+ *   - Ajustes de tipografia, espaçamentos, e largura de cartões para toque.
+ *   - Scroll horizontal suave em sensores (sensors-grid) com snap.
+ *   - Dark-mode adaptado para legibilidade em telas menores.
+ *   - Força visibilidade de textos e logo mesmo quando classes colapsadas existem.
+ * Acessibilidade:
+ *   - Alturas mínimas para elementos clicáveis (>=44px onde aplicável).
+ *   - Regras de prefers-reduced-motion para reduzir animações.
+ * ============================================================= */
 
 /* ==================== RESET E BASE ==================== */
 
@@ -12,6 +23,7 @@
 
 /* Desktop: esconder elementos mobile não utilizados */
 @media screen and (min-width: 769px) {
+
     .mobile-menu-btn,
     .mobile-overlay {
         display: none !important;
@@ -20,75 +32,75 @@
 
 /* ==================== DARK MODE MOBILE ==================== */
 @media screen and (max-width: 768px) {
-    
+
     /* Garantir que tema escuro funcione corretamente no mobile */
     .dark-mode {
         background: var(--dark-bg-primary, #0d1117) !important;
         color: var(--dark-text-primary, #c9d1d9) !important;
     }
-    
+
     .dark-mode .main-content {
         background: var(--dark-bg-primary, #0d1117) !important;
     }
-    
+
     .dark-mode .main-header {
         background: var(--dark-bg-secondary, #161b22) !important;
         border-bottom: 1px solid var(--dark-border, #30363d) !important;
     }
-    
+
     .dark-mode .sidebar {
         background: var(--dark-bg-secondary, #161b22) !important;
     }
-    
+
     /* Garantir que textos dos menus estejam visíveis no mobile */
     .sidebar .menu-text {
         display: block !important;
         opacity: 1 !important;
         visibility: visible !important;
     }
-    
+
     /* Logo grande visível */
     .sidebar .logo-img-large {
         display: block !important;
     }
-    
+
     .dark-mode .sensor-card {
         background: var(--dark-bg-tertiary, #21262d) !important;
         border: 1px solid var(--dark-border, #30363d) !important;
     }
-    
+
     .dark-mode .failures-section,
     .dark-mode .calendar-section,
     .dark-mode .alerts-section {
         background: var(--dark-bg-tertiary, #21262d) !important;
         border: 1px solid var(--dark-border, #30363d) !important;
     }
-    
+
     .dark-mode .failures-table th {
         background: var(--dark-bg-secondary, #161b22) !important;
         color: var(--dark-text-primary, #c9d1d9) !important;
     }
-    
+
     .dark-mode .failures-table td {
         color: var(--dark-text-secondary, #8b949e) !important;
         border-bottom: 1px solid var(--dark-border, #30363d) !important;
     }
-    
-    .dark-mode .calendar-grid > div {
+
+    .dark-mode .calendar-grid>div {
         background: var(--dark-bg-secondary, #161b22) !important;
         color: var(--dark-text-primary, #c9d1d9) !important;
     }
-    
+
     .dark-mode .calendar-grid .today {
         background: var(--data-primary, #58a6ff) !important;
         color: #000 !important;
     }
-    
+
     /* Theme toggle button no mobile */
     .dark-mode #themeToggleBtn {
         background: var(--dark-bg-tertiary, #21262d) !important;
     }
-    
+
     .dark-mode #themeToggleBtn .theme-toggle-slider {
         background: var(--data-primary, #58a6ff) !important;
     }
@@ -97,7 +109,7 @@
 
 /* ==================== MOBILE ONLY (≤768px) ==================== */
 @media screen and (max-width: 768px) {
-    
+
     /* === SIDEBAR MOBILE - SEMPRE VISÍVEL E EXPANDIDA === */
     .sidebar {
         position: fixed !important;
@@ -112,7 +124,7 @@
         -webkit-overflow-scrolling: touch !important;
         box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1) !important;
     }
-    
+
     /* FORÇAR largura 280px independente de classes */
     .sidebar,
     .sidebar.collapsed,
@@ -133,7 +145,7 @@
     .dark-mode .sidebar.mobile-open {
         box-shadow: 4px 0 20px rgba(0, 0, 0, 0.7) !important;
     }
-    
+
     /* Sidebar sempre expandida no mobile - FORÇAR largura 280px */
     .sidebar,
     .sidebar.collapsed,
@@ -141,7 +153,7 @@
         width: 280px !important;
         left: 0 !important;
     }
-    
+
     /* FORÇAR exibição de textos mesmo com classe .collapsed */
     .sidebar .menu-text,
     .sidebar.collapsed .menu-text {
@@ -152,7 +164,7 @@
         max-width: none !important;
         overflow: visible !important;
     }
-    
+
     /* Regras com máxima especificidade para textos */
     html body .sidebar .menu-text,
     html body .sidebar.collapsed .menu-text,
@@ -168,21 +180,21 @@
         height: auto !important;
         font-size: 15px !important;
     }
-    
+
     .sidebar .logo-img-large,
     .sidebar.collapsed .logo-img-large {
         display: block !important;
         opacity: 1 !important;
         visibility: visible !important;
     }
-    
+
     .sidebar .menu-section,
     .sidebar.collapsed .menu-section {
         display: block !important;
         opacity: 1 !important;
         visibility: visible !important;
     }
-    
+
     .sidebar .sidebar-separator,
     .sidebar.collapsed .sidebar-separator {
         display: block !important;
@@ -440,7 +452,7 @@
 
 /* ==================== MOBILE PEQUENO (≤480px) ==================== */
 @media screen and (max-width: 480px) {
-    
+
     .mobile-menu-btn {
         width: 44px !important;
         height: 44px !important;
@@ -489,7 +501,7 @@
 
 /* ==================== LANDSCAPE MOBILE ==================== */
 @media screen and (max-height: 500px) and (orientation: landscape) and (max-width: 768px) {
-    
+
     .main-content {
         padding: 60px 16px 12px 16px !important;
     }
@@ -513,7 +525,7 @@
         min-width: 140px !important;
         max-width: 140px !important;
     }
-    
+
     /* === USER MENU MOBILE === */
     .user-menu {
         display: flex !important;
@@ -523,35 +535,36 @@
         border-radius: 8px !important;
         transition: background 0.2s ease !important;
     }
-    
+
     .user-menu:active {
         background: rgba(0, 0, 0, 0.05) !important;
     }
-    
+
     .dark-mode .user-menu:active {
         background: rgba(255, 255, 255, 0.1) !important;
     }
-    
+
     .user-avatar {
         width: 36px !important;
         height: 36px !important;
         font-size: 16px !important;
         flex-shrink: 0 !important;
     }
-    
-    .user-menu > span {
+
+    .user-menu>span {
         font-size: 14px !important;
         max-width: 120px !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
         white-space: nowrap !important;
     }
-    
+
     /* === TOOLTIPS MOBILE === */
     .tooltip {
-        display: none !important; /* Esconder tooltips por padrão no mobile */
+        display: none !important;
+        /* Esconder tooltips por padrão no mobile */
     }
-    
+
     /* Mostrar tooltip ao tocar (quando ativado via JS) */
     .menu-item.show-tooltip .tooltip {
         display: block !important;
@@ -566,7 +579,7 @@
         z-index: 10002 !important;
         pointer-events: none !important;
     }
-    
+
     /* === DEMO BANNER MOBILE === */
     .demo-banner {
         flex-direction: column !important;
@@ -575,14 +588,14 @@
         font-size: 13px !important;
         text-align: center !important;
     }
-    
+
     .demo-login-btn {
         width: 100% !important;
         max-width: 200px !important;
         padding: 8px 16px !important;
         font-size: 13px !important;
     }
-    
+
     /* === SCROLL INDICATORS === */
     /* Indicador visual de que há mais conteúdo para scrollar */
     .has-scroll::after {
@@ -599,35 +612,38 @@
         border-radius: 4px 0 0 4px !important;
         animation: pulse-scroll 2s infinite !important;
     }
-    
+
     .dark-mode .has-scroll::after {
         background: linear-gradient(to right, transparent, rgba(88, 166, 255, 0.8)) !important;
     }
-    
+
     @keyframes pulse-scroll {
-        0%, 100% {
+
+        0%,
+        100% {
             opacity: 0.6;
             transform: translateY(-50%) translateX(0);
         }
+
         50% {
             opacity: 1;
             transform: translateY(-50%) translateX(-5px);
         }
     }
-    
+
     /* === AVISOS/ALERTS MOBILE === */
     .alerts-section,
     .important-alerts {
         padding: 16px !important;
         border-radius: 12px !important;
     }
-    
+
     .alert-item {
         padding: 12px !important;
         font-size: 13px !important;
         border-radius: 8px !important;
     }
-    
+
     /* === SEPARADORES === */
     .separator,
     .sidebar-separator {
@@ -638,7 +654,7 @@
 
 /* ==================== TOUCH OPTIMIZATIONS ==================== */
 @media (hover: none) and (pointer: coarse) {
-    
+
     /* Aumentar áreas de toque */
     button,
     a,
@@ -667,6 +683,7 @@
 
 /* ==================== PRINT STYLES ==================== */
 @media print {
+
     .mobile-menu-btn,
     .mobile-overlay,
     .sidebar,

@@ -1,8 +1,21 @@
-// Função para mostrar/ocultar senha
+/**
+ * Arquivo: login.js
+ * Objetivo: Gerenciar interações da página de login (mostrar/ocultar senha,
+ *           transições visuais entre páginas e validação simples antes de envio).
+ * Visão Geral:
+ *  - togglePassword(): alterna exibição da senha para melhorar usabilidade.
+ *  - ensurePageTransitionElement()/showTransition(): criam e exibem overlay animado conforme configuração global.
+ *  - Lógica de transição entre login e cadastro: usa sessionStorage para animar entrada/saída consistente.
+ *  - Validação cliente: verifica preenchimento e formato básico de email antes de permitir envio.
+ * Acessibilidade:
+ *  - Ícone da senha utiliza aria-pressed para indicar estado.
+ *  - Evita animações excessivas em dispositivos com prefers-reduced-motion (tratado em outros módulos de transição).
+ */
+// Função para mostrar/ocultar senha (alternar tipo de input e estado visual do ícone)
 function togglePassword() {
     const senhaInput = document.getElementById('senha');
     const eyeIcon = document.getElementById('eye-icon-password');
-    
+
     if (senhaInput.type === 'password') {
         senhaInput.type = 'text';
         eyeIcon.style.opacity = '0.5';
@@ -34,6 +47,7 @@ function ensurePageTransitionElement() {
     return el;
 }
 
+// Exibe animação de transição usando configuração global PAGE_TRANSITION_CONFIG ou fallback.
 function showTransition(duration) {
     const cfg = window.PAGE_TRANSITION_CONFIG || { duration: 600 };
     const d = typeof duration === 'number' ? duration : cfg.duration;
@@ -46,11 +60,12 @@ function showTransition(duration) {
     setTimeout(() => el.classList.remove('visible'), d + 3000);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    // conectar o botão de alternância de senha (se presente)
+// Inicialização principal: registra eventos e prepara transições condicionais.
+document.addEventListener('DOMContentLoaded', function () {
+    // Conecta botão de alternância de senha (se presente no DOM)
     const eyeBtn = document.getElementById('eye-icon-password');
     if (eyeBtn) {
-        eyeBtn.addEventListener('click', function(e) {
+        eyeBtn.addEventListener('click', function (e) {
             // chama a função global definida acima
             togglePassword();
         });
@@ -59,15 +74,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
     const criarContaLink = document.querySelector('.criar-conta a');
 
-    // Intercepta clique no link "criar conta" para mostrar animação antes de navegar
+    // Intercepta clique no link "criar conta" para animar saída antes da navegação
     if (criarContaLink) {
-        criarContaLink.addEventListener('click', function(e) {
+        criarContaLink.addEventListener('click', function (e) {
             e.preventDefault();
             const href = this.href;
             const cfg = window.PAGE_TRANSITION_CONFIG || { duration: 600, type: 'panel' };
 
             if (cfg.type === 'slide') {
-                // mark transition so target page can animate in
+                // Marca transição para página alvo animar entrada (persistida em sessionStorage)
                 sessionStorage.setItem('pp_transition', 'login->cadastro');
                 const container = document.querySelector('.container');
                 if (container) {
@@ -81,25 +96,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Validação simples e submissão com animação
+    // Registra submissão do formulário de login com validação e animação
     if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            // Validações básicas do lado cliente
+        loginForm.addEventListener('submit', function (e) {
+            // Validação básica cliente: campos obrigatórios
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
 
             if (!email || !senha) {
-    // Play slide-in if coming from other page
-    const trans = sessionStorage.getItem('pp_transition');
-    if (trans === 'cadastro->login') {
-        const container = document.querySelector('.container');
-        if (container) {
-            container.classList.add('slide-in-left');
-            // remove marker so it doesn't play again
-            sessionStorage.removeItem('pp_transition');
-            setTimeout(() => container.classList.remove('slide-in-left'), (window.PAGE_TRANSITION_CONFIG && window.PAGE_TRANSITION_CONFIG.duration) || 600);
-        }
-    }
+                // Se veio de cadastro via marcação, anima entrada (slide-in)
+                const trans = sessionStorage.getItem('pp_transition');
+                if (trans === 'cadastro->login') {
+                    const container = document.querySelector('.container');
+                    if (container) {
+                        container.classList.add('slide-in-left');
+                        // remove marker so it doesn't play again
+                        sessionStorage.removeItem('pp_transition');
+                        setTimeout(() => container.classList.remove('slide-in-left'), (window.PAGE_TRANSITION_CONFIG && window.PAGE_TRANSITION_CONFIG.duration) || 600);
+                    }
+                }
                 alert('Por favor, preencha todos os campos.');
                 e.preventDefault();
                 return;
@@ -112,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Mostrar a transição e deixar o formulário submeter normalmente
+            // Mostra transição e deixa submissão seguir normalmente (sem bloqueio artificial)
             const cfg = window.PAGE_TRANSITION_CONFIG || { duration: 800, type: 'panel' };
             if (cfg.type === 'slide') {
                 // on submit, slide the container up/left as feedback
@@ -121,9 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 showTransition(cfg.duration);
             }
-            // pequena espera para que a animação apareça antes do POST
-            // não impedir o submit — permitir que o envio ocorra
-            // usamos setTimeout apenas se quisermos atrasar o envio; aqui deixamos seguir imediato
+            // Observação: nenhuma espera forçada adicionada; animação ocorre enquanto o POST segue.
         });
     }
 });

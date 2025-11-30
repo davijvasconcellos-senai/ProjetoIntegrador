@@ -1,3 +1,14 @@
+<!-- =============================================================
+    Arquivo: login.html
+    Objetivo: Tela de autenticação com formulário (email/senha), mensagens
+                        flash e link para cadastro e modo demonstração.
+    Dinâmica:
+        - Form action aponta para rota Flask 'login'.
+        - Mensagens flash exibidas com categorias (success/error/info).
+    Acessibilidade:
+        - aria-live no container de mensagens para leitura assistiva.
+        - Botão de alternância de senha possui aria-pressed.
+============================================================= -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -10,15 +21,15 @@
     <link href="https://fonts.cdnfonts.com/css/garet" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/transitions.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/transitions.css') }}">
 </head>
 
 <body>
     <div class="container">
         <div class="logo">
-               <a href="/" aria-label="Voltar para a página de boas-vindas">
-                  <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo PredictivePulse">
-               </a>
+            <a href="/" aria-label="Voltar para a página de boas-vindas">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo PredictivePulse">
+            </a>
         </div>
 
         <h1>PredictivePulse</h1>
@@ -64,9 +75,10 @@
                 <a href="{{ url_for('cadastro') }}" class="to-cadastro" data-transition-link>Criar conta</a>
             </div>
         </form>
-            <div style="margin-top:10px">
-                <a href="/login" aria-label="Esqueci minha senha" style="color:#334155; text-decoration:underline; font-size:14px">Esqueci minha senha</a>
-            </div>
+        <div style="margin-top:10px">
+            <a href="/login" aria-label="Esqueci minha senha"
+                style="color:#334155; text-decoration:underline; font-size:14px">Esqueci minha senha</a>
+        </div>
 
         <footer>
             <p>© 2025 PredictivePulse - Monitoramento Inteligente</p>

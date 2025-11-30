@@ -1,4 +1,26 @@
-/* Reset e configurações globais */
+/* =============================================================
+ * Arquivo: login.css
+ * Objetivo: Estilizar tela de login (logo animada, formulário, botões,
+ *           acesso demo e responsividade).
+ * Seções:
+ *   1. Reset / Base de layout
+ *   2. Botões de login social (Google / Microsoft)
+ *   3. Alertas de feedback
+ *   4. Container / Logo com animação de entrada (logoFloatIn)
+ *   5. Formulário (labels, inputs, toggle de senha)
+ *   6. Botões (Entrar / Demonstração)
+ *   7. Links auxiliares / Footer / Responsividade
+ *   8. Suporte a redução de movimento
+ * Comentários traduzidos:
+ *   "Social Signup Buttons" -> "Botões de Cadastro via Redes"
+ * Decisões:
+ *   - Gradiente de fundo para coerência com identidade visual.
+ *   - Animação moderada (800ms) com easing customizado para suavidade.
+ * Acessibilidade:
+ *   - aria-label no link logo (em HTML) facilita navegação por leitores.
+ *   - focus-visible delimita foco para navegação com teclado.
+ * ============================================================= */
+/* Reset e configurações globais (padroniza comportamento base) */
 * {
     margin: 0;
     padding: 0;
@@ -129,12 +151,22 @@ body {
 }
 
 @keyframes logoFloatIn {
-    from { opacity: 0; transform: translateY(10px) scale(0.985); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .logo img { animation: none !important; transform: none !important; }
+    .logo img {
+        animation: none !important;
+        transform: none !important;
+    }
 }
 
 /* Títulos */
@@ -643,9 +675,11 @@ footer {
     }
 
     .form-group input {
-        font-size: 16px; /* Previne zoom no iOS */
+        font-size: 16px;
+        /* Previne zoom no iOS */
         padding: 12px 14px;
-        height: 48px; /* Touch-friendly */
+        height: 48px;
+        /* Touch-friendly */
     }
 
     /* Botões */
@@ -654,7 +688,8 @@ footer {
         font-size: 16px;
         padding: 14px;
         height: 50px;
-        touch-action: manipulation; /* Previne double-tap zoom */
+        touch-action: manipulation;
+        /* Previne double-tap zoom */
     }
 
     /* Senha com ícone */
@@ -715,8 +750,8 @@ footer {
 
     /* Animações mais rápidas em mobile */
     .container {
-        transition: transform 0.3s var(--transition-easing), 
-                    opacity 0.3s var(--transition-easing);
+        transition: transform 0.3s var(--transition-easing),
+            opacity 0.3s var(--transition-easing);
     }
 }
 
@@ -813,6 +848,7 @@ footer {
 
 /* Touch-specific optimizations */
 @media (hover: none) and (pointer: coarse) {
+
     /* Aumentar área de toque para dispositivos touch */
     button,
     a,
@@ -834,6 +870,7 @@ footer {
     .btn-demo:hover {
         transform: none;
     }
+
     .logo img:hover {
         transform: none !important;
     }

@@ -1,25 +1,40 @@
+/* =============================================================
+ * Arquivo: theme.css
+ * Objetivo: Definir variáveis de tema (cores principais, gradientes,
+ *           sombras, estados de foco, links) reutilizadas em páginas.
+ * Uso:
+ *   - Incluído antes dos arquivos de página para permitir override local.
+ * Notas:
+ *   - Comentários originais em inglês convertidos para explicações em PT-BR.
+ *   - RGB separado (--primary-rgb) facilita uso com transparência via rgba().
+ * ============================================================= */
 :root {
-  /* Primary blues */
-  --primary-500: #3b82f6; /* blue-500 */
-  --primary-700: #1e40af; /* blue-800 */
+  /* Azuis principais (escala de identidade visual) */
+  --primary-500: #3b82f6;
+  /* blue-500 */
+  --primary-700: #1e40af;
+  /* blue-800 */
   --primary-rgb: 59, 130, 246;
 
-  /* Background gradient */
-  --bg-gradient-start: #1e3a8a; /* blue-900 */
-  --bg-gradient-end: #3b82f6;   /* blue-500 */
+  /* Gradiente de fundo padrão */
+  --bg-gradient-start: #1e3a8a;
+  /* blue-900 */
+  --bg-gradient-end: #3b82f6;
+  /* blue-500 */
 
-  /* Focus ring */
+  /* Anel de foco (acessibilidade visual para teclado) */
   --focus-ring-color: rgba(var(--primary-rgb), 0.24);
   --focus-ring-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.18);
 
-  /* Button shadows */
+  /* Sombras de botões (normal e hover) */
   --btn-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.30);
   --btn-shadow-hover: 0 6px 20px rgba(var(--primary-rgb), 0.40);
 
-  /* Loader ring */
+  /* Anel de loader (spinner) */
   --loader-ring: rgba(var(--primary-rgb), 0.18);
 
-  /* Links */
+  /* Cores de links (normal e hover) */
   --link: var(--primary-500);
-  --link-hover: #1d4ed8; /* blue-700 */
+  --link-hover: #1d4ed8;
+  /* blue-700 */
 }

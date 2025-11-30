@@ -1,7 +1,25 @@
-// Menu Lateral Interativo com Botão de Dupla Função
+/**
+ * Arquivo: index.js
+ * Objetivo: Controlar comportamento do dashboard (sidebar colapsável, tema claro/escuro,
+ *           drawer para tablets, tooltips, atalhos e navegação básica).
+ * Componentes Principais:
+ *  - Sidebar desktop: alterna entre expandida e colapsada (armazenando estado em localStorage).
+ *  - Drawer tablet: faixa entre 769px–1024px usa overlay e classe 'drawer-open' para exibir lateral temporária.
+ *  - Tema (dark-mode): estado persistente em localStorage; adiciona/remover classe no body e atualiza UI.
+ *  - Tooltips: mapeia ícones para textos via atributo data-tooltip facilitando acessibilidade.
+ *  - Atalho teclado: Ctrl+M alterna sidebar em ambiente desktop.
+ * Decisões de Implementação:
+ *  - Não mistura lógica mobile (<=768px) aqui; está isolada em mobile.js para evitar conflitos.
+ *  - Usa margem dinâmica no mainContent ao colapsar/expandir para preservar layout sem recalcular grid complexo.
+ *  - Persistência simples (localStorage) suficiente dado escopo, sem necessidade de backend.
+ * Acessibilidade:
+ *  - Usa aria-expanded nas interações de drawer.
+ *  - Usa aria-hidden na overlay para controle de leitura por leitores de tela.
+ */
+// Menu Lateral Interativo com Botão de Dupla Função (inicialização principal após DOM pronto)
 document.addEventListener('DOMContentLoaded', function () {
     console.log('JS index.js carregado');
-    
+
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('toggleBtn');
     const menuToggle = document.getElementById('menuToggle');
@@ -9,22 +27,22 @@ document.addEventListener('DOMContentLoaded', function () {
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const drawerOverlay = document.getElementById('drawerOverlay');
 
-    // Estado do menu (salvo no localStorage)
+    // Estado do menu lateral (persistido em localStorage para experiência consistente)
     let isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
 
-    // Estado do tema (dark/light) - Começar sempre em modo claro se não houver preferência salva
+    // Estado do tema (dark/light) - inicia claro se não houver preferência salva
     let darkModeValue = localStorage.getItem('darkMode');
     let isDarkMode = darkModeValue === 'true';
-    
+
     console.log('Dark mode localStorage:', darkModeValue, 'isDarkMode:', isDarkMode);
-    
-    // Aplicar estado inicial (apenas desktop)
+
+    // Aplica estado inicial da sidebar somente em desktop (>768px)
     if (window.innerWidth > 768) {
         updateSidebarState();
     }
     setupTooltips();
 
-    // Estado visual do botão de tema
+    // Ajusta estado visual inicial do botão de tema conforme preferência armazenada
     if (isDarkMode) {
         themeToggleBtn.classList.add('active');
         updateTheme();
@@ -33,8 +51,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Garantir que body não tenha dark-mode se não estiver ativo
         document.body.classList.remove('dark-mode');
     }
-    
-    // Alternância de tema ao clicar no botão
+
+    // Alternância de tema ao clicar no botão (atualiza classe e persistência)
     themeToggleBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         isDarkMode = !isDarkMode;
@@ -46,8 +64,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         themeToggleBtn.classList.toggle('active', isDarkMode);
     });
-    
-    // Função para atualizar o tema
+
+    // Atualiza DOM para refletir estado atual de tema (classe dark-mode e slider)
     function updateTheme() {
         const slider = themeToggleBtn.querySelector('.theme-toggle-slider');
         if (isDarkMode) {
@@ -61,12 +79,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Salvar estado do tema no localStorage
+    // Persiste estado do tema (boolean) no localStorage
     function saveThemeState() {
         localStorage.setItem('darkMode', isDarkMode);
     }
 
-    // Botão de dupla função (recolher/expandir) - APENAS DESKTOP
+    // Botão de dupla função (recolher/expandir) - somente em desktop; ignora em tablet/mobile
     if (toggleBtn) {
         toggleBtn.addEventListener('click', function (e) {
             e.stopPropagation();
@@ -77,8 +95,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ==================== TABLET DRAWER (769px–1024px) ====================
-    // O botão `.menu-toggle` no header deve abrir/fechar a sidebar como drawer em tablets.
-    // Reutiliza a overlay existente e evita conflito com mobile.js (que atua apenas <=768px).
+    // Lógica exclusiva para tablets: o header .menu-toggle abre/fecha a sidebar como drawer.
+    // Reutiliza overlay existente e evita conflito com mobile.js (este cuida apenas de <=768px).
     if (menuToggle && sidebar && drawerOverlay) {
         menuToggle.addEventListener('click', function (e) {
             e.preventDefault();
@@ -88,14 +106,14 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Clique na overlay fecha o drawer em tablets
+        // Clique na overlay fecha o drawer (encerrando foco e ocultando lateral)
         drawerOverlay.addEventListener('click', function () {
             if (window.innerWidth > 768 && window.innerWidth <= 1024) {
                 closeTabletDrawer();
             }
         });
 
-        // ESC fecha o drawer em tablets
+        // Pressionar ESC fecha o drawer para acessibilidade/rapidez
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && window.innerWidth > 768 && window.innerWidth <= 1024) {
                 closeTabletDrawer();
@@ -125,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (isTabletDrawerOpen()) closeTabletDrawer(); else openTabletDrawer();
     }
 
-    // Limpeza ao redimensionar: garantir estados corretos para cada faixa
+    // Limpeza ao redimensionar: garante que estados tablet não vazem para desktop ou mobile
     window.addEventListener('resize', function () {
         // Saindo de tablet -> fechar drawer tablet
         if (window.innerWidth <= 768 || window.innerWidth > 1024) {
@@ -137,14 +155,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Função para alternar o menu (desktop)
+    // Alterna entre colapsado/expandido no contexto desktop
     function toggleSidebar() {
         isCollapsed = !isCollapsed;
         updateSidebarState();
         saveSidebarState();
     }
 
-    // Atualizar estado do menu lateral (desktop)
+    // Aplica classes/styles conforme estado colapsado (apenas desktop)
     function updateSidebarState() {
         if (window.innerWidth > 768) {
             if (isCollapsed) {
@@ -157,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Configurar tooltips para os ícones do menu
+    // Adiciona tooltips baseados em ícones para melhorar entendimento rápido
     function setupTooltips() {
         const menuItems = document.querySelectorAll('.menu-item');
         const tooltips = {
@@ -184,22 +202,21 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Salvar estado no localStorage
+    // Persiste estado de colapso da sidebar
     function saveSidebarState() {
         localStorage.setItem('sidebarCollapsed', isCollapsed);
     }
 
-    // ==================== FUNCIONALIDADE MOBILE (DESABILITADA - USAR MOBILE.JS) ====================
-    // Todo código mobile foi movido para mobile.js para evitar conflitos
-    // O mobile.js agora controla 100% das funcionalidades mobile
+    // ==================== FUNCIONALIDADE MOBILE (DESABILITADA AQUI) ====================
+    // Código específico de mobile deslocado para mobile.js para isolamento e evitar interações duplicadas.
 
-    // Navegação do menu (desktop only)
+    // Navegação do menu (desktop): marca item ativo e loga clique
     const menuItems = document.querySelectorAll('.menu-item');
     menuItems.forEach(item => {
         item.addEventListener('click', function () {
             // Ignorar o botão de tema
             if (this.id === 'themeToggleBtn') return;
-            
+
             menuItems.forEach(i => i.classList.remove('active'));
             this.classList.add('active');
 
@@ -210,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Navegação do calendário (funciona em desktop e mobile)
+    // Navegação do calendário (simples placeholders; lógica de troca de mês pode ser expandida futuramente)
     const prevButton = document.querySelector('.nav-button:first-child');
     const nextButton = document.querySelector('.nav-button:last-child');
 
@@ -224,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Atalho de teclado (desktop only): Ctrl + M para alternar menu
+    // Atalho de teclado (desktop): Ctrl+M alterna sidebar para acesso rápido sem mouse
     document.addEventListener('keydown', function (e) {
         if (e.ctrlKey && e.key === 'm' && window.innerWidth > 768) {
             e.preventDefault();
@@ -232,5 +249,5 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Valores fixos exibidos diretamente no HTML dos cards (ver index.html)
+    // Observação: métricas mostradas são estáticas no HTML nesta versão simplificada (ver index.html)
 });

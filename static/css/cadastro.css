@@ -1,3 +1,27 @@
+/* =============================================================
+ * Arquivo: cadastro.css
+ * Objetivo: Estilizar página de criação de conta: campos, validação visual,
+ *           botões sociais, estados de erro/sucesso e transições de foco.
+ * Seções:
+ *   1. Reset / Base tipográfica e layout flex centralizado
+ *   2. Botões de cadastro social (Google / Microsoft)
+ *   3. Alertas (sucesso / erro)
+ *   4. Formulário (campos, labels, validação em tempo real)
+ *   5. Campos de senha com ícone interativo
+ *   6. Grupo de rádio para tipo de usuário
+ *   7. Botão principal com estado de carregamento (controlado via JS)
+ *   8. Preferências de movimento reduzido (@media prefers-reduced-motion)
+ * Tradução de Comentários:
+ *   "Social Signup Buttons" -> "Botões de Cadastro via Redes"
+ *   "Validation visual" -> "Validação visual" (já em pt-BR)
+ * Decisões de Design:
+ *   - Bordas mais espessas em inputs para estado de foco nitidamente perceptível.
+ *   - Uso de var(--primary-500) garantindo consistência cromática.
+ *   - Espaço reservado (min-height) nas mensagens de erro evita salto de layout.
+ * Acessibilidade:
+ *   - focus-visible aplicado para teclado.
+ *   - Ícones de senha suficientemente grandes para toque.
+ * ============================================================= */
 * {
     margin: 0;
     padding: 0;
@@ -130,12 +154,22 @@ body {
 }
 
 @keyframes logoFloatIn {
-    from { opacity: 0; transform: translateY(10px) scale(0.985); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .logo img { animation: none !important; transform: none !important; }
+    .logo img {
+        animation: none !important;
+        transform: none !important;
+    }
 }
 
 h1 {
@@ -312,11 +346,13 @@ button:focus-visible,
     align-items: center;
     cursor: pointer;
     position: relative;
-    padding-left: 42px; /* incrementos consistentes: redução suave em 2px do original */
+    padding-left: 42px;
+    /* incrementos consistentes: redução suave em 2px do original */
     font-size: 14px;
     color: #555;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.5; /* melhora legibilidade em frases longas */
+    line-height: 1.5;
+    /* melhora legibilidade em frases longas */
 }
 
 .opcao input {
@@ -729,7 +765,8 @@ footer {
     }
 
     .campo input {
-        font-size: 16px; /* Previne zoom no iOS */
+        font-size: 16px;
+        /* Previne zoom no iOS */
         padding: 12px 14px;
         height: 48px;
     }
@@ -763,7 +800,8 @@ footer {
 
     .tipo-usuario .opcao {
         width: 100%;
-        padding: 12px 16px 12px 46px; /* redução de 2px para manter ritmo */
+        padding: 12px 16px 12px 46px;
+        /* redução de 2px para manter ritmo */
         font-size: 15px;
         min-height: 48px;
         line-height: 1.6;
@@ -886,7 +924,8 @@ footer {
     }
 
     .tipo-usuario .opcao {
-        padding: 10px 14px 10px 44px; /* mais 2px de aproximação mantendo alvo de toque */
+        padding: 10px 14px 10px 44px;
+        /* mais 2px de aproximação mantendo alvo de toque */
         font-size: 14px;
         min-height: 44px;
         line-height: 1.6;
@@ -956,6 +995,7 @@ footer {
 
 /* Touch-specific optimizations */
 @media (hover: none) and (pointer: coarse) {
+
     /* Touch-specific adjustments */
     button,
     a,
@@ -978,7 +1018,10 @@ footer {
     .tipo-usuario .opcao:hover {
         transform: none;
     }
-    .logo img:hover { transform: none !important; }
+
+    .logo img:hover {
+        transform: none !important;
+    }
 
     /* Focus mais visível em touch */
     input:focus,
@@ -990,6 +1033,7 @@ footer {
 
 /* Acessibilidade - High Contrast Mode */
 @media (prefers-contrast: high) {
+
     .campo input,
     .tipo-usuario .opcao {
         border-width: 2px;
