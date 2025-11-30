@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagens - PredictivePulse</title>
+    <link href="https://fonts.cdnfonts.com/css/garet" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile_drawer.css') }}">
+    <style>
+        :root {
+            --brand-primary: #3956e8;
+            --card-green: #2fc46c;
+            --card-yellow: #f2b632;
+            --card-red: #e05b50;
+            --card-blue: #b9d9ff;
+            --tile-radius: 18px;
+        }
+
+        .messages-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .messages-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 12px;
+            align-items: center;
+            background: #ededed;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 12px 14px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), 0 4px 12px rgba(26, 46, 96, .08);
+            opacity: 0;
+            transform: translateY(6px);
+            animation: msgFadeIn .45s ease forwards;
+            transition: transform .15s ease;
+        }
+
+        .message-item.unread {
+            border-color: #93c5fd;
+            box-shadow: 0 6px 16px rgba(59, 130, 246, .15);
+        }
+
+        .msg-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: #1f336b;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .msg-title {
+            margin: 0;
+            font-size: 14px;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .msg-preview {
+            margin: 2px 0 0;
+            font-size: 12px;
+            color: #475569;
+        }
+
+        .msg-sender {
+            font-size: 12px;
+            color: #1f2937;
+            font-weight: 700;
+        }
+
+        .msg-time {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .toolbar input[type="text"] {
+            flex: 1;
+            min-width: 180px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            padding: 10px 12px;
+            background: #f8fafc;
+        }
+
+        .toolbar button {
+            border: none;
+            border-radius: 10px;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #eef2ff;
+            color: #1f336b;
+            box-shadow: 0 2px 8px rgba(26, 46, 96, .15);
+        }
+
+        /* ====== SUMMARY TILES ====== */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin: 12px 0 18px;
+        }
+
+        .summary-card {
+            border-radius: var(--tile-radius);
+            padding: 16px;
+            color: #0f172a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 14px rgba(15, 23, 42, .08);
+        }
+
+        .summary-card h4 {
+            margin: 6px 0 0;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .summary-card .value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .summary-card.green {
+            background: var(--card-green);
+            color: #fff;
+        }
+
+        .summary-card.yellow {
+            background: var(--card-yellow);
+            color: #1f2937;
+        }
+
+        .summary-card.red {
+            background: var(--card-red);
+            color: #fff;
+        }
+
+        .summary-card.blue {
+            background: var(--card-blue);
+            color: #0b2545;
+        }
+
+        @media (max-width: 960px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 520px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-card {
+                padding: 14px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .messages-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .message-item {
+                grid-template-columns: auto 1fr;
+                grid-template-areas:
+                    "avatar content"
+                    "time time";
+                align-items: start;
+            }
+
+            .message-item .msg-avatar {
+                grid-area: avatar;
+            }
+
+            .message-item div:nth-child(2) {
+                grid-area: content;
+            }
+
+            .message-item .msg-time {
+                grid-area: time;
+                justify-self: end;
+            }
+
+            .msg-title {
+                font-size: 13px;
+            }
+
+            .msg-preview {
+                font-size: 12px;
+            }
+
+            .msg-sender {
+                font-size: 12px;
+            }
+
+            .messages-list {
+                gap: 8px;
+            }
+
+            .toolbar input[type="text"] {
+                min-width: 140px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .toolbar {
+                gap: 8px;
+            }
+
+            .toolbar button {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            .msg-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+
+            .summary-card .value {
+                font-size: 24px;
+            }
+
+            .summary-card h4 {
+                font-size: 14px;
+            }
+        }
+
+        /* ====== DARK MODE TUNING ====== */
+        body.dark-mode .summary-card {
+            box-shadow: 0 6px 14px rgba(0, 0, 0, .35);
+        }
+
+        body.dark-mode .summary-card.yellow {
+            color: #f8fafc;
+        }
+
+        body.dark-mode .summary-card.blue {
+            color: #0b2545;
+        }
+
+        body.dark-mode .messages-header .toolbar input[type="text"] {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-color: #334155;
+        }
+
+        body.dark-mode .toolbar button {
+            background: #1e293b;
+            color: #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .4);
+        }
+
+        body.dark-mode .message-item {
+            background: #0f172a;
+            border-color: #334155;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04), 0 4px 12px rgba(0, 0, 0, .35);
+        }
+
+        body.dark-mode .message-item.unread {
+            border-color: #60a5fa;
+            box-shadow: 0 6px 16px rgba(59, 130, 246, .25);
+        }
+
+        body.dark-mode .msg-avatar {
+            background: #1f336b;
+            color: #e5e7eb;
+        }
+
+        body.dark-mode .msg-title {
+            color: #e5e7eb;
+        }
+
+        body.dark-mode .msg-preview {
+            color: #cbd5e1;
+        }
+
+        body.dark-mode .msg-sender {
+            color: #f1f5f9;
+        }
+
+        body.dark-mode .msg-time {
+            color: #94a3b8;
+        }
+
+        /* Animations */
+        @keyframes msgFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Swipe to archive */
+        .message-item.swiping {
+            transition: none;
+        }
+
+        .message-item.archived {
+            opacity: 0;
+            height: 0;
+            margin: 0;
+            padding: 0;
+            border: none;
+            overflow: hidden;
+            transition: all .25s ease;
+        }
+
+        .message-item.swipe-right {
+            box-shadow: 0 8px 18px rgba(34, 197, 94, .25);
+            border-color: #86efac;
+        }
+
+        .message-item.swipe-left {
+            box-shadow: 0 8px 18px rgba(239, 68, 68, .25);
+            border-color: #fca5a5;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Botão hamburger e overlay para navegação mobile acessível -->
+    <button id="drawerToggle" class="hamburger" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false">
+        <span class="hamburger-box">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </span>
+    </button>
+    <div id="drawerOverlay" class="drawer-overlay" tabindex="-1" aria-hidden="true"></div>
+
+    <div class="app-container">
+        <!-- Menu Lateral -->
+        <nav class="sidebar" id="sidebar" role="navigation" aria-label="Menu principal">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="{{ url_for('static', filename='images/logo_reduzida_transparente.png') }}"
+                        alt="Logo Predictive Pulse" class="logo-img logo-img-large" />
+                </div>
+                <button class="toggle-btn" id="toggleBtn">
+                    <span class="toggle-icon">‹</span>
+                </button>
+            </div>
+
+            <ul class="sidebar-menu" style="margin-bottom: 0;">
+                <li class="menu-item" id="themeToggleBtn">
+                    <span class="menu-icon">
+                        <span class="theme-toggle-slider">
+                            <span class="theme-toggle-thumb"></span>
+                        </span>
+                    </span>
+                    <span class="menu-text">Modo Escuro</span>
+                </li>
+            </ul>
+
+            <ul class="sidebar-menu" role="list">
+                <li class="menu-section">Atalhos</li>
+                <li class="menu-item" role="listitem">
+                    <a href="{{ url_for('dashboard') if session.get('user_id') else url_for('demo') }}"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <path d="M10 18V23H22V18" stroke="white" stroke-width="2" fill="none" />
+                                <path d="M8 16L16 10L24 16" stroke="white" stroke-width="2" fill="none" />
+                                <rect x="13" y="20" width="6" height="3" stroke="white" stroke-width="2" fill="none" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Página inicial</span>
+                    </a>
+                </li>
+                <li class="menu-item active" role="listitem">
+                    <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                            <rect x="8" y="12" width="16" height="10" rx="2" stroke="white" stroke-width="2"
+                                fill="none" />
+                            <polyline points="8,12 16,19 24,12" stroke="white" stroke-width="2" fill="none" />
+                        </svg>
+                    </span>
+                    <span class="menu-text">Caixa de mensagens</span>
+                </li>
+                <li class="menu-item" role="listitem">
+                    <a href="{{ url_for('notificacoes') }}"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit; position: relative;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <path d="M22 22v-5a6 6 0 10-12 0v5l-1 1v1h14v-1l-1-1z" stroke="white" stroke-width="2"
+                                    fill="none" />
+                                <circle cx="16" cy="25" r="2" stroke="white" stroke-width="2" fill="none" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Notificações</span>
+                        <span id="notifBadge" class="menu-badge hidden" aria-label="Notificações não lidas">0</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-separator"></div>
+
+            <ul class="sidebar-menu" role="list">
+                <li class="menu-section">Configurações</li>
+                <li class="menu-item" role="listitem">
+                    <a href="https://larissa-dantas.itch.io/system-alert" target="_blank" rel="noopener noreferrer"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <path d="M16 22v-2" stroke="white" stroke-width="2" stroke-linecap="round" />
+                                <path d="M16 18c0-2 3-2 3-5a3 3 0 1 0-6 0" stroke="white" stroke-width="2" fill="none"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Ajuda</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="listitem">
+                    <a href="{{ url_for('logout') }}"
+                        style="display: flex; align-items: center; text-decoration: none; color: inherit; width: 100%;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <rect x="10" y="10" width="8" height="12" rx="2" stroke="white" stroke-width="2"
+                                    fill="none" />
+                                <path d="M18 16h4" stroke="white" stroke-width="2" stroke-linecap="round" />
+                                <circle cx="13" cy="16" r="1" fill="white" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Sair da conta</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-separator"></div>
+        </nav>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content" id="mainContent" tabindex="-1">
+            <header class="main-header">
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-controls="sidebar"
+                    aria-expanded="false">
+                    <span class="menu-box">
+                        <span class="menu-line"></span>
+                        <span class="menu-line"></span>
+                        <span class="menu-line"></span>
+                    </span>
+                </button>
+                <div class="page-title">
+                    <h2>Caixa de Mensagens</h2>
+                </div>
+                <div class="header-actions">
+                    <div class="user-menu">
+                        <span>{{ usuario }}</span>
+                        <div class="user-avatar">{{ usuario[0]|upper }}</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Tiles de resumo no topo, seguindo o estilo do dashboard -->
+            <section class="summary-grid" aria-label="Resumo de mensagens">
+                <div class="summary-card green" id="tile-conversas">
+                    <div class="value" data-key="conversas">6</div>
+                    <h4>Conversas Ativas</h4>
+                </div>
+                <div class="summary-card yellow" id="tile-importantes">
+                    <div class="value" data-key="importantes">1</div>
+                    <h4>Mensagens Importantes</h4>
+                </div>
+                <div class="summary-card red" id="tile-naolidas">
+                    <div class="value" data-key="naolidas">2</div>
+                    <h4>Não Lidas</h4>
+                </div>
+                <div class="summary-card blue" id="tile-historico">
+                    <div class="value" data-key="historico">14</div>
+                    <h4>Histórico</h4>
+                </div>
+            </section>
+
+            <section class="messages-header">
+                <div class="toolbar" role="toolbar" aria-label="Ações de mensagens">
+                    <input type="text" placeholder="Pesquisar mensagens" aria-label="Pesquisar mensagens">
+                    <button type="button">Nova mensagem</button>
+                    <button type="button">Marcar todas como lidas</button>
+                </div>
+            </section>
+
+            <!-- Lista de mensagens de outros usuários -->
+            <h3 style="margin: 10px 0 8px; color:#1f336b;">Mensagens de Outros Usuários</h3>
+            <section class="messages-list" aria-label="Mensagens de outros usuários">
+                <article class="message-item unread" aria-label="Mensagem não lida">
+                    <div class="msg-avatar" aria-hidden="true">LD</div>
+                    <div>
+                        <span class="msg-sender">Larissa Dantas</span>
+                        <h3 class="msg-title">Alerta de Temperatura - Laser 2</h3>
+                        <p class="msg-preview">Temperatura acima de 80 °C. Verificar fluxo de refrigeração.</p>
+                    </div>
+                    <time class="msg-time" datetime="2025-11-30T09:15:00">09:15</time>
+                </article>
+                <article class="message-item">
+                    <div class="msg-avatar" aria-hidden="true">MT</div>
+                    <div>
+                        <span class="msg-sender">Manutenção Técnica</span>
+                        <h3 class="msg-title">Manutenção Programada - Laser 1</h3>
+                        <p class="msg-preview">Agendada para 02/12 às 14:00. Confirmar disponibilidade.</p>
+                    </div>
+                    <time class="msg-time" datetime="2025-11-29T17:40:00">Ontem</time>
+                </article>
+                <article class="message-item">
+                    <div class="msg-avatar" aria-hidden="true">EQ</div>
+                    <div>
+                        <span class="msg-sender">Equipe de Qualidade</span>
+                        <h3 class="msg-title">Oscilação Elétrica Detectada - Laser 4</h3>
+                        <p class="msg-preview">Oscilação breve no circuito. Sem impacto operacional.</p>
+                    </div>
+                    <time class="msg-time" datetime="2025-11-28T11:22:00">2 dias</time>
+                </article>
+            </section>
+
+            <!-- Lista de minhas mensagens (respostas) -->
+            <h3 style="margin: 18px 0 8px; color:#1f336b;">Minhas Mensagens</h3>
+            <section class="messages-list" aria-label="Minhas mensagens">
+                <article class="message-item" aria-label="Minha resposta">
+                    <div class="msg-avatar" aria-hidden="true">{{ usuario[0]|upper }}</div>
+                    <div>
+                        <span class="msg-sender">Você</span>
+                        <h3 class="msg-title">Re: Alerta de Temperatura - Laser 2</h3>
+                        <p class="msg-preview">Equipe avisada. Fluxo de refrigeração será verificado em 10 minutos.</p>
+                    </div>
+                    <time class="msg-time" datetime="2025-11-30T09:20:00">09:20</time>
+                </article>
+            </section>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mobile.js') }}"></script>
+    <script>
+        // Swipe-to-archive: arrasta para os lados e arquiva visualmente
+        (function () {
+            const lists = document.querySelectorAll('.messages-list .message-item');
+            const threshold = 60; // px para acionar archive
+            const counters = {
+                conversas: parseInt(document.querySelector('[data-key="conversas"]').textContent || '0', 10),
+                importantes: parseInt(document.querySelector('[data-key="importantes"]').textContent || '0', 10),
+                naolidas: parseInt(document.querySelector('[data-key="naolidas"]').textContent || '0', 10),
+                historico: parseInt(document.querySelector('[data-key="historico"]').textContent || '0', 10)
+            };
+
+            function setCount(key, value) {
+                const el = document.querySelector(`[data-key="${key}"]`);
+                if (el) el.textContent = String(value);
+            }
+
+            function makeUndo(messageItem) {
+                let bar = document.getElementById('undoBar');
+                if (!bar) {
+                    bar = document.createElement('div');
+                    bar.id = 'undoBar';
+                    bar.style.position = 'fixed';
+                    bar.style.left = '50%';
+                    bar.style.bottom = '20px';
+                    bar.style.transform = 'translateX(-50%)';
+                    bar.style.background = '#1f336b';
+                    bar.style.color = '#fff';
+                    bar.style.padding = '10px 14px';
+                    bar.style.borderRadius = '10px';
+                    bar.style.boxShadow = '0 8px 18px rgba(26,46,96,.25)';
+                    bar.style.zIndex = '9999';
+                    bar.style.display = 'flex';
+                    bar.style.gap = '12px';
+                    bar.style.alignItems = 'center';
+                    const text = document.createElement('span');
+                    text.textContent = 'Mensagem arquivada';
+                    const btn = document.createElement('button');
+                    btn.textContent = 'Desfazer';
+                    btn.style.background = '#eef2ff';
+                    btn.style.color = '#1f336b';
+                    btn.style.border = 'none';
+                    btn.style.borderRadius = '8px';
+                    btn.style.padding = '6px 10px';
+                    btn.style.cursor = 'pointer';
+                    bar.appendChild(text); bar.appendChild(btn);
+                    document.body.appendChild(bar);
+                }
+                let timeoutId = null;
+                const btn = bar.querySelector('button');
+                bar.style.display = 'flex';
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => { bar.style.display = 'none'; }, 4000);
+                btn.onclick = function () {
+                    clearTimeout(timeoutId);
+                    bar.style.display = 'none';
+                    messageItem.classList.remove('archived');
+                    // Reverter contadores
+                    counters.historico = Math.max(0, counters.historico - 1);
+                    setCount('historico', counters.historico);
+                };
+            }
+
+            lists.forEach(item => {
+                let startX = 0, currentX = 0, dragging = false;
+
+                item.addEventListener('touchstart', (e) => {
+                    if (!e.touches || !e.touches[0]) return;
+                    startX = e.touches[0].clientX;
+                    dragging = true;
+                    item.classList.add('swiping');
+                }, { passive: true });
+
+                item.addEventListener('touchmove', (e) => {
+                    if (!dragging || !e.touches || !e.touches[0]) return;
+                    currentX = e.touches[0].clientX;
+                    const dx = currentX - startX;
+                    item.style.transform = `translateX(${dx}px)`;
+                    item.classList.toggle('swipe-right', dx > 0);
+                    item.classList.toggle('swipe-left', dx < 0);
+                }, { passive: true });
+
+                function resetSwipe() {
+                    item.style.transform = '';
+                    item.classList.remove('swiping', 'swipe-right', 'swipe-left');
+                }
+
+                item.addEventListener('touchend', () => {
+                    dragging = false;
+                    const dx = currentX - startX;
+                    if (Math.abs(dx) > threshold) {
+                        item.classList.add('archived');
+                        // Atualiza contadores simples: move para histórico
+                        counters.historico += 1;
+                        setCount('historico', counters.historico);
+                        makeUndo(item);
+                    } else {
+                        resetSwipe();
+                    }
+                    startX = 0; currentX = 0;
+                });
+
+                item.addEventListener('touchcancel', () => { dragging = false; resetSwipe(); });
+            });
+        })();
+        // Tooltips simples nos ícones do menu
+        (function () {
+            const menuItems = document.querySelectorAll('.menu-item');
+            const tooltips = {
+                'Área do Cliente': 'Pressa do cliente',
+                'Página inicial': 'Ir para o dashboard',
+                'Caixa de mensagens': 'Ver mensagens',
+                'Notificações': 'Ver alertas e avisos',
+                'Monitoramento': 'Acompanhar sensores e métricas',
+                'Ajuda': 'Suporte e ajuda',
+                'Sair da conta': 'Encerrar sessão'
+            };
+            menuItems.forEach(item => {
+                const textEl = item.querySelector('.menu-text');
+                if (!textEl) return;
+                const label = textEl.textContent.trim();
+                if (tooltips[label]) item.setAttribute('title', tooltips[label]);
+            });
+        })();
+    </script>
+    {% include '_footer.html' %}
+</body>
+
+</html>

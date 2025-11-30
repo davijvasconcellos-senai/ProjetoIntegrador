@@ -118,6 +118,11 @@ def demo():
                            sensores=[],
                            demo_mode=True)
 
+@app.route('/mensagens')
+def mensagens():
+    """Página de caixa de mensagens (acesso liberado)."""
+    return render_template('mensagens.html', usuario=session.get('user_nome', 'Usuário'))
+
 
 @app.route('/notificacoes')
 def notificacoes():
