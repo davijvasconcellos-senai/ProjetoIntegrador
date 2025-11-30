@@ -1,0 +1,222 @@
+<!-- =============================================================
+     Arquivo: ajuda.html
+     Objetivo: Página de ajuda / suporte exibindo conteúdo externo incorporado (itch.io)
+     Acesso: Requer usuário autenticado (ver rota /ajuda em app.py)
+     Notas:
+       - Conteúdo incorporado via iframe conforme especificado.
+       - Wrapper responsivo para ajustar dimensões em telas menores.
+============================================================= -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ajuda - PredictivePulse</title>
+    <link href="https://fonts.cdnfonts.com/css/garet" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <style>
+        body {
+            font-family: 'Garet', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .help-container {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, .15);
+            width: 100%;
+            max-width: 780px;
+            padding: 40px 36px;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            margin: 0 0 4px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #222;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            margin: 0 0 28px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #555;
+        }
+
+        .iframe-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .iframe-wrapper iframe {
+            max-width: 100%;
+            border: 0;
+        }
+
+        p.desc {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #444;
+            margin-bottom: 18px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 32px;
+            text-decoration: none;
+            background: var(--primary-500, #051148);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            letter-spacing: .5px;
+            transition: .25s ease;
+        }
+
+        .back-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, .18);
+        }
+
+        /* ================= Widget do jogo (aspecto 16:9 e modo expandido) ================ */
+        .game-widget-container {
+            margin-top: 12px;
+            background: #f7f7f9;
+            border: 1px solid #e2e2e6;
+            border-radius: 14px;
+            padding: 16px 18px 20px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
+        }
+
+        .game-widget-aspect {
+            position: relative;
+            width: 100%;
+            /* 16:9 => 9 / 16 = 0.5625 => 56.25% */
+            padding-bottom: 56.25%;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: height .4s ease, padding-bottom .4s ease;
+        }
+
+        .game-widget-aspect iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Estado expandido ocupa mais altura da viewport */
+        .game-widget-aspect.expandido {
+            padding-bottom: 0;
+            /* remove aspecto fixo */
+            height: 80vh;
+            max-height: 860px;
+        }
+
+        .expand-btn {
+            margin-top: 12px;
+            background: #051148;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-weight: 600;
+            border-radius: 6px;
+            letter-spacing: .5px;
+            cursor: pointer;
+            transition: background .25s ease, transform .25s ease;
+        }
+
+        .expand-btn:hover {
+            background: #0b215f;
+            transform: translateY(-2px);
+        }
+
+        .widget-hint {
+            font-size: 12px;
+            line-height: 1.4;
+            color: #555;
+            margin: 10px 0 4px;
+        }
+
+        @media (max-width: 680px) {
+            .game-widget-container {
+                padding: 14px 14px 18px;
+            }
+
+            .expand-btn {
+                width: 100%;
+            }
+
+            .game-widget-aspect.expandido {
+                height: 70vh;
+                /* Menor em telas muito pequenas */
+            }
+        }
+
+        @media (max-width:600px) {
+            .help-container {
+                padding: 32px 24px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="help-container">
+        <h1>Central de Ajuda</h1>
+        <h2>Recursos Interativos</h2>
+        <p class="desc">Abaixo está o conteúdo de suporte interativo solicitado. Use este material para explorar
+            conceitos ou obter assistência adicional. Caso precise retornar ao painel, utilize o botão abaixo.</p>
+        <!-- Widget jogável do jogo (substitui o cartão compacto) -->
+        <!-- IMPORTANTE: Para o jogo ser jogável diretamente aqui, é preciso usar o "embed-upload" gerado pelo botão "Embed" na página do jogo no itch.io.
+             Exemplo de URL: https://itch.io/embed-upload/UPLOAD_ID?color=333333
+             Onde UPLOAD_ID é um número específico de build. Substitua abaixo quando tiver o ID. -->
+        <div class="game-widget-container">
+            <div class="game-widget-aspect">
+                <iframe id="gameWidget" allowfullscreen frameborder="0" src="https://itch.io/embed/4066597"
+                    title="System Alert! - Widget" style="width:100%;height:100%;border:0;">
+                </iframe>
+            </div>
+            <p class="widget-hint">Se aparecer apenas um cartão e não o jogo completo, substitua o src pelo código
+                <code>https://itch.io/embed-upload/UPLOAD_ID?color=333333</code> (troque <code>UPLOAD_ID</code> pelo ID
+                correto obtido em "Embed" na página do jogo).
+            </p>
+            <button type="button" class="expand-btn" onclick="alternarTamanhoWidget()">🔍 Alternar tamanho</button>
+        </div>
+        <a href="{{ url_for('dashboard') }}" class="back-link">← Voltar ao Dashboard</a>
+    </div>
+    <script>
+        // Alterna entre altura padrão e tela maior para o widget
+        function alternarTamanhoWidget() {
+            const aspect = document.querySelector('.game-widget-aspect');
+            aspect.classList.toggle('expandido');
+            // Ajusta texto do botão para feedback rápido
+            const btn = document.querySelector('.expand-btn');
+            if (aspect.classList.contains('expandido')) {
+                btn.textContent = '↩ Voltar tamanho padrão';
+            } else {
+                btn.textContent = '🔍 Alternar tamanho';
+            }
+        }
+    </script>
+</body>
+
+</html>

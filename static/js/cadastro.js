@@ -72,6 +72,20 @@ function mostrarErro(campoId, mensagem) {
         erroElement.textContent = mensagem;
         erroElement.classList.add('mostrar');
     }
+    // Adiciona classe de pulso suave ao input relacionado
+    const inputMap = {
+        'nome': 'nome',
+        'matricula': 'matricula',
+        'email': 'email',
+        'senha': 'senha',
+        'confirmar-senha': 'confirmarSenha',
+        'tipo-usuario': null
+    };
+    const targetId = inputMap[campoId];
+    if (targetId) {
+        const inputEl = document.getElementById(targetId);
+        if (inputEl) inputEl.classList.add('input-error-pulse');
+    }
 }
 
 // Limpa/remover mensagem de erro previamente exibida para o campo informado.
@@ -81,11 +95,25 @@ function limparErro(campoId) {
         erroElement.textContent = '';
         erroElement.classList.remove('mostrar');
     }
+    const inputMap = {
+        'nome': 'nome',
+        'matricula': 'matricula',
+        'email': 'email',
+        'senha': 'senha',
+        'confirmar-senha': 'confirmarSenha',
+        'tipo-usuario': null
+    };
+    const targetId = inputMap[campoId];
+    if (targetId) {
+        const inputEl = document.getElementById(targetId);
+        if (inputEl) inputEl.classList.remove('input-error-pulse');
+    }
 }
 
 // Validação acionada em tempo real (input/blur) para fornecer feedback imediato ao usuário.
 function validarCampoEmTempoReal() {
     const nome = document.getElementById('nome').value;
+    const matricula = document.getElementById('matricula') ? document.getElementById('matricula').value : '';
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
     const confirmarSenha = document.getElementById('confirmarSenha').value;
@@ -104,6 +132,18 @@ function validarCampoEmTempoReal() {
         limparErro('email');
     }
 
+    // Validar matrícula (formato X-XXX, letra maiúscula sem I ou O)
+    if (matricula.length > 0) {
+        const matRegex = /^[A-HJ-NP-Z]-\d{3}$/;
+        if (!matRegex.test(matricula)) {
+            mostrarErro('matricula', 'Formato: letra maiúscula (sem I ou O) + hífen + 3 números (ex: A-123)');
+        } else {
+            limparErro('matricula');
+        }
+    } else {
+        limparErro('matricula');
+    }
+
     // Validar senha
     if (senha.length > 0 && senha.length < 6) {
         mostrarErro('senha', 'A senha deve ter no mínimo 6 caracteres');
@@ -117,6 +157,8 @@ function validarCampoEmTempoReal() {
     } else {
         limparErro('confirmar-senha');
     }
+
+    updatePasswordStrength(senha);
 }
 
 // Ativa/Desativa estado de loading do botão de submissão para evitar cliques múltiplos.
@@ -169,6 +211,40 @@ function showTransition(duration) {
 document.addEventListener('DOMContentLoaded', function () {
     const cadastroForm = document.getElementById('cadastroForm');
     const entrarLink = document.querySelector('.login-link a');
+    const matriculaInput = document.getElementById('matricula');
+    if (matriculaInput) {
+        matriculaInput.addEventListener('input', () => {
+            let raw = matriculaInput.value.toUpperCase();
+            // Remove tudo que não seja letra ou dígito
+            raw = raw.replace(/[^A-Z0-9]/g, '');
+            // Exclui I e O do primeiro caractere
+            if (raw.length > 0 && !/[A-HJ-NP-Z]/.test(raw[0])) {
+                raw = raw.slice(1); // descarta letra inválida
+            }
+            let first = raw.charAt(0) || '';
+            let digits = raw.slice(1).replace(/[^0-9]/g, '').slice(0, 3);
+            let masked = first ? first + '-' + digits : '';
+            matriculaInput.value = masked;
+        });
+        // Bloqueia teclas inválidas diretamente
+        matriculaInput.addEventListener('keydown', (e) => {
+            const allowedControl = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'];
+            if (allowedControl.includes(e.key)) return;
+            const v = matriculaInput.value;
+            // Posição 0: só letras A-HJ-NP-Z
+            if (v.length === 0) {
+                if (!/^[A-HJ-NP-Z]$/.test(e.key.toUpperCase())) e.preventDefault();
+            } else if (v.length === 1) {
+                // Inserimos hífen via máscara; bloquear qualquer entrada manual (será ajustado em input)
+                // Permitir números para próxima fase (máscara adiciona hífen automática)
+                // Não precisa digitar '-'; será gerado
+            } else {
+                // Após hífen: aceitar apenas dígitos até 3
+                const digitCount = v.replace(/^[A-HJ-NP-Z]-?/, '').length;
+                if (!/^[0-9]$/.test(e.key) || digitCount >= 3) e.preventDefault();
+            }
+        });
+    }
 
     // Play slide-in if coming from other page
     // Recupera indicador de transição armazenado na sessão para animar entrada.
@@ -190,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (eyeConfirmBtn) eyeConfirmBtn.addEventListener('click', function (e) { toggleConfirmPassword(); });
 
     // Associa eventos para validação em tempo real em campos principais do formulário.
-    const campos = ['nome', 'email', 'senha', 'confirmarSenha'];
+    const campos = ['nome', 'matricula', 'email', 'senha', 'confirmarSenha'];
     campos.forEach(campoId => {
         const campo = document.getElementById(campoId);
         if (campo) {
@@ -222,6 +298,7 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
 
             const nome = document.getElementById('nome').value;
+            const matricula = document.getElementById('matricula') ? document.getElementById('matricula').value : '';
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
             const confirmarSenha = document.getElementById('confirmarSenha') ? document.getElementById('confirmarSenha').value : '';
@@ -236,6 +313,19 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!nome) {
                 mostrarErro('nome', 'Por favor, preencha o nome completo');
                 valido = false;
+            }
+
+            if (!matricula) {
+                mostrarErro('matricula', 'Por favor, preencha a matrícula');
+                valido = false;
+            } else {
+                const matRegex = /^[A-HJ-NP-Z]-\d{3}$/;
+                if (!matRegex.test(matricula)) {
+                    mostrarErro('matricula', 'Formato: letra maiúscula (sem I ou O) + hífen + 3 números (ex: A-123)');
+                    valido = false;
+                } else {
+                    limparErro('matricula');
+                }
             }
 
             if (!email) {
@@ -283,6 +373,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const dadosCadastro = {
                 nome: nome,
+                matricula: matricula,
                 email: email,
                 senha: senha,
                 tipoUsuario: tipoUsuario.value
@@ -306,3 +397,30 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+// Atualiza checklist de força da senha
+function updatePasswordStrength(senha) {
+    const elTamanho = document.getElementById('req-tamanho');
+    const elNumero = document.getElementById('req-numero');
+    const elMaiuscula = document.getElementById('req-maiuscula');
+    if (!elTamanho) return;
+    const hasLength = senha.length >= 6;
+    const hasNumber = /\d/.test(senha);
+    const hasUpper = /[A-Z]/.test(senha);
+    toggleReq(elTamanho, hasLength);
+    toggleReq(elNumero, hasNumber);
+    toggleReq(elMaiuscula, hasUpper);
+}
+
+function toggleReq(li, ok) {
+    if (!li) return;
+    if (ok) {
+        li.classList.add('ok');
+        const indicador = li.querySelector('.indicador');
+        if (indicador) indicador.textContent = '✓';
+    } else {
+        li.classList.remove('ok');
+        const indicador = li.querySelector('.indicador');
+        if (indicador) indicador.textContent = '•';
+    }
+}

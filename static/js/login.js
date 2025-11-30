@@ -74,6 +74,21 @@ document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('loginForm');
     const criarContaLink = document.querySelector('.criar-conta a');
 
+    // Mapeia requisitos de senha para atualização dinâmica
+    const senhaInput = document.getElementById('senha');
+    if (senhaInput) {
+        senhaInput.addEventListener('input', () => {
+            validarSenhaChecklist(senhaInput.value);
+            validarCamposLoginEmTempoReal();
+        });
+        senhaInput.addEventListener('blur', validarCamposLoginEmTempoReal);
+    }
+    const emailInput = document.getElementById('email');
+    if (emailInput) {
+        emailInput.addEventListener('input', validarCamposLoginEmTempoReal);
+        emailInput.addEventListener('blur', validarCamposLoginEmTempoReal);
+    }
+
 
     // Intercepta clique no link "criar conta" para animar saída antes da navegação
     if (criarContaLink) {
@@ -103,27 +118,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // Validação básica cliente: campos obrigatórios
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
-
-            if (!email || !senha) {
-                // Se veio de cadastro via marcação, anima entrada (slide-in)
-                const trans = sessionStorage.getItem('pp_transition');
-                if (trans === 'cadastro->login') {
-                    const container = document.querySelector('.container');
-                    if (container) {
-                        container.classList.add('slide-in-left');
-                        // remove marker so it doesn't play again
-                        sessionStorage.removeItem('pp_transition');
-                        setTimeout(() => container.classList.remove('slide-in-left'), (window.PAGE_TRANSITION_CONFIG && window.PAGE_TRANSITION_CONFIG.duration) || 600);
-                    }
-                }
-                alert('Por favor, preencha todos os campos.');
-                e.preventDefault();
-                return;
-            }
-
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                alert('Por favor, insira um email válido.');
+            const valido = validarCamposLoginFinal(email, senha);
+            if (!valido) {
                 e.preventDefault();
                 return;
             }
@@ -141,3 +137,88 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+// ====== Validação em tempo real (login) ======
+function validarCamposLoginEmTempoReal() {
+    const emailEl = document.getElementById('email');
+    const senhaEl = document.getElementById('senha');
+    if (!emailEl || !senhaEl) return;
+    const email = emailEl.value.trim();
+    const senha = senhaEl.value;
+
+    // Email
+    if (email.length > 0 && !/^([^\s@]+@[^\s@]+\.[^\s@]+)$/.test(email)) {
+        mostrarErroLogin('email', 'Email inválido');
+    } else {
+        limparErroLogin('email');
+    }
+
+    // Senha (requisitos básicos)
+    if (senha.length > 0 && senha.length < 6) {
+        mostrarErroLogin('senha', 'Mínimo 6 caracteres');
+    } else {
+        limparErroLogin('senha');
+    }
+}
+
+function validarCamposLoginFinal(email, senha) {
+    let valido = true;
+    if (!email) {
+        mostrarErroLogin('email', 'Email obrigatório');
+        valido = false;
+    } else if (!/^([^\s@]+@[^\s@]+\.[^\s@]+)$/.test(email)) {
+        mostrarErroLogin('email', 'Formato de email inválido');
+        valido = false;
+    }
+    if (!senha) {
+        mostrarErroLogin('senha', 'Senha obrigatória');
+        valido = false;
+    } else if (senha.length < 6) {
+        mostrarErroLogin('senha', 'Mínimo 6 caracteres');
+        valido = false;
+    }
+    return valido;
+}
+
+function mostrarErroLogin(campoId, mensagem) {
+    const erroEl = document.getElementById(`erro-${campoId}`);
+    if (erroEl) {
+        erroEl.textContent = mensagem;
+        erroEl.classList.add('mostrar');
+    }
+    const inputEl = document.getElementById(campoId);
+    if (inputEl) inputEl.classList.add('input-error-pulse');
+}
+
+function limparErroLogin(campoId) {
+    const erroEl = document.getElementById(`erro-${campoId}`);
+    if (erroEl) {
+        erroEl.textContent = '';
+        erroEl.classList.remove('mostrar');
+    }
+    const inputEl = document.getElementById(campoId);
+    if (inputEl) inputEl.classList.remove('input-error-pulse');
+}
+
+// Checklist de senha dinâmica (login)
+function validarSenhaChecklist(senha) {
+    const elTamanho = document.getElementById('login-req-tamanho');
+    const elNumero = document.getElementById('login-req-numero');
+    const elMaiuscula = document.getElementById('login-req-maiuscula');
+    if (!elTamanho) return;
+    atualizarItemChecklist(elTamanho, senha.length >= 6);
+    atualizarItemChecklist(elNumero, /\d/.test(senha));
+    atualizarItemChecklist(elMaiuscula, /[A-Z]/.test(senha));
+}
+
+function atualizarItemChecklist(li, ok) {
+    if (!li) return;
+    const indicador = li.querySelector('.indicador');
+    if (ok) {
+        li.classList.add('ok');
+        if (indicador) indicador.textContent = '✓';
+    } else {
+        li.classList.remove('ok');
+        if (indicador) indicador.textContent = '•';
+    }
+}

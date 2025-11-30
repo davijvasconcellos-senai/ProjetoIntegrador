@@ -53,6 +53,15 @@
             </div>
 
             <div class="campo">
+                <label for="matricula">Matrícula</label>
+                <input type="text" id="matricula" name="matricula" required pattern="[A-HJ-NP-Z]-[0-9]{3}"
+                    placeholder="A-123" autocomplete="off" inputmode="text" aria-describedby="hint-matricula">
+                <small id="hint-matricula" style="margin-top:4px;color:#666;display:block;font-size:11px;">Formato:
+                    letra maiúscula (sem I ou O) + hífen + 3 números (ex: A-123)</small>
+                <div class="erro-validacao" id="erro-matricula"></div>
+            </div>
+
+            <div class="campo">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" required autocomplete="email">
                 <div class="erro-validacao" id="erro-email"></div>
@@ -66,6 +75,11 @@
                         aria-label="Mostrar senha">👁️</button>
                 </div>
                 <div class="erro-validacao" id="erro-senha"></div>
+                <ul class="senha-requisitos" id="senha-requisitos" aria-live="polite" aria-label="Requisitos da senha">
+                    <li id="req-tamanho"><span class="indicador">•</span>Mínimo 6 caracteres</li>
+                    <li id="req-numero"><span class="indicador">•</span>Ao menos 1 número</li>
+                    <li id="req-maiuscula"><span class="indicador">•</span>Ao menos 1 letra maiúscula</li>
+                </ul>
             </div>
 
             <div class="campo senha-container">

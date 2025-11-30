@@ -920,3 +920,68 @@ footer {
         display: none;
     }
 }
+
+/* ================= Pulsing error border & password checklist (login) ================= */
+.erro-validacao {
+    font-size: 12px;
+    margin-top: 4px;
+    color: var(--error-color);
+    min-height: 16px;
+    display: none;
+}
+
+.erro-validacao.mostrar {
+    display: block;
+}
+
+.input-error-pulse {
+    border-color: var(--error-color) !important;
+    animation: pulseBorder 1.8s ease-in-out infinite;
+}
+
+@keyframes pulseBorder {
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.30);
+    }
+
+    70% {
+        box-shadow: 0 0 0 4px rgba(220, 53, 69, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+    }
+}
+
+.senha-requisitos {
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.senha-requisitos li {
+    font-size: 12px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.25s ease;
+}
+
+.senha-requisitos li.ok {
+    color: var(--success-color);
+    font-weight: 600;
+}
+
+.senha-requisitos .indicador {
+    width: 14px;
+    height: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    line-height: 1;
+}

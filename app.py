@@ -65,7 +65,8 @@ def home():
     """Redireciona para login ou dashboard."""
     if session.get('user_id'):
         return redirect(url_for('dashboard'))
-    return render_template('welcome.html')
+    # Exibe página inicial limpa (welcome_clean)
+    return render_template('welcome_clean.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -116,6 +117,7 @@ def demo():
                            falhas=[],
                            sensores=[],
                            demo_mode=True)
+
 
 # (APIs removidas na versão simplificada)
 

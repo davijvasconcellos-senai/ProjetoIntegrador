@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bem-vindo • PredictivePulse</title>
+    <link rel="stylesheet" href="/static/css/index.css" />
+    <style>
+        :root {
+            --brand-primary: #3956e8;
+            --brand-primary-dark: #2d47c5;
+            --brand-bg-grad: linear-gradient(125deg, #f1f6ff 0%, #e3edff 40%, #d9e6ff 70%, #d2e2ff 100%);
+            --brand-surface: #fff;
+            --brand-border: #d9e1ec;
+            --brand-text: #1e293b;
+            --brand-muted: #64748b;
+            --shadow-lg: 0 18px 40px -10px rgba(57, 86, 232, .35);
+            --shadow-sm: 0 4px 14px -4px rgba(30, 41, 59, .25);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f5f8fc;
+            color: var(--brand-text);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        @keyframes floatLogo {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-10px)
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(18px)
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes pulseBorder {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(57, 86, 232, .35)
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(57, 86, 232, .08)
+            }
+        }
+
+        .welcome {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 26px 30px 70px;
+        }
+
+        .hero {
+            position: relative;
+            display: grid;
+            gap: 30px;
+            justify-items: center;
+            text-align: center;
+            padding: 64px 40px 70px;
+            border-radius: 30px;
+            background: var(--brand-bg-grad);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .logo-emblem {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--brand-surface);
+            border: 1px solid var(--brand-border);
+            padding: 34px 44px;
+            border-radius: 28px;
+            box-shadow: 0 16px 40px -10px rgba(57, 86, 232, .45);
+            animation: floatLogo 9s ease-in-out infinite;
+        }
+
+        .logo-emblem img {
+            height: 160px;
+            width: auto;
+            filter: drop-shadow(0 8px 24px rgba(57, 86, 232, .45));
+        }
+
+        .hero-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 46px;
+            letter-spacing: 1px;
+            margin: 0;
+            background: linear-gradient(90deg, #233a92, #3956e8, #6d84ff);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .hero-tagline {
+            max-width: 980px;
+            margin: 2px 0 0;
+            font-size: 18px;
+            line-height: 1.55;
+            color: var(--brand-muted);
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 15px 26px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 16px;
+            border: 1px solid var(--brand-border);
+            background: var(--brand-surface);
+            color: var(--brand-primary-dark);
+            box-shadow: var(--shadow-sm);
+            transition: .35s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3956e8, #2d47c5);
+            color: #fff;
+            border-color: #3956e8;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 26px -6px rgba(30, 41, 59, .35);
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-top: 34px;
+            width: 100%;
+        }
+
+        .metric {
+            background: rgba(255, 255, 255, .87);
+            backdrop-filter: blur(6px);
+            border: 1px solid var(--brand-border);
+            padding: 18px 16px 20px;
+            border-radius: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            box-shadow: var(--shadow-sm);
+            animation: fadeInUp .8s ease forwards;
+            opacity: 0;
+        }
+
+        .metric:nth-child(1) {
+            animation-delay: .05s;
+        }
+
+        .metric:nth-child(2) {
+            animation-delay: .15s;
+        }
+
+        .metric:nth-child(3) {
+            animation-delay: .25s;
+        }
+
+        .metric:nth-child(4) {
+            animation-delay: .35s;
+        }
+
+        .metric:nth-child(5) {
+            animation-delay: .45s;
+        }
+
+        .metric:nth-child(6) {
+            animation-delay: .55s;
+        }
+
+        .metric:nth-child(7) {
+            animation-delay: .65s;
+        }
+
+        .metric h4 {
+            margin: 0;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+            color: var(--brand-muted);
+        }
+
+        .metric p {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--brand-primary-dark);
+        }
+
+        .features {
+            margin-top: 70px;
+            display: grid;
+            gap: 36px;
+        }
+
+        .features-header {
+            text-align: center;
+        }
+
+        .features-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 30px;
+            margin: 0 0 12px;
+            color: #223777;
+        }
+
+        .features-header p {
+            margin: 0;
+            font-size: 16px;
+            color: var(--brand-muted);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 26px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: var(--brand-surface);
+            border: 1px solid var(--brand-border);
+            border-radius: 24px;
+            padding: 26px 24px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp .9s ease forwards;
+            opacity: 0;
+        }
+
+        .feature-card:nth-child(1) {
+            animation-delay: .2s;
+        }
+
+        .feature-card:nth-child(2) {
+            animation-delay: .32s;
+        }
+
+        .feature-card:nth-child(3) {
+            animation-delay: .44s;
+        }
+
+        .feature-card:nth-child(4) {
+            animation-delay: .56s;
+        }
+
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 25% 18%, rgba(57, 86, 232, .22), rgba(57, 86, 232, 0) 65%);
+            opacity: .9;
+        }
+
+        .feature-card h3 {
+            margin: 0;
+            font-size: 17px;
+            font-family: 'Orbitron', sans-serif;
+            color: #253057;
+        }
+
+        .feature-card p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.55;
+            color: #3b4b63;
+        }
+
+        .carousel {
+            position: relative;
+            width: 100%;
+            background: var(--brand-surface);
+            border: 1px solid var(--brand-border);
+            border-radius: 26px;
+            padding: 30px 28px 40px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            margin-top: 76px;
+        }
+
+        .carousel-header {
+            margin: 0 0 16px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            color: #223777;
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 22px;
+            transition: transform .55s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        .carousel-slide {
+            min-width: 285px;
+            max-width: 305px;
+            flex: 0 0 auto;
+            background: linear-gradient(135deg, #f8fbff, #eef4ff);
+            border: 1px solid var(--brand-border);
+            border-radius: 20px;
+            padding: 18px 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+        }
+
+        .carousel-slide h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            margin: 0;
+            color: #1f2937;
+        }
+
+        .carousel-slide p {
+            margin: 0;
+            font-size: 13px;
+            color: #334155;
+            line-height: 1.5;
+        }
+
+        .carousel-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .carousel-btn {
+            background: var(--brand-primary);
+            color: #fff;
+            border: none;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: .35s;
+            box-shadow: 0 6px 16px -4px rgba(57, 86, 232, .45);
+        }
+
+        .carousel-btn:hover {
+            background: var(--brand-primary-dark);
+            transform: translateY(-3px);
+        }
+
+        .carousel-indicators {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            max-width: 60%;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            transition: .35s;
+        }
+
+        .dot.active {
+            background: var(--brand-primary);
+            box-shadow: 0 0 0 4px rgba(57, 86, 232, .18);
+            animation: pulseBorder 2.8s infinite;
+        }
+
+        .videos {
+            margin-top: 86px;
+        }
+
+        .videos h2 {
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 26px;
+            margin: 0 0 28px;
+            color: #223777;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+            gap: 30px;
+        }
+
+        .video-item {
+            background: var(--brand-surface);
+            border: 1px solid var(--brand-border);
+            border-radius: 26px;
+            padding: 18px 18px 26px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            animation: fadeInUp .9s ease forwards;
+            opacity: 0;
+        }
+
+        .video-item:nth-child(1) {
+            animation-delay: .25s;
+        }
+
+        .video-item:nth-child(2) {
+            animation-delay: .38s;
+        }
+
+        .video-item:nth-child(3) {
+            animation-delay: .51s;
+        }
+
+        .video-item h3 {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 600;
+            color: #2d3e5f;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .page-end-spacer {
+            height: 12px;
+        }
+
+        @media (max-width:860px) {
+            .hero {
+                padding: 56px 34px 64px;
+            }
+
+            .hero-title {
+                font-size: 40px;
+            }
+
+            .carousel-slide {
+                min-width: 270px;
+            }
+        }
+
+        @media (max-width:680px) {
+            .hero {
+                padding: 48px 28px 58px;
+            }
+
+            .hero-title {
+                font-size: 34px;
+            }
+
+            .metrics {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+
+            .feature-grid {
+                grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            }
+        }
+
+        @media (max-width:520px) {
+            .hero {
+                padding: 42px 22px 52px;
+            }
+
+            .hero-title {
+                font-size: 30px;
+            }
+
+            .carousel-slide {
+                min-width: 250px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="welcome" aria-labelledby="hero-title">
+        <section class="hero" aria-describedby="hero-tagline">
+            <div class="logo-emblem" role="img" aria-label="Logo PredictivePulse"><img
+                    src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo PredictivePulse" /></div>
+            <h1 id="hero-title" class="hero-title">PredictivePulse</h1>
+            <p id="hero-tagline" class="hero-tagline">Manutenção preditiva centrada em dados reais de operação. Antecipe
+                falhas, reduza custos improdutivos e eleve a confiabilidade dos ativos com insights acionáveis.</p>
+            <div class="hero-actions">
+                <a class="btn btn-primary" href="{{ url_for('login') }}" aria-label="Acessar login">Entrar</a>
+                <a class="btn" href="{{ url_for('cadastro') }}" aria-label="Criar conta">Criar conta</a>
+            </div>
+            <div class="metrics" aria-label="Indicadores resumidos">
+                <div class="metric">
+                    <h4>Disponibilidade</h4>
+                    <p>↑</p>
+                </div>
+                <div class="metric">
+                    <h4>Falhas Não Planej.</h4>
+                    <p>↓</p>
+                </div>
+                <div class="metric">
+                    <h4>Custos de Parada</h4>
+                    <p>↓</p>
+                </div>
+                <div class="metric">
+                    <h4>MTBF</h4>
+                    <p>↑</p>
+                </div>
+                <div class="metric">
+                    <h4>MTTR</h4>
+                    <p>↓</p>
+                </div>
+                <div class="metric">
+                    <h4>Alertas Filtrados</h4>
+                    <p>↑</p>
+                </div>
+                <div class="metric">
+                    <h4>Precisão Previsão</h4>
+                    <p>↑</p>
+                </div>
+            </div>
+        </section>
+        <section class="features" aria-labelledby="features-title">
+            <div class="features-header">
+                <h2 id="features-title">Recursos Centrais</h2>
+                <p>Conecte sinais, visualize tendências e aja com segurança orientada por contexto.</p>
+            </div>
+            <div class="feature-grid" role="list">
+                <div class="feature-card" role="listitem">
+                    <h3>Alertas Contextuais</h3>
+                    <p>Priorização por criticidade e impacto, reduzindo ruído informacional.</p>
+                </div>
+                <div class="feature-card" role="listitem">
+                    <h3>Sinais IoT</h3>
+                    <p>Leituras contínuas de temperatura, vibração e ruído para detecção precoce.</p>
+                </div>
+                <div class="feature-card" role="listitem">
+                    <h3>Histórico Estruturado</h3>
+                    <p>Registro completo de ocorrências, tempo de resposta e trilha de decisão.</p>
+                </div>
+                <div class="feature-card" role="listitem">
+                    <h3>Visão Unificada</h3>
+                    <p>Painel único para ativos, alertas e evolução de indicadores-chave.</p>
+                </div>
+            </div>
+        </section>
+        <section class="carousel" aria-label="Destaques da plataforma">
+            <h3 class="carousel-header">Destaques & Benefícios</h3>
+            <div class="carousel-track" id="carouselTrack">
+                <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="1 de 15">
+                    <h4>Redução de Paradas</h4>
+                    <p>Detecte degradação antecipada e evite interrupções não planejadas.</p>
+                </div>
+                <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="2 de 15">
+                    <h4>Custos Otimizados</h4>
+                    <p>Intervenções só quando o ativo sinaliza necessidade real.</p>
+                </div>
+                <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="3 de 15">
+                    <h4>Segurança Operacional</h4>
+                    <p>Tendências claras reduzem exposição a riscos abruptos.</p>
+                </div>
+                <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="4 de 15">
+                    <h4>Visão Unificada</h4>
+                    <p>Painéis, alertas e histórico sem fragmentação.</p>
+                </div>
+                <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="5 de 15">
+                    <h4>Confiabilidade</h4>
+                    <p>Aumente MTBF e reduza MTTR com ação orientada por dados.</p>
+                </div>
+                <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="6 de 15">
+                    <h4>Análises Enriquecidas</h4>
+                    <p>Correlações entre vibração, temperatura e ruído apontam anomalias.</p>
+                </div>
+                <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="7 de 15">
+                    <h4>Integrações</h4>
+                    <p>Pronto para conectar a ERPs / CMMS para ordens automatizadas.</p>
+                </div>
+                <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="8 de 15">
+                    <h4>Auditoria & Trilhas</h4>
+                    <p>Registro de decisões e evolução para conformidade.</p>
+                </div>
+                <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="9 de 15">
+                    <h4>Projeto Integrador</h4>
+                    <p>Ambiente didático para simular Indústria 4.0.</p>
+                </div>
+                <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="10 de 15">
+                    <h4>Objetivo Geral</h4>
+                    <p>Monitorar máquinas, detectar anomalias e priorizar ações.</p>
+                </div>
+                <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="11 de 15">
+                    <h4>Módulos</h4>
+                    <p>Simulador IoT · API · Análise · Dashboard · Alertas.</p>
+                </div>
+                <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="12 de 15">
+                    <h4>Metodologia</h4>
+                    <p>Arquitetura → Coleta → Análise → Ação → Registro.</p>
+                </div>
+                <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="13 de 15">
+                    <h4>Escalabilidade</h4>
+                    <p>Pronto para múltiplos ativos e sensores.</p>
+                </div>
+                <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="14 de 15">
+                    <h4>Indicadores-Chave</h4>
+                    <p>MTBF, MTTR e taxa de alertas contextualizados.</p>
+                </div>
+                <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="15 de 15"
+                    data-stop-reset="true">
+                    <h4>Justificativa</h4>
+                    <p>Atende demanda por manutenção inteligente e aprendizagem alinhada à Indústria 4.0.</p>
+                </div>
+            </div>
+            <div class="carousel-actions">
+                <button class="carousel-btn" id="prevBtn" aria-label="Slide anterior">‹</button>
+                <div class="carousel-indicators" id="carouselDots"></div>
+                <button class="carousel-btn" id="nextBtn" aria-label="Próximo slide">›</button>
+            </div>
+        </section>
+        <section class="videos" aria-labelledby="videos-title">
+            <h2 id="videos-title">Aprenda Mais</h2>
+            <div class="video-grid" role="list">
+                <div class="video-item" role="listitem">
+                    <h3>Introdução</h3>
+                    <div class="video-wrapper"><iframe
+                            src="https://www.youtube.com/embed/XyE4DZ51fsE?si=nftBevMD6NYkWwcv"
+                            title="Introdução à Manutenção Preditiva"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+                </div>
+                <div class="video-item" role="listitem">
+                    <h3>Benefícios</h3>
+                    <div class="video-wrapper"><iframe
+                            src="https://www.youtube.com/embed/-K4rxQHH9T4?si=tcuM7kP-CNkkzAJq"
+                            title="Benefícios da Abordagem Preventiva"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+                </div>
+                <div class="video-item" role="listitem">
+                    <h3>Sensores & Dados</h3>
+                    <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/4X8un9w7WvY"
+                            title="Sensores e Aquisição de Dados"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+                </div>
+            </div>
+        </section>
+        <div class="page-end-spacer" aria-hidden="true"></div>
+    </main>
+    <script>
+        (function () { const track = document.getElementById('carouselTrack'); const slides = Array.from(track.children); const prev = document.getElementById('prevBtn'); const next = document.getElementById('nextBtn'); const dotsWrap = document.getElementById('carouselDots'); let index = 0; const gap = 22; let timer = null; const intervalMs = 5600; slides.forEach((_, i) => { const dot = document.createElement('span'); dot.className = 'dot' + (i === 0 ? ' active' : ''); dot.setAttribute('role', 'button'); dot.setAttribute('aria-label', 'Ir para slide ' + (i + 1)); dot.addEventListener('click', () => { stop(); goTo(i); start(); }); dotsWrap.appendChild(dot); }); function calc() { const slideW = slides[0].getBoundingClientRect().width; const containerW = track.parentElement.getBoundingClientRect().width; const visible = Math.max(1, Math.floor((containerW + gap) / (slideW + gap))); return { slideW, visible, maxIndex: Math.max(0, slides.length - visible) }; } function update() { const { slideW, maxIndex } = calc(); index = Math.min(index, maxIndex); const offset = index * (slideW + gap); track.style.transform = `translateX(-${offset}px)`; Array.from(dotsWrap.children).forEach((d, i) => d.classList.toggle('active', i === index)); } function goTo(i) { const { maxIndex } = calc(); index = Math.max(0, Math.min(i, maxIndex)); update(); } function start() { stop(); timer = setInterval(() => { const nextIndex = index < slides.length - 1 ? index + 1 : 0; const nextSlide = slides[nextIndex]; if (nextSlide && nextSlide.hasAttribute('data-stop-reset')) { goTo(0); } else { goTo(nextIndex); } }, intervalMs); } function stop() { if (timer) { clearInterval(timer); timer = null; } } prev.addEventListener('click', () => { stop(); goTo(index - 1); start(); }); next.addEventListener('click', () => { stop(); goTo(index + 1); start(); }); let pauseBound = false; function bindPause() { const isMobile = window.matchMedia('(max-width:760px)').matches; if (!isMobile && !pauseBound) { track.addEventListener('mouseenter', stop); track.addEventListener('mouseleave', start); pauseBound = true; } else if (isMobile && pauseBound) { track.removeEventListener('mouseenter', stop); track.removeEventListener('mouseleave', start); pauseBound = false; } } window.addEventListener('resize', () => { update(); bindPause(); }); update(); bindPause(); start(); })();
+        (function () { const animated = document.querySelectorAll('.feature-card,.video-item,.metric'); const io = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; io.unobserve(e.target); } }) }, { threshold: .2 }); animated.forEach(el => io.observe(el)); })();
+    </script>
+    {% include '_footer.html' %}
+</body>
+
+</html>
