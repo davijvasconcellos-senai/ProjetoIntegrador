@@ -99,15 +99,20 @@
                     <span class="menu-text">Caixa de mensagens</span>
                 </li>
                 <li class="menu-item" role="listitem">
-                    <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
-                            <path d="M22 22v-5a6 6 0 10-12 0v5l-1 1v1h14v-1l-1-1z" stroke="white" stroke-width="2"
-                                fill="none" />
-                            <circle cx="16" cy="25" r="2" stroke="white" stroke-width="2" fill="none" />
-                        </svg>
-                    </span>
-                    <span class="menu-text">Notificações</span>
+                    <a href="{{ url_for('notificacoes') }}"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit; position: relative;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <path d="M22 22v-5a6 6 0 10-12 0v5l-1 1v1h14v-1l-1-1z" stroke="white" stroke-width="2"
+                                    fill="none" />
+                                <circle cx="16" cy="25" r="2" stroke="white" stroke-width="2" fill="none" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Notificações</span>
+                        <span id="notifBadge" class="menu-badge hidden" aria-label="Notificações não lidas">0</span>
+                    </a>
                 </li>
                 <li class="menu-item" role="listitem">
                     <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">

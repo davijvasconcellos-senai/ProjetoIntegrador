@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificações - PredictivePulse</title>
+    <link href="https://fonts.cdnfonts.com/css/garet" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile_drawer.css') }}">
+    <style>
+        :root {
+            --brand-primary: #3956e8;
+            /* Paleta ajustada para aproximar da imagem de referência */
+            --card-green: #2fc46c;
+            /* Verde vivo do tile "Máquinas Ativas" */
+            --card-yellow: #f2b632;
+            /* Amarelo mostarda do tile "Alertas Críticos" */
+            --card-red: #e05b50;
+            /* Vermelho coral do tile "Manutenções" */
+            --card-blue: #b9d9ff;
+            /* Azul claro do tile "Histórico de Falhas" */
+            --tile-radius: 18px;
+        }
+
+        header.page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            color: #1f336b;
+            font-size: 22px;
+        }
+
+        .actions a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #fff;
+            background: var(--brand-primary);
+            box-shadow: 0 8px 18px -8px rgba(57, 86, 232, .55);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .actions a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 26px -10px rgba(57, 86, 232, .6);
+        }
+
+        .empty {
+            display: grid;
+            grid-template-columns: 1fr;
+            align-items: center;
+            padding: 36px 12px 24px;
+            text-align: center;
+            color: #334155;
+        }
+
+        .empty svg {
+            opacity: .7;
+        }
+
+        p {
+            margin: 10px 0 0;
+        }
+
+        /* Lista de notificações */
+        .notif-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .notif-actions button {
+            border: none;
+            border-radius: 10px;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #eef2ff;
+            color: #1f336b;
+            box-shadow: 0 2px 8px rgba(26, 46, 96, .15);
+        }
+
+        .notif-actions button:hover {
+            transform: translateY(-1px);
+        }
+
+        .notif-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filters button {
+            background: #f1f5f9;
+            color: #1f2937;
+        }
+
+        .filters button.active {
+            background: #1f336b;
+            color: #fff;
+        }
+
+        .notif-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .notif-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            background: #ededed;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 14px 16px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), 0 4px 12px rgba(26, 46, 96, .08);
+            opacity: 0;
+            animation: fadeInUp .6s ease both;
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+
+        .notif-item.unread {
+            border-color: #93c5fd;
+            box-shadow: 0 6px 16px rgba(59, 130, 246, .15);
+        }
+
+        .notif-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(26, 46, 96, .15);
+        }
+
+        .notif-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notif-icon.alert {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .notif-icon.info {
+            background: #e0e7ff;
+            color: #1e40af;
+        }
+
+        .notif-meta {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .notif-title {
+            margin: 0;
+            font-size: 14px;
+            color: #0f172a;
+        }
+
+        .notif-actions-row {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+        }
+
+        .notif-actions-row button {
+            background: #f8fafc;
+        }
+
+        .no-items {
+            text-align: center;
+            color: #475569;
+            padding: 28px 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .notif-item {
+                animation: none !important;
+                opacity: 1 !important;
+            }
+        }
+
+        /* ====== SUMMARY TILES (estilo baseado na captura) ====== */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin: 16px 24px;
+        }
+
+        .summary-card {
+            border-radius: var(--tile-radius);
+            padding: 16px;
+            color: #0f172a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 14px rgba(15, 23, 42, .08);
+        }
+
+        .summary-card h4 {
+            margin: 6px 0 0;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .summary-card .value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .summary-card.green {
+            background: var(--card-green);
+            color: #fff;
+        }
+
+        .summary-card.yellow {
+            background: var(--card-yellow);
+            color: #1f2937;
+        }
+
+        .summary-card.red {
+            background: var(--card-red);
+            color: #fff;
+        }
+
+        .summary-card.blue {
+            background: var(--card-blue);
+            color: #0b2545;
+        }
+
+        @media (max-width: 960px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 520px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+                margin: 12px 16px;
+            }
+
+            .summary-card {
+                padding: 14px;
+            }
+        }
+
+        /* Ajustes responsivos adicionais para mobile */
+        @media (max-width: 768px) {
+            .notif-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .filters {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 6px;
+            }
+
+            .filters button {
+                flex: 0 0 auto;
+                padding: 10px 12px;
+            }
+
+            .notif-list {
+                gap: 8px;
+            }
+
+            .notif-item {
+                padding: 12px 14px;
+            }
+
+            .notif-actions-row {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .notif-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .notif-icon {
+                width: 28px;
+                height: 28px;
+                border-radius: 8px;
+            }
+
+            .notif-actions-row {
+                margin-top: 8px;
+                gap: 6px;
+                justify-content: stretch;
+            }
+
+            .notif-actions-row button {
+                padding: 8px 10px;
+            }
+
+            .notif-actions {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                width: 100%;
+            }
+
+            .notif-actions button {
+                width: 100%;
+            }
+        }
+
+        /* ====== DARK MODE OVERRIDES (desktop e mobile) ====== */
+        body.dark-mode .summary-grid {
+            color: inherit;
+        }
+
+        body.dark-mode .summary-card.green {
+            color: #fff !important;
+        }
+
+        body.dark-mode .summary-card.red {
+            color: #fff !important;
+        }
+
+        body.dark-mode .summary-card.yellow {
+            color: #111827 !important;
+        }
+
+        body.dark-mode .summary-card.blue {
+            color: #0b2545 !important;
+        }
+
+        body.dark-mode .notif-toolbar {
+            color: var(--dark-text-primary);
+        }
+
+        body.dark-mode .filters button {
+            background: var(--dark-bg-tertiary);
+            color: var(--dark-text-primary) !important;
+            border: 1px solid var(--dark-border-default);
+        }
+
+        body.dark-mode .filters button.active {
+            background: var(--brand-primary);
+            color: #fff !important;
+            border-color: transparent;
+        }
+
+        body.dark-mode .notif-list {
+            color: var(--dark-text-primary);
+        }
+
+        body.dark-mode .notif-item {
+            background: var(--dark-bg-secondary);
+            border-color: var(--dark-border-default);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 4px 12px rgba(0, 0, 0, 0.35);
+        }
+
+        body.dark-mode .notif-item.unread {
+            border-color: #60a5fa;
+            box-shadow: 0 6px 16px rgba(59, 130, 246, .18);
+        }
+
+        body.dark-mode .notif-title {
+            color: var(--dark-text-primary) !important;
+        }
+
+        body.dark-mode .notif-meta {
+            color: var(--dark-text-secondary) !important;
+        }
+
+        body.dark-mode .notif-icon.alert {
+            background: rgba(239, 68, 68, 0.18);
+            color: #fca5a5;
+        }
+
+        body.dark-mode .notif-icon.info {
+            background: rgba(99, 102, 241, 0.18);
+            color: #93c5fd;
+        }
+
+        body.dark-mode .notif-actions-row button {
+            background: var(--dark-bg-tertiary);
+            color: var(--dark-text-primary) !important;
+            border: 1px solid var(--dark-border-default);
+        }
+
+        body.dark-mode .no-items,
+        body.dark-mode .empty {
+            color: var(--dark-text-secondary) !important;
+        }
+
+        /* ====== NOVAS NOTIFICAÇÕES: SINALIZAÇÃO VISUAL ====== */
+        .notif-item.just-arrived {
+            animation: arrivePulse 1.3s ease-out;
+            outline: 2px solid rgba(250, 204, 21, 0.8);
+            outline-offset: 2px;
+        }
+
+        @keyframes arrivePulse {
+            0% {
+                background-color: #fffbe6;
+                box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.6);
+            }
+
+            40% {
+                background-color: #fff4b8;
+                box-shadow: 0 0 0 6px rgba(250, 204, 21, 0.0);
+            }
+
+            100% {
+                background-color: #ededed;
+                box-shadow: none;
+            }
+        }
+
+        body.dark-mode .notif-item.just-arrived {
+            outline: 2px solid rgba(250, 204, 21, 0.6);
+        }
+
+
+
+        @media (prefers-reduced-motion: reduce) {
+            .notif-item.just-arrived {
+                animation: none;
+            }
+        }
+
+        /* Toasts para avisos rápidos */
+        .toast-container {
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 9999;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            color: #fff;
+            background: #1f336b;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, .25);
+            max-width: min(92vw, 380px);
+            font-weight: 600;
+        }
+
+        .toast.alert {
+            background: #b91c1c;
+        }
+
+        .toast.info {
+            background: #1e40af;
+        }
+
+        .toast .toast-icon {
+            font-size: 18px;
+        }
+
+        .toast .toast-text {
+            line-height: 1.2;
+        }
+
+        @media (max-width: 520px) {
+            .toast-container {
+                left: 50%;
+                right: auto;
+                transform: translateX(-50%);
+                bottom: 12px;
+            }
+
+            .toast {
+                width: calc(100vw - 24px);
+                border-radius: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Botão hamburger e overlay para navegação mobile acessível -->
+    <button id="drawerToggle" class="hamburger" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false">
+        <span class="hamburger-box">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </span>
+    </button>
+    <div id="drawerOverlay" class="drawer-overlay" tabindex="-1" aria-hidden="true"></div>
+
+    <div class="app-container">
+        <!-- Menu Lateral (reutilizado) -->
+        <nav class="sidebar" id="sidebar" role="navigation" aria-label="Menu principal">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="{{ url_for('static', filename='images/logo_reduzida_transparente.png') }}"
+                        alt="Logo Predictive Pulse" class="logo-img logo-img-large" />
+                </div>
+                <button class="toggle-btn" id="toggleBtn">
+                    <span class="toggle-icon">‹</span>
+                </button>
+            </div>
+
+            <ul class="sidebar-menu" style="margin-bottom: 0;">
+                <li class="menu-item" id="themeToggleBtn">
+                    <span class="menu-icon">
+                        <span class="theme-toggle-slider">
+                            <span class="theme-toggle-thumb"></span>
+                        </span>
+                    </span>
+                    <span class="menu-text">Modo Escuro</span>
+                </li>
+            </ul>
+
+            <ul class="sidebar-menu" role="list">
+                <li class="menu-section">Atalhos</li>
+                <li class="menu-item" role="listitem">
+                    <a href="{{ url_for('dashboard') if session.get('user_id') else url_for('demo') }}"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <circle cx="16" cy="13" r="5" stroke="white" stroke-width="2" />
+                                <path d="M8 25c0-4 4-6 8-6s8 2 8 6" stroke="white" stroke-width="2" fill="none" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Área do Cliente</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="listitem">
+                    <a href="{{ url_for('welcome') }}"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <path d="M10 18V23H22V18" stroke="white" stroke-width="2" fill="none" />
+                                <path d="M8 16L16 10L24 16" stroke="white" stroke-width="2" fill="none" />
+                                <rect x="13" y="20" width="6" height="3" stroke="white" stroke-width="2" fill="none" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Página inicial</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="listitem">
+                    <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                            <rect x="8" y="12" width="16" height="10" rx="2" stroke="white" stroke-width="2"
+                                fill="none" />
+                            <polyline points="8,12 16,19 24,12" stroke="white" stroke-width="2" fill="none" />
+                        </svg>
+                    </span>
+                    <span class="menu-text">Caixa de mensagens</span>
+                </li>
+                <li class="menu-item active" role="listitem">
+                    <a href="{{ url_for('notificacoes') }}"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit; position:relative;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <path d="M22 22v-5a6 6 0 10-12 0v5l-1 1v1h14v-1l-1-1z" stroke="white" stroke-width="2"
+                                    fill="none" />
+                                <circle cx="16" cy="25" r="2" stroke="white" stroke-width="2" fill="none" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Notificações</span>
+                        <span id="notifBadge" class="menu-badge hidden" aria-label="Notificações não lidas">0</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="listitem">
+                    <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                            <polyline points="8,22 14,16 18,20 24,12" stroke="white" stroke-width="2" fill="none" />
+                            <circle cx="8" cy="22" r="1.5" fill="white" />
+                            <circle cx="14" cy="16" r="1.5" fill="white" />
+                            <circle cx="18" cy="20" r="1.5" fill="white" />
+                            <circle cx="24" cy="12" r="1.5" fill="white" />
+                        </svg>
+                    </span>
+                    <span class="menu-text">Monitoramento</span>
+                </li>
+            </ul>
+
+            <div class="sidebar-separator"></div>
+
+            <ul class="sidebar-menu" role="list">
+                <li class="menu-section">Configurações</li>
+                <li class="menu-item" role="listitem">
+                    <a href="https://larissa-dantas.itch.io/system-alert" target="_blank" rel="noopener noreferrer"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <path d="M16 22v-2" stroke="white" stroke-width="2" stroke-linecap="round" />
+                                <path d="M16 18c0-2 3-2 3-5a3 3 0 1 0-6 0" stroke="white" stroke-width="2" fill="none"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Ajuda</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="listitem">
+                    <a href="{{ url_for('logout') }}"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <rect x="10" y="10" width="8" height="12" rx="2" stroke="white" stroke-width="2"
+                                    fill="none" />
+                                <path d="M18 16h4" stroke="white" stroke-width="2" stroke-linecap="round" />
+                                <circle cx="13" cy="16" r="1" fill="white" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Sair da conta</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Conteúdo principal -->
+        <main class="main-content" id="mainContent" role="main">
+            <div class="main-header">
+                <button class="menu-toggle" id="menuToggle" aria-label="Alternar menu" aria-controls="sidebar">
+                    <span class="menu-box">
+                        <span class="menu-line"></span>
+                        <span class="menu-line"></span>
+                        <span class="menu-line"></span>
+                    </span>
+                </button>
+                <h1 style="margin:0; font-family: 'Orbitron', sans-serif; letter-spacing:1px;">Notificações</h1>
+            </div>
+
+            <!-- Tiles de resumo no topo -->
+            <div class="summary-grid" aria-hidden="false">
+                <div class="summary-card red" role="status" aria-live="polite">
+                    <div class="value" id="sumUnread">0</div>
+                    <h4>Não lidas</h4>
+                </div>
+                <div class="summary-card yellow" role="status" aria-live="polite">
+                    <div class="value" id="sumAlerts">0</div>
+                    <h4>Alertas Críticos</h4>
+                </div>
+                <div class="summary-card green" role="status" aria-live="polite">
+                    <div class="value" id="sumToday">0</div>
+                    <h4>Hoje</h4>
+                </div>
+                <div class="summary-card blue" role="status" aria-live="polite">
+                    <div class="value" id="sumTotal">0</div>
+                    <h4>Total</h4>
+                </div>
+            </div>
+
+            <section style="padding: 20px 24px;">
+                <div class="notif-toolbar">
+                    <div class="filters" role="tablist" aria-label="Filtros de notificações">
+                        <button class="active" data-filter="all" aria-selected="true">Todas</button>
+                        <button data-filter="unread">Não lidas</button>
+                        <button data-filter="alert">Alertas</button>
+                        <button data-filter="info">Informações</button>
+                    </div>
+                    <div class="notif-actions">
+                        <button id="markAllReadBtn">Marcar todas como lidas</button>
+                        <button id="clearAllBtn">Limpar todas</button>
+                    </div>
+                </div>
+
+                <div id="notifList" class="notif-list" role="list"></div>
+                <div id="noItems" class="no-items" style="display:none;">Nenhuma notificação para exibir.</div>
+            </section>
+
+            {% include '_footer.html' %}
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mobile.js') }}"></script>
+    <script>
+        // Seed inicial simples para demonstração
+        (function seedNotifications() {
+            const raw = localStorage.getItem('notifications');
+            if (raw) return;
+            const now = new Date();
+            const pad = (n) => String(n).padStart(2, '0');
+            const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+            const items = [
+                { id: 1, title: 'Temperatura acima do limite no Motor A', type: 'alert', date: iso(new Date(now.getTime() - 3600_000)), read: false },
+                { id: 2, title: 'Vibração normalizada no Compressor B', type: 'info', date: iso(new Date(now.getTime() - 7200_000)), read: true },
+                { id: 3, title: 'Nova atualização do sistema disponível', type: 'info', date: iso(new Date(now.getTime() - 1800_000)), read: false }
+            ];
+            localStorage.setItem('notifications', JSON.stringify(items));
+        })();
+
+        function getNotifications() {
+            try { const raw = localStorage.getItem('notifications'); return raw ? JSON.parse(raw) : []; } catch { return []; }
+        }
+        function setNotifications(list) { localStorage.setItem('notifications', JSON.stringify(list)); window.dispatchEvent(new StorageEvent('storage', { key: 'notifications' })); }
+
+        function formatDate(d) {
+            const pad = (n) => String(n).padStart(2, '0');
+            return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        }
+
+        function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+        function addNewNotification() {
+            const list = getNotifications();
+            const nextId = list.length ? Math.max.apply(null, list.map(n => n.id || 0)) + 1 : 1;
+            const type = Math.random() < 0.5 ? 'alert' : 'info';
+            const alerts = [
+                'Temperatura elevada detectada em Motor C',
+                'Oscilação de vibração acima do normal',
+                'Pressão fora da faixa no Sistema Hidráulico',
+                'Corrente elétrica acima do limite em Linha 2'
+            ];
+            const infos = [
+                'Inspeção preventiva concluída no Setor A',
+                'Firmware dos sensores atualizado com sucesso',
+                'Relatório semanal disponível para revisão',
+                'Tendência estável nas últimas 24 horas'
+            ];
+            const title = type === 'alert' ? pick(alerts) : pick(infos);
+            const item = { id: nextId, title, type, date: formatDate(new Date()), read: false };
+            list.push(item);
+            if (list.length > 50) list.shift();
+            setNotifications(list);
+            window.__lastNewId = nextId;
+            renderList(currentFilter);
+            updateBadge();
+            updateSummaries();
+            showToast(type === 'alert' ? '⚠️' : 'ℹ️', title, type);
+        }
+
+        function startAutoNotifications() {
+            if (window.__notifAutoInterval) return;
+            window.__notifAutoInterval = setInterval(addNewNotification, 60000);
+        }
+
+        function renderList(filter = 'all') {
+            const listEl = document.getElementById('notifList');
+            const emptyEl = document.getElementById('noItems');
+            const list = getNotifications();
+            let filtered = list;
+            if (filter === 'unread') filtered = list.filter(n => !n.read);
+            if (filter === 'alert') filtered = list.filter(n => n.type === 'alert');
+            if (filter === 'info') filtered = list.filter(n => n.type === 'info');
+
+            listEl.innerHTML = '';
+            if (!filtered.length) { emptyEl.style.display = 'block'; return; } else { emptyEl.style.display = 'none'; }
+
+            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+            filtered.forEach((n, i) => {
+                const item = document.createElement('div');
+                item.className = 'notif-item' + (n.read ? '' : ' unread');
+                item.setAttribute('role', 'listitem');
+                item.style.animationDelay = `${Math.min(i * 0.06, 0.36)}s`;
+                if (window.__lastNewId && n.id === window.__lastNewId) {
+                    item.classList.add('just-arrived');
+                    setTimeout(() => item.classList.remove('just-arrived'), 2000);
+                }
+                const icon = document.createElement('div');
+                icon.className = 'notif-icon ' + (n.type === 'alert' ? 'alert' : 'info');
+                icon.textContent = n.type === 'alert' ? '⚠️' : 'ℹ️';
+                const content = document.createElement('div');
+                const title = document.createElement('h4'); title.className = 'notif-title'; title.textContent = n.title;
+                const meta = document.createElement('div'); meta.className = 'notif-meta'; meta.textContent = n.date + (n.read ? ' • lida' : ' • não lida');
+                const actions = document.createElement('div'); actions.className = 'notif-actions-row';
+                const btnToggle = document.createElement('button'); btnToggle.textContent = n.read ? 'Marcar não lida' : 'Marcar lida';
+                btnToggle.addEventListener('click', () => {
+                    const all = getNotifications();
+                    const idx = all.findIndex(x => x.id === n.id);
+                    if (idx > -1) { all[idx].read = !all[idx].read; setNotifications(all); renderList(currentFilter); updateBadge(); }
+                });
+                const btnRemove = document.createElement('button'); btnRemove.textContent = 'Remover';
+                btnRemove.addEventListener('click', () => {
+                    const all = getNotifications().filter(x => x.id !== n.id); setNotifications(all); renderList(currentFilter); updateBadge();
+                });
+                actions.appendChild(btnToggle); actions.appendChild(btnRemove);
+                content.appendChild(title); content.appendChild(meta);
+                item.appendChild(icon); item.appendChild(content); item.appendChild(actions);
+                listEl.appendChild(item);
+            });
+        }
+
+        function updateBadge() {
+            // atualiza badge via index.js listener também
+            const list = getNotifications();
+            const unread = list.filter(n => !n.read).length;
+            const badge = document.getElementById('notifBadge');
+            if (badge) {
+                if (unread > 0) { badge.textContent = unread > 99 ? '99+' : String(unread); badge.classList.remove('hidden'); }
+                else { badge.textContent = '0'; badge.classList.add('hidden'); }
+            }
+            updateTitleUnreadBadge();
+        }
+
+        let currentFilter = 'all';
+        function bindFilters() {
+            const buttons = document.querySelectorAll('.filters button');
+            buttons.forEach(b => b.addEventListener('click', () => {
+                buttons.forEach(x => x.classList.remove('active'));
+                b.classList.add('active');
+                currentFilter = b.dataset.filter;
+                renderList(currentFilter);
+            }));
+        }
+
+        function bindBulkActions() {
+            document.getElementById('markAllReadBtn').addEventListener('click', () => {
+                const all = getNotifications().map(n => ({ ...n, read: true })); setNotifications(all); renderList(currentFilter); updateBadge();
+            });
+            document.getElementById('clearAllBtn').addEventListener('click', () => {
+                setNotifications([]); renderList(currentFilter); updateBadge();
+            });
+        }
+
+        function updateSummaries() {
+            const list = getNotifications();
+            const unread = list.filter(n => !n.read).length;
+            const alerts = list.filter(n => n.type === 'alert').length;
+            const todayStr = new Date().toISOString().slice(0, 10);
+            const today = list.filter(n => (n.date || '').slice(0, 10) === todayStr).length;
+            const total = list.length;
+            const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = String(val); };
+            set('sumUnread', unread);
+            set('sumAlerts', alerts);
+            set('sumToday', today);
+            set('sumTotal', total);
+        }
+
+        // init
+        bindFilters();
+        bindBulkActions();
+        renderList();
+        updateBadge();
+        updateSummaries();
+        updateTitleUnreadBadge();
+        startAutoNotifications();
+
+        // Atualiza em alterações externas de storage
+        window.addEventListener('storage', (e) => { if (e.key === 'notifications') { renderList(currentFilter); updateBadge(); updateSummaries(); updateTitleUnreadBadge(); } });
+
+        // Título com contador e piscada quando aba não está visível
+        const __baseTitle = document.title;
+        function getUnreadCount() { try { return getNotifications().filter(n => !n.read).length; } catch { return 0; } }
+        function stopTitleBlink() { if (window.__titleBlinkInterval) { clearInterval(window.__titleBlinkInterval); window.__titleBlinkInterval = null; } }
+        function updateTitleUnreadBadge() {
+            const c = getUnreadCount();
+            if (document.hidden && c > 0) {
+                if (!window.__titleBlinkInterval) {
+                    window.__titleBlinkInterval = setInterval(() => {
+                        const count = getUnreadCount();
+                        document.title = (document.title.startsWith('(') ? __baseTitle : `(${count}) Notificações - PredictivePulse`);
+                    }, 1200);
+                }
+            } else {
+                stopTitleBlink();
+                document.title = __baseTitle;
+            }
+        }
+        document.addEventListener('visibilitychange', updateTitleUnreadBadge);
+
+        // Toast utilitário e realce de itens recém-chegados
+        function ensureToastContainer() {
+            let c = document.querySelector('.toast-container');
+            if (!c) { c = document.createElement('div'); c.className = 'toast-container'; document.body.appendChild(c); }
+            return c;
+        }
+        function showToast(icon, text, type) {
+            const c = ensureToastContainer();
+            const el = document.createElement('div');
+            el.className = 'toast ' + (type || 'info');
+            el.innerHTML = `<span class="toast-icon">${icon}</span><span class="toast-text">${text}</span>`;
+            c.appendChild(el);
+            setTimeout(() => {
+                el.style.transition = 'opacity .3s ease, transform .3s ease';
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(6px)';
+                setTimeout(() => el.remove(), 350);
+            }, 3600);
+        }
+    </script>
+</body>
+
+</html>

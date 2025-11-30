@@ -229,6 +229,34 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // ==================== NOTIFICAÇÕES: BADGE ====================
+    function getNotifications() {
+        try {
+            const raw = localStorage.getItem('notifications');
+            return raw ? JSON.parse(raw) : [];
+        } catch { return []; }
+    }
+
+    function updateNotifBadge() {
+        const list = getNotifications();
+        const unread = list.filter(n => !n.read).length;
+        const badge = document.getElementById('notifBadge');
+        if (!badge) return;
+        if (unread > 0) {
+            badge.textContent = unread > 99 ? '99+' : String(unread);
+            badge.classList.remove('hidden');
+        } else {
+            badge.textContent = '0';
+            badge.classList.add('hidden');
+        }
+    }
+
+    // Atualiza badge ao carregar e quando o storage mudar (outras abas/páginas)
+    updateNotifBadge();
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'notifications') updateNotifBadge();
+    });
+
     // Navegação do calendário (simples placeholders; lógica de troca de mês pode ser expandida futuramente)
     const prevButton = document.querySelector('.nav-button:first-child');
     const nextButton = document.querySelector('.nav-button:last-child');

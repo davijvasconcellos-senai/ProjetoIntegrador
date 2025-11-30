@@ -119,6 +119,18 @@ def demo():
                            demo_mode=True)
 
 
+@app.route('/notificacoes')
+def notificacoes():
+    """Página de notificações (acesso liberado)."""
+    return render_template('notificacoes.html',
+                           usuario=session.get('user_nome', 'Usuário'))
+
+@app.route('/welcome')
+def welcome():
+    """Página de boas-vindas explícita, sempre renderiza a landing sem redirecionar."""
+    return render_template('welcome_clean.html')
+
+
 # (APIs removidas na versão simplificada)
 
 # ==================== TRATAMENTO DE ERROS ====================
