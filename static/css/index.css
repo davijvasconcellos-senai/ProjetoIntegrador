@@ -685,6 +685,28 @@ body {
 .toggle-icon {
     font-size: 18px;
     font-weight: bold;
+
+    /* Ajustes para exibir corretamente o logo no mobile (drawer) */
+    @media (max-width:768px) {
+        .sidebar-header {
+            height: auto;
+            padding: 12px 20px;
+        }
+
+        .logo-container {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        .logo-img-large {
+            position: static;
+            transform: none;
+            height: 60px;
+            max-width: 90%;
+            margin: 8px auto;
+        }
+    }
+
     transition: all 0.3s ease;
     display: flex;
     align-items: center;

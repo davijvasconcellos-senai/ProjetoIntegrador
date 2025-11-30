@@ -130,6 +130,12 @@ def notificacoes():
     return render_template('notificacoes.html',
                            usuario=session.get('user_nome', 'Usuário'))
 
+@app.route('/monitoramento')
+def monitoramento():
+    """Página de monitoramento (acesso liberado)."""
+    return render_template('monitoramento.html',
+                           usuario=session.get('user_nome', 'Usuário'))
+
 @app.route('/welcome')
 def welcome():
     """Página de boas-vindas explícita, sempre renderiza a landing sem redirecionar."""

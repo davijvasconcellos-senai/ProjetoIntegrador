@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento - PredictivePulse</title>
+    <link href="https://fonts.cdnfonts.com/css/garet" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile_drawer.css') }}">
+    <style>
+        :root {
+            --brand-primary: #3956e8;
+            --card-green: #2fc46c;
+            --card-yellow: #f2b632;
+            --card-red: #e05b50;
+            --card-blue: #b9d9ff;
+            --tile-radius: 18px;
+        }
+
+        /* Summary tiles (estilo dashboard) */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin: 12px 0 18px;
+        }
+
+        .summary-card {
+            border-radius: var(--tile-radius);
+            padding: 16px;
+            color: #0f172a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 14px rgba(15, 23, 42, .08);
+        }
+
+        .summary-card .value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .summary-card h4 {
+            margin: 6px 0 0;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .summary-card.green {
+            background: var(--card-green);
+            color: #fff;
+        }
+
+        .summary-card.yellow {
+            background: var(--card-yellow);
+            color: #1f2937;
+        }
+
+        .summary-card.red {
+            background: var(--card-red);
+            color: #fff;
+        }
+
+        .summary-card.blue {
+            background: var(--card-blue);
+            color: #0b2545;
+        }
+
+        .monitor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .card {
+            background: #ededed;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), 0 4px 12px rgba(26, 46, 96, .08);
+        }
+
+        .card h3 {
+            margin: 0 0 8px;
+            color: #0f172a;
+        }
+
+        .metric {
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #334155;
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .filters select,
+        .filters button {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            color: #1f2937;
+        }
+
+        @media (max-width: 960px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .monitor-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-card {
+                padding: 14px;
+            }
+        }
+
+        /* Dark mode */
+        body.dark-mode .summary-card {
+            box-shadow: 0 6px 14px rgba(0, 0, 0, .35);
+        }
+
+        body.dark-mode .summary-card.yellow {
+            color: #f8fafc;
+        }
+
+        body.dark-mode .summary-card.blue {
+            color: #0b2545;
+        }
+
+        body.dark-mode .card {
+            background: #0f172a;
+            border-color: #334155;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04), 0 4px 12px rgba(0, 0, 0, .35);
+        }
+
+        body.dark-mode .card h3 {
+            color: #e5e7eb;
+        }
+
+        body.dark-mode .metric {
+            background: #0b1220;
+            color: #cbd5e1;
+        }
+
+        body.dark-mode .filters select,
+        body.dark-mode .filters button {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-color: #334155;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="drawerToggle" class="hamburger" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false">
+        <span class="hamburger-box">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </span>
+    </button>
+    <div id="drawerOverlay" class="drawer-overlay" tabindex="-1" aria-hidden="true"></div>
+
+    <div class="app-container">
+        <nav class="sidebar" id="sidebar" role="navigation" aria-label="Menu principal">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="{{ url_for('static', filename='images/logo_reduzida_transparente.png') }}"
+                        alt="Logo Predictive Pulse" class="logo-img logo-img-large" />
+                </div>
+                <button class="toggle-btn" id="toggleBtn"><span class="toggle-icon">‹</span></button>
+            </div>
+
+            <ul class="sidebar-menu" style="margin-bottom:0;">
+                <li class="menu-item" id="themeToggleBtn">
+                    <span class="menu-icon"><span class="theme-toggle-slider"><span
+                                class="theme-toggle-thumb"></span></span></span>
+                    <span class="menu-text">Modo Escuro</span>
+                </li>
+            </ul>
+
+            <ul class="sidebar-menu" role="list">
+                <li class="menu-section">Atalhos</li>
+                <li class="menu-item" role="listitem">
+                    <a href="{{ url_for('dashboard') if session.get('user_id') else url_for('demo') }}"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
+                        <span class="menu-icon" style="margin-right:8px; display:flex; align-items:center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <path d="M10 18V23H22V18" stroke="white" stroke-width="2" fill="none" />
+                                <path d="M8 16L16 10L24 16" stroke="white" stroke-width="2" fill="none" />
+                                <rect x="13" y="20" width="6" height="3" stroke="white" stroke-width="2" fill="none" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Página inicial</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="listitem">
+                    <a href="{{ url_for('mensagens') }}"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
+                        <span class="menu-icon" style="margin-right:8px; display:flex; align-items:center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <rect x="8" y="12" width="16" height="10" rx="2" stroke="white" stroke-width="2"
+                                    fill="none" />
+                                <polyline points="8,12 16,19 24,12" stroke="white" stroke-width="2" fill="none" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Caixa de mensagens</span>
+                    </a>
+                </li>
+                <li class="menu-item active" role="listitem">
+                    <span class="menu-icon" style="margin-right:8px; display:flex; align-items:center;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                            <polyline points="8,22 14,16 18,20 24,12" stroke="white" stroke-width="2" fill="none" />
+                        </svg>
+                    </span>
+                    <span class="menu-text">Monitoramento</span>
+                </li>
+            </ul>
+
+            <div class="sidebar-separator"></div>
+
+            <ul class="sidebar-menu" role="list">
+                <li class="menu-section">Configurações</li>
+                <li class="menu-item" role="listitem">
+                    <a href="https://larissa-dantas.itch.io/system-alert" target="_blank" rel="noopener noreferrer"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
+                        <span class="menu-icon" style="margin-right:8px; display:flex; align-items:center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <path d="M16 22v-2" stroke="white" stroke-width="2" stroke-linecap="round" />
+                                <path d="M16 18c0-2 3-2 3-5a3 3 0 1 0-6 0" stroke="white" stroke-width="2" fill="none"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Ajuda</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="listitem">
+                    <a href="{{ url_for('logout') }}"
+                        style="display:flex; align-items:center; text-decoration:none; color:inherit; width:100%;">
+                        <span class="menu-icon" style="margin-right:8px; display:flex; align-items:center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <rect x="10" y="10" width="8" height="12" rx="2" stroke="white" stroke-width="2"
+                                    fill="none" />
+                                <path d="M18 16h4" stroke="white" stroke-width="2" stroke-linecap="round" />
+                                <circle cx="13" cy="16" r="1" fill="white" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Sair da conta</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-separator"></div>
+        </nav>
+
+        <main class="main-content" id="mainContent" tabindex="-1">
+            <header class="main-header">
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-controls="sidebar"
+                    aria-expanded="false">
+                    <span class="menu-box">
+                        <span class="menu-line"></span>
+                        <span class="menu-line"></span>
+                        <span class="menu-line"></span>
+                    </span>
+                </button>
+                <div class="page-title">
+                    <h2>Monitoramento</h2>
+                </div>
+                <div class="header-actions">
+                    <div class="user-menu">
+                        <span>{{ usuario }}</span>
+                        <div class="user-avatar">{{ usuario[0]|upper }}</div>
+                    </div>
+                </div>
+            </header>
+            <!-- Tiles de resumo no topo -->
+            <section class="summary-grid" aria-label="Resumo de monitoramento">
+                <div class="summary-card green" id="tile-ativas">
+                    <div class="value" data-key="ativas">6</div>
+                    <h4>Máquinas Ativas</h4>
+                </div>
+                <div class="summary-card yellow" id="tile-alertas">
+                    <div class="value" data-key="alertas">1</div>
+                    <h4>Alertas Críticos</h4>
+                </div>
+                <div class="summary-card red" id="tile-manutencoes">
+                    <div class="value" data-key="manutencoes">2</div>
+                    <h4>Manutenções Agendadas</h4>
+                </div>
+                <div class="summary-card blue" id="tile-historico">
+                    <div class="value" data-key="historico">14</div>
+                    <h4>Histórico de Falhas</h4>
+                </div>
+            </section>
+
+            <section class="filters" aria-label="Filtros de monitoramento">
+                <select aria-label="Selecionar máquina">
+                    <option>Laser 1</option>
+                    <option>Laser 2</option>
+                    <option>Laser 3</option>
+                    <option>Laser 4</option>
+                </select>
+                <select aria-label="Intervalo">
+                    <option>Últimas 24h</option>
+                    <option>Última semana</option>
+                    <option>Último mês</option>
+                </select>
+                <button type="button">Aplicar</button>
+                <span id="filterStatus" style="margin-left:8px; color:#1f2937; font-weight:600;">Monitorando Laser 1 —
+                    Últimas 24h</span>
+            </section>
+
+            <section class="monitor-grid">
+                <div class="card">
+                    <h3>Consumo de Energia</h3>
+                    <div class="metric"><canvas id="chartEnergy" height="160"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3>Vibração</h3>
+                    <div class="metric"><canvas id="chartVibration" height="160"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3>Temperatura</h3>
+                    <div class="metric"><canvas id="chartTemperature" height="160"></canvas></div>
+                </div>
+                <div class="card">
+                    <h3>Ruído</h3>
+                    <div class="metric"><canvas id="chartNoise" height="160"></canvas></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mobile.js') }}"></script>
+    <script>
+        // Mock dinâmico: atualiza tiles conforme filtros
+        (function () {
+            const counts = {
+                ativas: 6,
+                alertas: 1,
+                manutencoes: 2,
+                historico: 14
+            };
+            function setCount(key, value) {
+                const el = document.querySelector(`[data-key="${key}"]`);
+                if (el) el.textContent = String(value);
+            }
+            function updateAll() {
+                setCount('ativas', counts.ativas);
+                setCount('alertas', counts.alertas);
+                setCount('manutencoes', counts.manutencoes);
+                setCount('historico', counts.historico);
+            }
+            updateAll();
+
+            const machineSel = document.querySelector('section.filters select[aria-label="Selecionar máquina"]');
+            const rangeSel = document.querySelector('section.filters select[aria-label="Intervalo"]');
+            const applyBtn = document.querySelector('section.filters button');
+            const statusEl = document.getElementById('filterStatus');
+            function recompute() {
+                const m = machineSel ? machineSel.value : 'Laser 1';
+                const r = rangeSel ? rangeSel.value : 'Últimas 24h';
+                // Regras mock simples para variações
+                const base = { 'Laser 1': [6, 1, 2, 14], 'Laser 2': [5, 2, 3, 12], 'Laser 3': [4, 0, 1, 10], 'Laser 4': [6, 1, 2, 15] };
+                const mult = { 'Últimas 24h': 1, 'Última semana': 1.1, 'Último mês': 1.25 };
+                const arr = base[m] || base['Laser 1'];
+                const k = mult[r] || 1;
+                counts.ativas = Math.max(0, Math.round(arr[0]));
+                counts.alertas = Math.max(0, Math.round(arr[1] * k));
+                counts.manutencoes = Math.max(0, Math.round(arr[2] * k));
+                counts.historico = Math.max(0, Math.round(arr[3] * k));
+                updateAll();
+                if (statusEl) statusEl.textContent = `Monitorando ${m} — ${r}`;
+            }
+            if (applyBtn) applyBtn.addEventListener('click', recompute);
+        })();
+        // Charts: reproduz visual dos gráficos do dashboard
+        (function () {
+            const isDark = () => document.body.classList.contains('dark-mode');
+            const gridColor = () => isDark() ? '#334155' : '#cbd5e1';
+            const textColor = () => isDark() ? '#e5e7eb' : '#0f172a';
+            const borderColor = (hex) => hex;
+            const bgTransparent = (hex) => hex + '33';
+
+            function baseOpts() {
+                return {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { color: gridColor() }, ticks: { color: textColor() } },
+                        y: { grid: { color: gridColor() }, ticks: { color: textColor() } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true }
+                    }
+                };
+            }
+
+            const ctxEnergy = document.getElementById('chartEnergy');
+            const ctxVibration = document.getElementById('chartVibration');
+            const ctxTemp = document.getElementById('chartTemperature');
+            const ctxNoise = document.getElementById('chartNoise');
+
+            const energyData = { labels: ['0', '10', '20', '30', '40', '50'], datasets: [{ data: [100, 450, 700, 820, 880, 900], borderColor: '#e6d300', backgroundColor: bgTransparent('#e6d300'), tension: 0.35, fill: true }] };
+            const vibrationData = { labels: ['0', '10', '20', '30', '40', '50'], datasets: [{ data: [0.4, 0.7, 1.1, 1.6, 2.1, 2.6], borderColor: '#2563eb', backgroundColor: bgTransparent('#2563eb'), tension: 0.35, fill: true }] };
+            const tempData = { labels: ['0', '10', '20', '30', '40', '50'], datasets: [{ data: [18, 25, 30, 34, 36, 37], borderColor: '#ef4444', backgroundColor: bgTransparent('#ef4444'), tension: 0.35, fill: true }] };
+            const noiseData = { labels: ['0', '10', '20', '30', '40', '50'], datasets: [{ data: [40, 45, 52, 58, 60, 62], borderColor: '#64748b', backgroundColor: bgTransparent('#64748b'), tension: 0.35, fill: true }] };
+
+            const charts = {};
+            if (ctxEnergy) charts.energy = new Chart(ctxEnergy, { type: 'line', data: energyData, options: baseOpts() });
+            if (ctxVibration) charts.vibration = new Chart(ctxVibration, { type: 'line', data: vibrationData, options: baseOpts() });
+            if (ctxTemp) charts.temperature = new Chart(ctxTemp, { type: 'line', data: tempData, options: baseOpts() });
+            if (ctxNoise) charts.noise = new Chart(ctxNoise, { type: 'line', data: noiseData, options: baseOpts() });
+
+            // Sincroniza tema: atualiza cores ao alternar dark-mode
+            const observer = new MutationObserver(() => {
+                Object.values(charts).forEach(c => {
+                    c.options.scales.x.grid.color = gridColor();
+                    c.options.scales.x.ticks.color = textColor();
+                    c.options.scales.y.grid.color = gridColor();
+                    c.options.scales.y.ticks.color = textColor();
+                    c.update();
+                });
+            });
+            observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+            // Integração com filtros
+            const machineSel = document.querySelector('section.filters select[aria-label="Selecionar máquina"]');
+            const rangeSel = document.querySelector('section.filters select[aria-label="Intervalo"]');
+            const applyBtn = document.querySelector('section.filters button');
+            const baseSeries = {
+                'Laser 1': {
+                    energy: [100, 450, 700, 820, 880, 900],
+                    vibration: [0.4, 0.7, 1.1, 1.6, 2.1, 2.6],
+                    temperature: [18, 25, 30, 34, 36, 37],
+                    noise: [40, 45, 52, 58, 60, 62]
+                },
+                'Laser 2': {
+                    energy: [120, 500, 760, 840, 900, 930],
+                    vibration: [0.3, 0.6, 0.9, 1.4, 1.9, 2.2],
+                    temperature: [20, 27, 32, 36, 39, 41],
+                    noise: [42, 47, 50, 56, 59, 61]
+                },
+                'Laser 3': {
+                    energy: [90, 380, 620, 780, 820, 850],
+                    vibration: [0.2, 0.5, 0.8, 1.1, 1.5, 1.8],
+                    temperature: [17, 22, 28, 31, 33, 35],
+                    noise: [38, 44, 49, 54, 57, 60]
+                },
+                'Laser 4': {
+                    energy: [110, 460, 710, 840, 900, 940],
+                    vibration: [0.5, 0.8, 1.2, 1.7, 2.3, 2.9],
+                    temperature: [19, 24, 31, 35, 38, 40],
+                    noise: [41, 46, 53, 59, 62, 65]
+                }
+            };
+            const rangeMult = { 'Últimas 24h': 1, 'Última semana': 1.08, 'Último mês': 1.18 };
+            function recomputeCharts() {
+                const m = machineSel ? machineSel.value : 'Laser 1';
+                const r = rangeSel ? rangeSel.value : 'Últimas 24h';
+                const series = baseSeries[m] || baseSeries['Laser 1'];
+                const k = rangeMult[r] || 1;
+                function scale(arr) { return arr.map(v => Math.round(v * k)); }
+                const dataEnergy = scale(series.energy);
+                const dataVib = scale(series.vibration);
+                const dataTemp = scale(series.temperature);
+                const dataNoise = scale(series.noise);
+                if (charts.energy) {
+                    charts.energy.data.datasets[0].data = dataEnergy;
+                    charts.energy.options.scales.y.min = Math.min(...dataEnergy) * 0.9;
+                    charts.energy.options.scales.y.max = Math.max(...dataEnergy) * 1.1;
+                    charts.energy.update();
+                }
+                if (charts.vibration) {
+                    charts.vibration.data.datasets[0].data = dataVib;
+                    charts.vibration.options.scales.y.min = Math.min(...dataVib) * 0.9;
+                    charts.vibration.options.scales.y.max = Math.max(...dataVib) * 1.1;
+                    charts.vibration.update();
+                }
+                if (charts.temperature) {
+                    charts.temperature.data.datasets[0].data = dataTemp;
+                    charts.temperature.options.scales.y.min = Math.min(...dataTemp) * 0.9;
+                    charts.temperature.options.scales.y.max = Math.max(...dataTemp) * 1.1;
+                    charts.temperature.update();
+                }
+                if (charts.noise) {
+                    charts.noise.data.datasets[0].data = dataNoise;
+                    charts.noise.options.scales.y.min = Math.min(...dataNoise) * 0.9;
+                    charts.noise.options.scales.y.max = Math.max(...dataNoise) * 1.1;
+                    charts.noise.update();
+                }
+            }
+            if (applyBtn) applyBtn.addEventListener('click', recomputeCharts);
+        })();
+    </script>
+    {% include '_footer.html' %}
+</body>
+
+</html>
