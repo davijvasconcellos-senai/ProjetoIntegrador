@@ -74,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('loginForm');
     const criarContaLink = document.querySelector('.criar-conta a');
 
+
     // Intercepta clique no link "criar conta" para animar saída antes da navegação
     if (criarContaLink) {
         criarContaLink.addEventListener('click', function (e) {

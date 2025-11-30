@@ -31,66 +31,94 @@ body {
     background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
     font-family: 'Garet', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     padding: 20px;
-}
-
-/* Social Signup Buttons */
-.social-signup {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-bottom: 28px;
-}
-
-.btn-social {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    padding: 12px 0;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    text-decoration: none;
-    color: #fff;
-    background: #4285f4;
-    box-shadow: 0 2px 8px rgba(66, 133, 244, 0.08);
-    transition: background 0.2s, box-shadow 0.2s;
-    border: none;
-    cursor: pointer;
-}
+    animation: authGradient 18s ease-in-out infinite alternate;
 
-.btn-social .icon-social {
-    width: 24px;
-    height: 24px;
-    background: transparent;
-    margin-right: 8px;
-}
+    @keyframes blobFloat1 {
+        0% {
+            transform: translate(-35%, -35%) scale(1);
+        }
 
-.btn-google {
-    background: #fff;
-    color: #222;
-    border: 1px solid #e0e0e0;
-}
+        50% {
+            transform: translate(-20%, -40%) scale(1.08);
+        }
 
-.btn-google:hover {
-    background: #f5f5f5;
-    box-shadow: 0 4px 16px rgba(66, 133, 244, 0.10);
-}
+        100% {
+            transform: translate(-35%, -35%) scale(1);
+        }
+    }
 
-.btn-microsoft {
-    background: #2F2F2F;
-    color: #fff;
-    border: 1px solid #222;
-}
+    @keyframes blobFloat2 {
+        0% {
+            transform: translate(20%, 20%) scale(1);
+        }
 
-.btn-microsoft:hover {
-    background: #1a1a1a;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
-}
+        50% {
+            transform: translate(10%, 25%) scale(1.1);
+        }
+
+        100% {
+            transform: translate(20%, 20%) scale(1);
+        }
+    }
+
+    /* Social Signup Buttons */
+    .social-signup {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+
+    .btn-social {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        text-decoration: none;
+        color: #fff;
+        background: #4285f4;
+        box-shadow: 0 2px 8px rgba(66, 133, 244, 0.08);
+        transition: background 0.2s, box-shadow 0.2s;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-social .icon-social {
+        width: 24px;
+        height: 24px;
+        background: transparent;
+        margin-right: 8px;
+    }
+
+    .btn-google {
+        background: #fff;
+        color: #222;
+        border: 1px solid #e0e0e0;
+    }
+
+    .btn-google:hover {
+        background: #f5f5f5;
+        box-shadow: 0 4px 16px rgba(66, 133, 244, 0.10);
+    }
+
+    .btn-microsoft {
+        background: #2F2F2F;
+        color: #fff;
+        border: 1px solid #222;
+    }
+
+    .btn-microsoft:hover {
+        background: #1a1a1a;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
+    }
 }
 
 /* Transition easing remains local to this file */

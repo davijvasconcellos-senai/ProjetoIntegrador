@@ -196,7 +196,7 @@ Sistema web para monitoramento preditivo de máquinas industriais com análise d
 - Monitoramento de sensores (Temperatura, Vibração, Ruído)
 - Histórico de falhas e avisos
 - Calendário de relatórios
-- 3 tipos de usuário (Técnico, Supervisor, Administrador)
+- 2 tipos de usuário (Técnico e Supervisor)
 - Menu lateral responsivo
 - API REST para integração
 - Banco de dados SQLite

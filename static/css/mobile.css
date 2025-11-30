@@ -39,6 +39,24 @@
         color: var(--dark-text-primary, #c9d1d9) !important;
     }
 
+    /* Evita faixas brancas nas bordas no modo escuro (mobile) */
+    html {
+        background: transparent !important;
+        overflow-x: hidden !important;
+        width: 100% !important;
+    }
+
+    body.dark-mode {
+        background-color: var(--dark-bg-primary, #0d1117) !important;
+        overflow-x: hidden !important;
+        width: 100% !important;
+    }
+
+    body.dark-mode .app-container,
+    body.dark-mode .main-content {
+        background-color: var(--dark-bg-primary, #0d1117) !important;
+    }
+
     .dark-mode .main-content {
         background: var(--dark-bg-primary, #0d1117) !important;
     }

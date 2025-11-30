@@ -237,7 +237,10 @@ body.dark-mode {
     --status-info: #58a6ff;
     --status-neutral: #8b949e;
 
-    background: var(--dark-bg-primary);
+    /* Força sobrepor o background inline do <body> em index.html */
+    background: var(--dark-bg-primary) !important;
+    background-color: var(--dark-bg-primary) !important;
+    overflow-x: hidden;
     color: var(--dark-text-primary);
 }
 
@@ -602,7 +605,8 @@ body {
     width: 280px;
     background: #051148;
     color: white;
-    transition: all 0.3s ease;
+    transition: width 0.3s ease;
+    will-change: width;
     position: relative;
     z-index: 1000;
 }
@@ -871,7 +875,8 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    transition: margin-left 0.3s ease;
+    /* Sem margem dinâmica: deixa o flex calcular o espaço ao lado da sidebar */
+    min-width: 0;
 }
 
 .main-header {
@@ -945,6 +950,9 @@ body {
 :root {
     --menu-icon-duration: 200ms;
     --menu-icon-ease: cubic-bezier(.4, 0, .2, 1);
+    /* Desktop sidebar animation */
+    --sidebar-transition-duration: 200ms;
+    --sidebar-transition-ease: cubic-bezier(.4, 0, .2, 1);
 }
 
 .menu-toggle .menu-box {
@@ -957,7 +965,7 @@ body {
     width: 24px;
     height: 3px;
     background: #fff;
-    border-radius: 2px;
+    transition: width var(--sidebar-transition-duration) var(--sidebar-transition-ease);
     transition: transform var(--menu-icon-duration) var(--menu-icon-ease), opacity var(--menu-icon-duration) var(--menu-icon-ease);
 }
 
@@ -1498,6 +1506,22 @@ h3 {
         margin-bottom: 16px;
         padding: 16px;
         border-radius: 12px;
+    }
+
+    /* Alinhar sensores e avisos ao mesmo grid das demais seções */
+    .sensors-section,
+    .warnings-section {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+
+    /* Neutralizar ajustes de largura usados no desktop quando sidebar colapsa */
+    .sidebar.collapsed~.main-content .sensors-section,
+    .main-content.sidebar-collapsed .sensors-section,
+    .sidebar.collapsed~.main-content .warnings-section,
+    .main-content.sidebar-collapsed .warnings-section {
+        width: 100% !important;
+        margin-left: 0 !important;
     }
 
     section h3 {

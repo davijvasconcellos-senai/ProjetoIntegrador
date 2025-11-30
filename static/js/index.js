@@ -167,10 +167,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (window.innerWidth > 768) {
             if (isCollapsed) {
                 sidebar.classList.add('collapsed');
-                mainContent.style.marginLeft = '70px';
             } else {
                 sidebar.classList.remove('collapsed');
-                mainContent.style.marginLeft = '280px';
+            }
+            // Evitar espaços em branco: não usar margin-left manual em layout flex
+            if (mainContent && mainContent.style) {
+                mainContent.style.marginLeft = '';
             }
         }
     }
