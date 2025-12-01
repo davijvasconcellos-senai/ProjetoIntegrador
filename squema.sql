@@ -25,3 +25,9 @@ insert into usuarios values (
 -- host: localhost
 -- port: 3306
 -- database: predictivepulse
+
+-- Instalando o flask
+    -- pip install flask flask-mysql flask-cors
+
+-- Instalando o conector para o mysql
+    -- pip install mysql-connector-python
