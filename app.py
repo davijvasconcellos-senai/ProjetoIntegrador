@@ -70,23 +70,104 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Página de login (funcionalidade real removida)."""
+    """Página de login com autenticação real no banco MySQL."""
     if request.method == 'POST':
-        # Placeholder: aceita qualquer entrada e cria sessão simples.
-        nome = request.form.get('email') or 'Usuário'
-        session['user_id'] = 1
-        session['user_nome'] = nome
-        session['user_tipo'] = 'visualizador'
-        flash('Login fictício efetuado. (Autenticação real removida)', 'info')
-        return redirect(url_for('dashboard'))
+        email = request.form.get('email', '').strip()
+        senha = request.form.get('senha', '').strip()
+        if not email or not senha:
+            flash('Preencha todos os campos.', 'error')
+            return render_template('login.html')
+        import mysql.connector
+        try:
+            conn = mysql.connector.connect(
+                host='localhost',
+                user='root',
+                password='alunolab',
+                database='predictivepulse',
+                port=3306
+            )
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute('SELECT * FROM usuarios WHERE email=%s AND senha=%s', (email, senha))
+            user = cursor.fetchone()
+            cursor.close()
+            conn.close()
+            if user:
+                session['user_id'] = user['id_usuario']
+                session['user_nome'] = user['nome']
+                session['user_tipo'] = user['tipo']
+                flash('Login efetuado com sucesso!', 'success')
+                return redirect(url_for('dashboard'))
+            else:
+                flash('Email ou senha inválidos.', 'error')
+                return render_template('login.html')
+        except Exception as e:
+            flash(f'Erro ao conectar ao banco: {e}', 'error')
+            return render_template('login.html')
     return render_template('login.html')
 
 @app.route('/cadastro', methods=['GET', 'POST'])
 def cadastro():
-    """Página de cadastro (desativada)."""
+    """Cadastro de novos usuários. Apenas administradores podem cadastrar outro administrador."""
     if request.method == 'POST':
-        flash('Cadastro desativado nesta versão simplificada.', 'warning')
-        return redirect(url_for('login'))
+        nome = request.form.get('nome', '').strip()
+        matricula = request.form.get('matricula', '').strip().upper()
+        email = request.form.get('email', '').strip()
+        senha = request.form.get('senha', '').strip()
+        confirmar_senha = request.form.get('confirmarSenha', '').strip()
+        tipo = request.form.get('tipoUsuario', '').strip().lower()
+
+        # Validações básicas (frontend já faz, mas reforçar no backend)
+        if not nome or len(nome) > 100:
+            flash('Nome inválido.', 'error')
+            return redirect(url_for('cadastro'))
+        if not matricula or len(matricula) != 5:
+            flash('Matrícula inválida.', 'error')
+            return redirect(url_for('cadastro'))
+        if not email or len(email) > 100 or '@' not in email:
+            flash('Email inválido.', 'error')
+            return redirect(url_for('cadastro'))
+        if not senha or len(senha) < 6 or senha != confirmar_senha:
+            flash('Senha inválida ou não confere.', 'error')
+            return redirect(url_for('cadastro'))
+        if tipo not in ['tecnico', 'supervisor', 'administrador']:
+            flash('Tipo de usuário inválido.', 'error')
+            return redirect(url_for('cadastro'))
+
+        # Regra: só um administrador pode cadastrar outro administrador
+        if tipo == 'administrador':
+            if session.get('user_tipo', '').lower() != 'administrador':
+                flash('Apenas um administrador pode cadastrar outro administrador.', 'error')
+                return redirect(url_for('cadastro'))
+
+        # Conectar ao banco e inserir usuário
+        import mysql.connector
+        try:
+            conn = mysql.connector.connect(
+                host='localhost',
+                user='root',
+                password='alunolab',
+                database='predictivepulse',
+                port=3306
+            )
+            cursor = conn.cursor()
+            # Verifica se matrícula ou email já existem
+            cursor.execute('SELECT id_usuario FROM usuarios WHERE matricula=%s OR email=%s', (matricula, email))
+            if cursor.fetchone():
+                flash('Matrícula ou email já cadastrados.', 'error')
+                cursor.close()
+                conn.close()
+                return redirect(url_for('cadastro'))
+            # Insere novo usuário
+            cursor.execute('INSERT INTO usuarios (nome, matricula, email, senha, tipo) VALUES (%s, %s, %s, %s, %s)',
+                           (nome, matricula, email, senha, tipo))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            flash('Usuário cadastrado com sucesso!', 'success')
+            return redirect(url_for('login'))
+        except Exception as e:
+            flash(f'Erro ao cadastrar usuário: {e}', 'error')
+            return redirect(url_for('cadastro'))
     return render_template('cadastro.html')
 
 @app.route('/dashboard')
@@ -138,11 +219,42 @@ def monitoramento():
 
 @app.route('/welcome')
 def welcome():
-    """Página de boas-vindas explícita, sempre renderiza a landing sem redirecionar."""
+    """Página de boas-vindas explícita, só para usuários autenticados."""
+    if not session.get('user_id'):
+        flash('Faça login para acessar a página inicial.', 'error')
+        return redirect(url_for('login'))
     return render_template('welcome_clean.html')
 
 
 # (APIs removidas na versão simplificada)
+
+# Perfil do usuário logado
+@app.route('/perfil')
+def perfil():
+    if not session.get('user_id'):
+        flash('Faça login para acessar o perfil.', 'error')
+        return redirect(url_for('login'))
+    import mysql.connector
+    try:
+        conn = mysql.connector.connect(
+            host='localhost',
+            user='root',
+            password='alunolab',
+            database='predictivepulse',
+            port=3306
+        )
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute('SELECT nome, matricula, email, tipo FROM usuarios WHERE id_usuario=%s', (session['user_id'],))
+        usuario = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        if not usuario:
+            flash('Usuário não encontrado.', 'error')
+            return redirect(url_for('login'))
+        return render_template('perfil.html', usuario=usuario)
+    except Exception as e:
+        flash(f'Erro ao buscar dados do usuário: {e}', 'error')
+        return redirect(url_for('dashboard'))
 
 # ==================== TRATAMENTO DE ERROS ====================
 

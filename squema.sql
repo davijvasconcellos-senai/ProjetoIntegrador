@@ -18,3 +18,10 @@ insert into usuarios values (
     'Senai*123', 
     'administrador'
 );
+
+-- Informações do mysql:
+-- user: root
+-- password: alunolab
+-- host: localhost
+-- port: 3306
+-- database: predictivepulse

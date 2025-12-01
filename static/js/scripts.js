@@ -74,8 +74,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function validarSenha() {
         const val = senha.value;
         let msg = '';
-        if (val.length !== 10) {
-            msg = 'A senha deve ter exatamente 10 caracteres.';
+        if (val.length < 6) {
+            msg = 'A senha deve ter no mínimo 6 caracteres.';
         } else if (!/[0-9]/.test(val)) {
             msg = 'A senha deve conter ao menos 1 número.';
         } else if (!/[A-Z]/.test(val)) {

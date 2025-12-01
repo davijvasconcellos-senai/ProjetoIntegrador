@@ -1,3 +1,86 @@
-<!-- Arquivo: adm.html | Placeholder para futura página de administração.
-	Atualmente inclui somente o footer compartilhado. -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Painel Administrativo - PredictivePulse</title>
+	<link href="https://fonts.cdnfonts.com/css/garet" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/mobile_drawer.css') }}">
+</head>
+
+<body>
+	<!-- Sidebar e navegação -->
+	<button id="drawerToggle" class="hamburger" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false">
+		<span class="hamburger-box">
+			<span class="hamburger-line"></span>
+			<span class="hamburger-line"></span>
+			<span class="hamburger-line"></span>
+		</span>
+	</button>
+	<div id="drawerOverlay" class="drawer-overlay" tabindex="-1" aria-hidden="true"></div>
+	<div class="app-container">
+		<nav class="sidebar" id="sidebar" role="navigation" aria-label="Menu principal">
+			<div class="sidebar-header">
+				<div class="logo-container">
+					<img src="{{ url_for('static', filename='images/logo_reduzida_transparente.png') }}"
+						alt="Logo Predictive Pulse" class="logo-img logo-img-large" />
+				</div>
+				<button class="toggle-btn" id="toggleBtn"><span class="toggle-icon">‹</span></button>
+			</div>
+			<ul class="sidebar-menu" style="margin-bottom: 0;">
+				<li class="menu-item" id="themeToggleBtn">
+					<span class="menu-icon"><span class="theme-toggle-slider"><span
+								class="theme-toggle-thumb"></span></span></span>
+					<span class="menu-text">Modo Escuro</span>
+				</li>
+			</ul>
+			<ul class="sidebar-menu" role="list">
+				<li class="menu-section">Atalhos</li>
+				<li class="menu-item" role="listitem"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+				<li class="menu-item" role="listitem"><a href="{{ url_for('monitoramento') }}">Monitoramento</a></li>
+				<li class="menu-item" role="listitem"><a href="{{ url_for('mensagens') }}">Mensagens</a></li>
+				<li class="menu-item" role="listitem"><a href="{{ url_for('notificacoes') }}">Notificações</a></li>
+			</ul>
+			<div class="sidebar-separator"></div>
+			<ul class="sidebar-menu" role="list">
+				<li class="menu-section">Configurações</li>
+				<li class="menu-item" role="listitem"><a href="https://larissa-dantas.itch.io/system-alert"
+						target="_blank">Ajuda</a></li>
+				<li class="menu-item" role="listitem"><a href="{{ url_for('logout') }}">Sair da conta</a></li>
+			</ul>
+		</nav>
+		<main class="main-content" id="mainContent" tabindex="-1">
+			<header class="main-header">
+				<button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-controls="sidebar"
+					aria-expanded="false">
+					<span class="menu-box">
+						<span class="menu-line"></span>
+						<span class="menu-line"></span>
+						<span class="menu-line"></span>
+					</span>
+				</button>
+				<div class="page-title">
+					<h2>Painel Administrativo - PredictivePulse</h2>
+				</div>
+				<div class="header-actions">
+					<div class="user-menu">
+						<span>{{ usuario }}</span>
+						<div class="user-avatar">{{ usuario[0]|upper }}</div>
+					</div>
+				</div>
+			</header>
+			<div class="dashboard-content">
+				{% include 'index.html' %}
+			</div>
+		</main>
+	</div>
+	<script src="{{ url_for('static', filename='js/index.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/mobile.js') }}"></script>
+	{% include '_footer.html' %}
+</body>
+
+</html>
 {% include '_footer.html' %}
