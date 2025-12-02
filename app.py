@@ -10,6 +10,13 @@ print('=== INICIANDO APP.PY (MODO SIMPLIFICADO) ===')
 app = Flask(__name__)
 app.secret_key = 'sua_chave_secreta_super_segura_aqui'  # Trocar em produção
 
+# Disponibiliza flags para controlar banners dependendo do ambiente
+@app.context_processor
+def inject_env_flags():
+    is_vercel = bool(os.environ.get('VERCEL')) or bool(os.environ.get('VERCEL_ENV'))
+    is_local = True  # Executando via app.py
+    return dict(is_vercel=is_vercel, is_local=is_local)
+
 # ==================== TERMINAL STYLING ====================
 
 class Colors:

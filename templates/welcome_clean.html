@@ -740,12 +740,14 @@
 </head>
 
 <body>
+    {% if is_vercel %}
     <!-- AVISO PARA USUÁRIOS DA VERCEL -->
     <div
         style="background: #ffcc00; color: #222; padding: 12px 20px; text-align: center; font-weight: bold; font-size: 1.1em; border-bottom: 2px solid #e6b800; z-index: 9999;">
         Atenção: Na versão hospedada na Vercel, as opções de <b>login</b> e <b>cadastro</b> não estão funcionando.<br>
         Apenas a <b>versão de demonstração</b> está disponível para uso.
     </div>
+    {% endif %}
     <main class="welcome" aria-labelledby="hero-title">
         <section class="hero" aria-describedby="hero-tagline">
             <div class="logo-emblem" role="img" aria-label="Logo PredictivePulse"><img

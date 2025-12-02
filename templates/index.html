@@ -25,6 +25,7 @@
 </head>
 
 <body>
+    {% if is_vercel %}
     <!-- AVISO PARA USUÁRIOS DA VERCEL -->
     <div
         style="background: #ffcc00; color: #222; padding: 12px 20px; text-align: center; font-weight: bold; font-size: 1.1em; border-bottom: 2px solid #e6b800; z-index: 9999;">
@@ -33,6 +34,7 @@
         Compre a versão pro!
 
     </div>
+    {% endif %}
     <!-- Botão hamburger e overlay para navegação mobile acessível -->
     <button id="drawerToggle" class="hamburger" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false">
         <span class="hamburger-box">
