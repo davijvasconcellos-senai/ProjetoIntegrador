@@ -10,6 +10,9 @@ print('=== INICIANDO APP.PY (MODO SIMPLIFICADO) ===')
 app = Flask(__name__)
 app.secret_key = 'sua_chave_secreta_super_segura_aqui'  # Trocar em produção
 
+# Rastreamento simples de usuários logados (memória do processo)
+LOGGED_USERS = set()
+
 # Disponibiliza flags para controlar banners dependendo do ambiente
 @app.context_processor
 def inject_env_flags():
@@ -102,6 +105,10 @@ def login():
                 session['user_id'] = user['id_usuario']
                 session['user_nome'] = user['nome']
                 session['user_tipo'] = user['tipo']
+                try:
+                    LOGGED_USERS.add(user['id_usuario'])
+                except Exception:
+                    pass
                 flash('Login efetuado com sucesso!', 'success')
                 return redirect(url_for('dashboard'))
             else:
@@ -192,6 +199,11 @@ def dashboard():
 @app.route('/logout')
 def logout():
     """Logout do usuário"""
+    try:
+        if session.get('user_id'):
+            LOGGED_USERS.discard(session['user_id'])
+    except Exception:
+        pass
     session.clear()
     flash('Você saiu da sua conta.', 'info')
     return redirect(url_for('login'))
@@ -231,6 +243,39 @@ def welcome():
         flash('Faça login para acessar a página inicial.', 'error')
         return redirect(url_for('login'))
     return render_template('welcome_clean.html')
+
+# Página de controle (apenas administradores)
+@app.route('/controle')
+def controle():
+    if not session.get('user_id'):
+        flash('Faça login para acessar o controle.', 'error')
+        return redirect(url_for('login'))
+    if session.get('user_tipo', '').lower() != 'administrador':
+        flash('Acesso restrito aos administradores.', 'error')
+        return redirect(url_for('dashboard'))
+    # Buscar usuários cadastrados e indicar quais estão logados
+    import mysql.connector
+    usuarios = []
+    try:
+        conn = mysql.connector.connect(
+            host='localhost',
+            user='root',
+            password='alunolab',
+            database='predictivepulse',
+            port=3306
+        )
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute('SELECT id_usuario, nome, matricula, email, tipo FROM usuarios ORDER BY nome ASC')
+        usuarios = cursor.fetchall() or []
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        flash(f'Erro ao carregar usuários: {e}', 'error')
+    # Marcar flag de "logado" com base no conjunto em memória
+    logged_ids = set(LOGGED_USERS)
+    for u in usuarios:
+        u['logado'] = u.get('id_usuario') in logged_ids
+    return render_template('controle.html', usuario=session.get('user_nome', 'Administrador'), usuarios=usuarios)
 
 
 # (APIs removidas na versão simplificada)
