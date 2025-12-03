@@ -253,6 +253,11 @@ def controle():
     if session.get('user_tipo', '').lower() != 'administrador':
         flash('Acesso restrito aos administradores.', 'error')
         return redirect(url_for('dashboard'))
+    # Garante que o usuário atual conste como logado
+    try:
+        LOGGED_USERS.add(session['user_id'])
+    except Exception:
+        pass
     # Buscar usuários cadastrados e indicar quais estão logados
     import mysql.connector
     usuarios = []
@@ -276,6 +281,107 @@ def controle():
     for u in usuarios:
         u['logado'] = u.get('id_usuario') in logged_ids
     return render_template('controle.html', usuario=session.get('user_nome', 'Administrador'), usuarios=usuarios)
+
+# Criar novo usuário (apenas administradores)
+@app.route('/controle/criar_usuario', methods=['POST'])
+def controle_criar_usuario():
+    if session.get('user_tipo', '').lower() != 'administrador':
+        flash('Acesso restrito aos administradores.', 'error')
+        return redirect(url_for('dashboard'))
+    nome = request.form.get('nome', '').strip()
+    matricula = request.form.get('matricula', '').strip().upper()
+    email = request.form.get('email', '').strip()
+    senha = request.form.get('senha', '').strip()
+    tipo = request.form.get('tipo', '').strip().lower()
+    if not nome or not matricula or not email or not senha or tipo not in ['tecnico','supervisor','administrador']:
+        flash('Dados inválidos para cadastro.', 'error')
+        return redirect(url_for('controle'))
+    import mysql.connector
+    try:
+        conn = mysql.connector.connect(host='localhost', user='root', password='alunolab', database='predictivepulse', port=3306)
+        cursor = conn.cursor()
+        cursor.execute('SELECT id_usuario FROM usuarios WHERE matricula=%s OR email=%s', (matricula, email))
+        if cursor.fetchone():
+            flash('Matrícula ou email já cadastrados.', 'error')
+            cursor.close(); conn.close()
+            return redirect(url_for('controle'))
+        cursor.execute('INSERT INTO usuarios (nome, matricula, email, senha, tipo) VALUES (%s, %s, %s, %s, %s)', (nome, matricula, email, senha, tipo))
+        conn.commit()
+        cursor.close(); conn.close()
+        flash('Usuário criado com sucesso.', 'success')
+    except Exception as e:
+        flash(f'Erro ao criar usuário: {e}', 'error')
+    return redirect(url_for('controle'))
+
+# Excluir usuário (apenas administradores)
+@app.route('/controle/excluir_usuario', methods=['POST'])
+def controle_excluir_usuario():
+    if session.get('user_tipo', '').lower() != 'administrador':
+        flash('Acesso restrito aos administradores.', 'error')
+        return redirect(url_for('dashboard'))
+    user_id = request.form.get('user_id')
+    try:
+        user_id_int = int(user_id)
+    except:
+        flash('ID de usuário inválido.', 'error')
+        return redirect(url_for('controle'))
+    # Não permitir excluir a si mesmo
+    if session.get('user_id') == user_id_int:
+        flash('Você não pode excluir sua própria conta enquanto logado.', 'error')
+        return redirect(url_for('controle'))
+    import mysql.connector
+    try:
+        conn = mysql.connector.connect(host='localhost', user='root', password='alunolab', database='predictivepulse', port=3306)
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM usuarios WHERE id_usuario=%s', (user_id_int,))
+        conn.commit()
+        cursor.close(); conn.close()
+        # Remover de LOGGED_USERS caso exista
+        try:
+            LOGGED_USERS.discard(user_id_int)
+        except Exception:
+            pass
+        flash('Usuário excluído com sucesso.', 'success')
+    except Exception as e:
+        flash(f'Erro ao excluir usuário: {e}', 'error')
+    return redirect(url_for('controle'))
+
+# Editar usuário (apenas administradores)
+@app.route('/controle/editar_usuario', methods=['POST'])
+def controle_editar_usuario():
+    if session.get('user_tipo', '').lower() != 'administrador':
+        flash('Acesso restrito aos administradores.', 'error')
+        return redirect(url_for('dashboard'))
+    user_id = request.form.get('user_id')
+    nome = request.form.get('nome', '').strip()
+    matricula = request.form.get('matricula', '').strip().upper()
+    email = request.form.get('email', '').strip()
+    tipo = request.form.get('tipo', '').strip().lower()
+    if not user_id or not nome or not matricula or not email or tipo not in ['tecnico','supervisor','administrador']:
+        flash('Dados inválidos para edição.', 'error')
+        return redirect(url_for('controle'))
+    try:
+        user_id_int = int(user_id)
+    except:
+        flash('ID de usuário inválido.', 'error')
+        return redirect(url_for('controle'))
+    import mysql.connector
+    try:
+        conn = mysql.connector.connect(host='localhost', user='root', password='alunolab', database='predictivepulse', port=3306)
+        cursor = conn.cursor()
+        # Verificar conflitos de matrícula/email com outros usuários
+        cursor.execute('SELECT id_usuario FROM usuarios WHERE (matricula=%s OR email=%s) AND id_usuario<>%s', (matricula, email, user_id_int))
+        if cursor.fetchone():
+            flash('Matrícula ou email já utilizados por outro usuário.', 'error')
+            cursor.close(); conn.close()
+            return redirect(url_for('controle'))
+        cursor.execute('UPDATE usuarios SET nome=%s, matricula=%s, email=%s, tipo=%s WHERE id_usuario=%s', (nome, matricula, email, tipo, user_id_int))
+        conn.commit()
+        cursor.close(); conn.close()
+        flash('Usuário atualizado com sucesso.', 'success')
+    except Exception as e:
+        flash(f'Erro ao editar usuário: {e}', 'error')
+    return redirect(url_for('controle'))
 
 
 # (APIs removidas na versão simplificada)

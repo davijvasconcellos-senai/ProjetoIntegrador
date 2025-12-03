@@ -21,17 +21,17 @@
         </span>
     </button>
     <div id="drawerOverlay" class="drawer-overlay" tabindex="-1" aria-hidden="true"></div>
-    <nav class="sidebar" id="sidebar" role="navigation" aria-label="Menu principal">
-        <div class="sidebar-header">
-            <div class="logo-container">
-                <img src="{{ url_for('static', filename='images/logo_reduzida_transparente.png') }}"
-                    alt="Logo Predictive Pulse" class="logo-img logo-img-large" />
+    <div class="app-container">
+        <nav class="sidebar" id="sidebar" role="navigation" aria-label="Menu principal">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="{{ url_for('static', filename='images/logo_reduzida_transparente.png') }}"
+                        alt="Logo Predictive Pulse" class="logo-img logo-img-large" />
+                </div>
+                <button class="toggle-btn" id="toggleBtn"><span class="toggle-icon">‹</span></button>
             </div>
-            <button class="toggle-btn" id="toggleBtn"><span class="toggle-icon">‹</span></button>
-        </div>
 
-        <!-- Toggle de tema igual ao index -->
-        <ul class="sidebar-menu" style="margin-bottom: 0;">
+            <!-- Toggle de tema igual ao index -->
             <li class="menu-item" id="themeToggleBtn">
                 <span class="menu-icon">
                     <span class="theme-toggle-slider">
@@ -40,190 +40,245 @@
                 </span>
                 <span class="menu-text">Modo Escuro</span>
             </li>
-        </ul>
+            </ul>
 
-        <!-- Seção de atalhos replicando estrutura/estilo do index -->
-        <ul class="sidebar-menu" role="list">
-            <li class="menu-section">Atalhos</li>
-            {% if session.get('user_tipo', '').lower() == 'administrador' %}
-            <li class="menu-item active" role="listitem">
-                <a href="{{ url_for('controle') }}"
-                    style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
-                    <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
-                            <path d="M12 20h8v2h-8z" stroke="white" stroke-width="2" fill="none" />
-                            <path d="M10 12h12v6H10z" stroke="white" stroke-width="2" fill="none" />
-                        </svg>
-                    </span>
-                    <span class="menu-text">Controle (Admin)</span>
-                </a>
-            </li>
-            {% endif %}
-            <li class="menu-item" role="listitem">
-                <a href="{{ url_for('perfil') }}"
-                    style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
-                    <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
-                            <path d="M16 10a6 6 0 100 12 6 6 0 000-12z" stroke="white" stroke-width="2" fill="none" />
-                            <path d="M8 25c0-4 4-6 8-6s8 2 8 6" stroke="white" stroke-width="2" fill="none" />
-                        </svg>
-                    </span>
-                    <span class="menu-text">Perfil</span>
-                </a>
-            </li>
-            <li class="menu-item" role="listitem">
-                <a href="{{ url_for('welcome') }}"
-                    style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
-                    <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
-                            <path d="M10 18V23H22V18" stroke="white" stroke-width="2" fill="none" />
-                            <path d="M8 16L16 10L24 16" stroke="white" stroke-width="2" fill="none" />
-                            <rect x="13" y="20" width="6" height="3" stroke="white" stroke-width="2" fill="none" />
-                        </svg>
-                    </span>
-                    <span class="menu-text">Página inicial</span>
-                </a>
-            </li>
-            <li class="menu-item" role="listitem">
-                <a href="{{ url_for('mensagens') }}"
-                    style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
-                    <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
-                            <rect x="8" y="12" width="16" height="10" rx="2" stroke="white" stroke-width="2"
-                                fill="none" />
-                            <polyline points="8,12 16,19 24,12" stroke="white" stroke-width="2" fill="none" />
-                        </svg>
-                    </span>
-                    <span class="menu-text">Caixa de mensagens</span>
-                </a>
-            </li>
-            <li class="menu-item" role="listitem">
-                <a href="{{ url_for('notificacoes') }}"
-                    style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit; position: relative;">
-                    <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
-                            <path d="M22 22v-5a6 6 0 10-12 0v5l-1 1v1h14v-1l-1-1z" stroke="white" stroke-width="2"
-                                fill="none" />
-                            <circle cx="16" cy="25" r="2" stroke="white" stroke-width="2" fill="none" />
-                        </svg>
-                    </span>
-                    <span class="menu-text">Notificações</span>
-                    <span id="notifBadge" class="menu-badge hidden" aria-label="Notificações não lidas">0</span>
-                </a>
-            </li>
-            <li class="menu-item" role="listitem">
-                <a href="{{ url_for('monitoramento') }}"
-                    style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
-                    <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
-                            <polyline points="8,22 14,16 18,20 24,12" stroke="white" stroke-width="2" fill="none" />
-                            <circle cx="8" cy="22" r="1.5" fill="white" />
-                            <circle cx="14" cy="16" r="1.5" fill="white" />
-                            <circle cx="18" cy="20" r="1.5" fill="white" />
-                            <circle cx="24" cy="12" r="1.5" fill="white" />
-                        </svg>
-                    </span>
-                    <span class="menu-text">Monitoramento</span>
-                </a>
-            </li>
-        </ul>
+            <!-- Seção de atalhos replicando estrutura/estilo do index -->
+            <ul class="sidebar-menu" role="list">
+                <li class="menu-section">Atalhos</li>
+                {% if session.get('user_tipo', '').lower() == 'administrador' %}
+                <li class="menu-item active" role="listitem">
+                    <a href="{{ url_for('controle') }}"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <path d="M12 20h8v2h-8z" stroke="white" stroke-width="2" fill="none" />
+                                <path d="M10 12h12v6H10z" stroke="white" stroke-width="2" fill="none" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Controle (Admin)</span>
+                    </a>
+                </li>
+                {% endif %}
+                <li class="menu-item" role="listitem">
+                    <a href="{{ url_for('perfil') }}"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <path d="M16 10a6 6 0 100 12 6 6 0 000-12z" stroke="white" stroke-width="2"
+                                    fill="none" />
+                                <path d="M8 25c0-4 4-6 8-6s8 2 8 6" stroke="white" stroke-width="2" fill="none" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Perfil</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="listitem">
+                    <a href="{{ url_for('welcome') }}"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <path d="M10 18V23H22V18" stroke="white" stroke-width="2" fill="none" />
+                                <path d="M8 16L16 10L24 16" stroke="white" stroke-width="2" fill="none" />
+                                <rect x="13" y="20" width="6" height="3" stroke="white" stroke-width="2" fill="none" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Página inicial</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="listitem">
+                    <a href="{{ url_for('mensagens') }}"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <rect x="8" y="12" width="16" height="10" rx="2" stroke="white" stroke-width="2"
+                                    fill="none" />
+                                <polyline points="8,12 16,19 24,12" stroke="white" stroke-width="2" fill="none" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Caixa de mensagens</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="listitem">
+                    <a href="{{ url_for('notificacoes') }}"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit; position: relative;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <path d="M22 22v-5a6 6 0 10-12 0v5l-1 1v1h14v-1l-1-1z" stroke="white" stroke-width="2"
+                                    fill="none" />
+                                <circle cx="16" cy="25" r="2" stroke="white" stroke-width="2" fill="none" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Notificações</span>
+                        <span id="notifBadge" class="menu-badge hidden" aria-label="Notificações não lidas">0</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="listitem">
+                    <a href="{{ url_for('monitoramento') }}"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <polyline points="8,22 14,16 18,20 24,12" stroke="white" stroke-width="2" fill="none" />
+                                <circle cx="8" cy="22" r="1.5" fill="white" />
+                                <circle cx="14" cy="16" r="1.5" fill="white" />
+                                <circle cx="18" cy="20" r="1.5" fill="white" />
+                                <circle cx="24" cy="12" r="1.5" fill="white" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Monitoramento</span>
+                    </a>
+                </li>
+            </ul>
 
-        <div class="sidebar-separator"></div>
+            <div class="sidebar-separator"></div>
 
-        <ul class="sidebar-menu" role="list">
-            <li class="menu-section">Configurações</li>
-            <li class="menu-item" role="listitem">
-                <a href="https://larissa-dantas.itch.io/system-alert" target="_blank" rel="noopener noreferrer"
-                    style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
-                    <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
-                            <path d="M16 22v-2" stroke="white" stroke-width="2" stroke-linecap="round" />
-                            <path d="M16 18c0-2 3-2 3-5a3 3 0 1 0-6 0" stroke="white" stroke-width="2" fill="none"
-                                stroke-linecap="round" />
-                        </svg>
+            <ul class="sidebar-menu" role="list">
+                <li class="menu-section">Configurações</li>
+                <li class="menu-item" role="listitem">
+                    <a href="https://larissa-dantas.itch.io/system-alert" target="_blank" rel="noopener noreferrer"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <path d="M16 22v-2" stroke="white" stroke-width="2" stroke-linecap="round" />
+                                <path d="M16 18c0-2 3-2 3-5a3 3 0 1 0-6 0" stroke="white" stroke-width="2" fill="none"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Ajuda</span>
+                    </a>
+                </li>
+                <li class="menu-item" role="listitem">
+                    <a href="{{ url_for('logout') }}"
+                        style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
+                        <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
+                                <path d="M12 10h6v12h-6" stroke="white" stroke-width="2" fill="none" />
+                                <path d="M18 16h6l-2-2m2 2l-2 2" stroke="white" stroke-width="2" fill="none" />
+                            </svg>
+                        </span>
+                        <span class="menu-text">Sair da conta</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="main-content" id="mainContent" tabindex="-1">
+            <header class="main-header">
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-controls="sidebar"
+                    aria-expanded="false">
+                    <span class="menu-box">
+                        <span class="menu-line"></span>
+                        <span class="menu-line"></span>
+                        <span class="menu-line"></span>
                     </span>
-                    <span class="menu-text">Ajuda</span>
-                </a>
-            </li>
-            <li class="menu-item" role="listitem">
-                <a href="{{ url_for('logout') }}"
-                    style="display:flex; align-items:center; width:100%; text-decoration:none; color:inherit;">
-                    <span class="menu-icon" style="margin-right:8px; display: flex; align-items: center;">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="16" cy="16" r="15" fill="#051148" stroke="white" stroke-width="2" />
-                            <path d="M12 10h6v12h-6" stroke="white" stroke-width="2" fill="none" />
-                            <path d="M18 16h6l-2-2m2 2l-2 2" stroke="white" stroke-width="2" fill="none" />
-                        </svg>
-                    </span>
-                    <span class="menu-text">Sair da conta</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+                </button>
+                <div class="page-title">
+                    <h2>Controle Administrativo</h2>
+                </div>
+            </header>
 
-    <main class="main-content" id="mainContent" tabindex="-1">
-        <header class="main-header">
-            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-controls="sidebar"
-                aria-expanded="false">
-                <span class="menu-box">
-                    <span class="menu-line"></span>
-                    <span class="menu-line"></span>
-                    <span class="menu-line"></span>
-                </span>
-            </button>
-            <div class="page-title">
-                <h2>Controle Administrativo</h2>
-            </div>
-        </header>
+            <h1 style="display:none;">Controle Administrativo</h1>
+            <p>Visualize usuários cadastrados e quem está logado atualmente.</p>
 
-        <h1 style="display:none;">Controle Administrativo</h1>
-        <p>Visualize usuários cadastrados e quem está logado atualmente.</p>
-
-        <section class="section-card" style="margin-top: 16px;">
-            <h2>Usuários Cadastrados</h2>
-            {% if usuarios %}
-            <div class="table-wrapper">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Matrícula</th>
-                            <th>Email</th>
-                            <th>Tipo</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for u in usuarios %}
-                        <tr>
-                            <td>{{ u.nome }}</td>
-                            <td>{{ u.matricula }}</td>
-                            <td>{{ u.email }}</td>
-                            <td class="type">{{ u.tipo }}</td>
-                            <td>
-                                {% if u.logado %}
-                                <span class="badge badge--online">Logado</span>
-                                {% else %}
-                                <span class="badge badge--offline">Offline</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <p>Nenhum usuário encontrado.</p>
-            {% endif %}
-        </section>
-    </main>
+            <section class="section-card" style="margin-top: 16px;">
+                <h2 class="section-title">Usuários Cadastrados</h2>
+                <!-- Removido o formulário duplicado; mantendo apenas o card moderno abaixo -->
+                <div class="card form-card">
+                    <div class="card-header">
+                        <h3>Novo Usuário</h3>
+                        <p>Preencha os campos para cadastrar um novo usuário.</p>
+                    </div>
+                    <form action="{{ url_for('controle_criar_usuario') }}" method="POST" class="grid-form">
+                        <div class="field">
+                            <label for="nome">Nome</label>
+                            <input type="text" id="nome" name="nome" required placeholder="Nome completo" />
+                        </div>
+                        <div class="field">
+                            <label for="matricula">Matrícula</label>
+                            <input type="text" id="matricula" name="matricula" required placeholder="Ex: B-757" />
+                        </div>
+                        <div class="field">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required placeholder="email@exemplo.com" />
+                        </div>
+                        <div class="field">
+                            <label for="senha">Senha</label>
+                            <input type="password" id="senha" name="senha" required placeholder="••••••" />
+                        </div>
+                        <div class="field">
+                            <label for="tipo">Tipo</label>
+                            <select id="tipo" name="tipo" required>
+                                <option value="tecnico">Técnico</option>
+                                <option value="supervisor">Supervisor</option>
+                                <option value="administrador">Administrador</option>
+                            </select>
+                        </div>
+                        <div class="actions">
+                            <button type="submit" class="btn btn-primary">Criar Usuário</button>
+                        </div>
+                    </form>
+                </div>
+                {% if usuarios %}
+                <div class="table-wrapper spaced-top">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Matrícula</th>
+                                <th>Email</th>
+                                <th>Tipo</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in usuarios %}
+                            <tr>
+                                <td>{{ u.nome }}</td>
+                                <td>{{ u.matricula }}</td>
+                                <td>{{ u.email }}</td>
+                                <td class="type">{{ u.tipo }}</td>
+                                <td style="display:flex; align-items:center; gap:8px;">
+                                    {% if u.logado %}
+                                    <span class="badge badge--online">Logado</span>
+                                    {% else %}
+                                    <span class="badge badge--offline">Offline</span>
+                                    {% endif %}
+                                    <!-- Botão excluir (Admin) -->
+                                    <form action="{{ url_for('controle_excluir_usuario') }}" method="POST"
+                                        class="inline-form"
+                                        onsubmit="return confirm('Confirmar exclusão de {{ u.nome }}?');">
+                                        <input type="hidden" name="user_id" value="{{ u.id_usuario }}" />
+                                        <button type="submit" class="btn btn-danger btn-soft" {% if
+                                            u.id_usuario==session.get('user_id') %}disabled
+                                            title="Não é possível excluir a própria conta." {% endif %}>Excluir</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p>Nenhum usuário encontrado.</p>
+                {% endif %}
+            </section>
+        </main>
+    </div>
 
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
     <script src="{{ url_for('static', filename='js/mobile.js') }}"></script>

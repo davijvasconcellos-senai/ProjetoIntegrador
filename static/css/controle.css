@@ -2,16 +2,31 @@
 /* Note: Do not override global theme; reuse existing colors and layout */
 
 .section-card {
-    background: var(--card-bg, rgba(255, 255, 255, 0.03));
+    background: var(--card-bg, rgba(255, 255, 255, 0.06));
     border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
-    border-radius: 12px;
-    padding: 16px;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+    text-align: center;
+    margin: 8px 0 18px 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--heading, #22304d);
+    letter-spacing: .2px;
 }
 
 .table-wrapper {
     overflow: auto;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+    background: var(--panel-bg, rgba(255, 255, 255, 0.02));
+}
+
+.spaced-top {
+    margin-top: 10px;
 }
 
 .table {
@@ -23,42 +38,156 @@
 .table thead th {
     text-align: left;
     font-weight: 600;
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.12));
-    background: var(--table-head-bg, rgba(255, 255, 255, 0.04));
+    letter-spacing: .2px;
+    color: var(--heading, #22304d);
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+    background: var(--table-head-bg, rgba(255, 255, 255, 0.65));
 }
 
 .table tbody td {
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+    padding: 12px 14px;
+    color: var(--text-muted, #374151);
+    border-bottom: 1px solid var(--border, rgba(0, 0, 0, 0.06));
 }
 
 .table tbody tr:hover {
-    background: var(--row-hover-bg, rgba(255, 255, 255, 0.03));
+    background: var(--row-hover-bg, rgba(99, 102, 241, 0.06));
 }
 
 .badge {
     display: inline-block;
-    padding: 4px 10px;
+    padding: 6px 12px;
     border-radius: 999px;
-    font-size: 0.85rem;
-    border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+    font-size: 0.82rem;
+    font-weight: 600;
+    border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
 }
 
 .badge--online {
-    color: var(--success, #22c55e);
-    border-color: color-mix(in srgb, var(--success, #22c55e) 20%, transparent);
-    background: color-mix(in srgb, var(--success, #22c55e) 10%, transparent);
+    color: var(--success-fg, #065f46);
+    border-color: color-mix(in srgb, var(--success, #22c55e) 26%, transparent);
+    background: color-mix(in srgb, var(--success, #22c55e) 18%, white);
 }
 
 .badge--offline {
-    color: var(--muted, #93a4c8);
-    border-color: color-mix(in srgb, var(--muted, #93a4c8) 20%, transparent);
-    background: color-mix(in srgb, var(--muted, #93a4c8) 10%, transparent);
+    color: var(--muted-fg, #334155);
+    border-color: color-mix(in srgb, var(--muted, #93a4c8) 26%, transparent);
+    background: color-mix(in srgb, var(--muted, #93a4c8) 26%, white);
 }
+
+/* Modal removed per request */
 
 .type {
     text-transform: capitalize;
+}
+
+/* Modern cards and form styling */
+.card {
+    background: var(--card-bg, rgba(255, 255, 255, 0.65));
+    border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.form-card {
+    margin: 12px 0 22px 0;
+}
+
+.card-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.card-header p {
+    margin: 6px 0 0 0;
+    color: var(--text-muted, #6b7280);
+}
+
+.grid-form {
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.grid-form .field {
+    display: flex;
+    flex-direction: column;
+}
+
+.grid-form label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--heading, #22304d);
+}
+
+.grid-form input,
+.grid-form select {
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--border, rgba(0, 0, 0, 0.12));
+    padding: 0 12px;
+    background: var(--input-bg, #fff);
+    color: var(--text, #111827);
+}
+
+.grid-form input:focus,
+.grid-form select:focus {
+    outline: 2px solid rgba(99, 102, 241, 0.25);
+    outline-offset: 2px;
+}
+
+.grid-form .actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn {
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: #4f46e5;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #4338ca;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.btn-soft {
+    background: rgba(239, 68, 68, 0.12);
+    color: #b91c1c;
+    border-color: rgba(239, 68, 68, 0.28);
+}
+
+.btn-soft:hover {
+    background: rgba(239, 68, 68, 0.18);
+}
+
+.inline-form {
+    display: inline-flex;
 }
 
 /* Responsive tweaks */
@@ -70,4 +199,30 @@
     .table {
         min-width: unset;
     }
+
+    .grid-form {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Dark mode adjustments */
+body.dark-mode .card {
+    background: linear-gradient(135deg, var(--dark-bg-primary, #0d1117) 0%, var(--dark-bg-secondary, #161b22) 100%);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .card-header p {
+    color: #9aa6c0;
+}
+
+body.dark-mode .grid-form input,
+body.dark-mode .grid-form select {
+    background: #0f172a;
+    color: #e5e7eb;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .btn-soft {
+    color: #fecaca;
+    border-color: rgba(239, 68, 68, 0.35);
 }
