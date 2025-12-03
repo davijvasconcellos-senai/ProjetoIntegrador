@@ -4,11 +4,15 @@ import sys
 import webbrowser
 import threading
 import time
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 
 print('=== INICIANDO APP.PY (MODO SIMPLIFICADO) ===')
 
 app = Flask(__name__)
 app.secret_key = 'sua_chave_secreta_super_segura_aqui'  # Trocar em produção
+
+# Serializer para tokens de redefinição de senha
+serializer = URLSafeTimedSerializer(app.secret_key)
 
 # Rastreamento simples de usuários logados (memória do processo)
 LOGGED_USERS = set()
@@ -118,6 +122,86 @@ def login():
             flash(f'Erro ao conectar ao banco: {e}', 'error')
             return render_template('login.html')
     return render_template('login.html')
+
+@app.route('/forgot', methods=['GET', 'POST'])
+def forgot_password():
+    """Página para solicitar redefinição de senha via email ou matrícula."""
+    if request.method == 'POST':
+        identifier = request.form.get('identifier', '').strip()
+        if not identifier:
+            flash('Informe seu email ou matrícula.', 'error')
+            return render_template('forgot_password.html')
+        import mysql.connector
+        try:
+            conn = mysql.connector.connect(
+                host='localhost',
+                user='root',
+                password='alunolab',
+                database='predictivepulse',
+                port=3306
+            )
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute('SELECT id_usuario, email FROM usuarios WHERE email=%s OR matricula=%s', (identifier, identifier))
+            user = cursor.fetchone()
+            cursor.close(); conn.close()
+            if not user:
+                flash('Usuário não encontrado para o identificador informado.', 'error')
+                return render_template('forgot_password.html')
+            token = serializer.dumps({'uid': user['id_usuario']}, salt='reset-senha')
+            reset_url = url_for('reset_password', token=token, _external=True)
+            # Observação: enviar email aqui se houver SMTP configurado.
+            flash('Link de redefinição gerado. Para testes, use o link abaixo.', 'info')
+            flash(reset_url, 'success')
+            return render_template('forgot_password.html', reset_url=reset_url)
+        except Exception as e:
+            flash(f'Erro ao gerar link de redefinição: {e}', 'error')
+            return render_template('forgot_password.html')
+    return render_template('forgot_password.html')
+
+@app.route('/reset/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    """Página para definir nova senha usando token de redefinição."""
+    try:
+        data = serializer.loads(token, salt='reset-senha', max_age=3600)
+        user_id = int(data.get('uid'))
+    except SignatureExpired:
+        flash('O link de redefinição expirou. Solicite novamente.', 'error')
+        return redirect(url_for('forgot_password'))
+    except (BadSignature, Exception):
+        flash('Link de redefinição inválido.', 'error')
+        return redirect(url_for('forgot_password'))
+
+    if request.method == 'POST':
+        nova_senha = request.form.get('senha', '').strip()
+        confirmar = request.form.get('confirmarSenha', '').strip()
+        if not nova_senha or len(nova_senha) < 6:
+            flash('A nova senha deve ter ao menos 6 caracteres.', 'error')
+            return render_template('reset_password.html', token=token)
+        if nova_senha != confirmar:
+            flash('As senhas não conferem.', 'error')
+            return render_template('reset_password.html', token=token)
+        import mysql.connector
+        try:
+            conn = mysql.connector.connect(
+                host='localhost',
+                user='root',
+                password='alunolab',
+                database='predictivepulse',
+                port=3306
+            )
+            cursor = conn.cursor()
+            # Nota: Mantemos o padrão atual do projeto (senha em texto),
+            # mas em produção use hash (ex.: bcrypt).
+            cursor.execute('UPDATE usuarios SET senha=%s WHERE id_usuario=%s', (nova_senha, user_id))
+            conn.commit()
+            cursor.close(); conn.close()
+            flash('Senha redefinida com sucesso! Faça login com a nova senha.', 'success')
+            return redirect(url_for('login'))
+        except Exception as e:
+            flash(f'Erro ao atualizar senha: {e}', 'error')
+            return render_template('reset_password.html', token=token)
+
+    return render_template('reset_password.html', token=token)
 
 @app.route('/cadastro', methods=['GET', 'POST'])
 def cadastro():
