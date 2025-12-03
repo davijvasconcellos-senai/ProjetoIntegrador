@@ -31,3 +31,6 @@ insert into usuarios values (
 
 -- Instalando o conector para o mysql
     -- pip install mysql-connector-python
+
+-- Instalar dependências:
+    -- pip install -r requirements.txt
