@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const mainContent = document.getElementById('mainContent');
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const drawerOverlay = document.getElementById('drawerOverlay');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
 
     // Estado do menu lateral (persistido no localStorage para experiência consistente)
     let isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
@@ -154,6 +155,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (window.innerWidth > 768) {
             updateSidebarState();
         }
+        // Esconde overlay se a tela for muito pequena (tablet ou mobile)
+        if (window.innerWidth <= 1024) {
+            hideSidebarOverlay();
+        }
     });
 
     // Alterna entre colapsado/expandido no desktop
@@ -168,14 +173,41 @@ document.addEventListener('DOMContentLoaded', function () {
         if (window.innerWidth > 768) {
             if (isCollapsed) {
                 sidebar.classList.add('collapsed');
+                hideSidebarOverlay();
             } else {
                 sidebar.classList.remove('collapsed');
+                showSidebarOverlay();
             }
             // Evita espaços em branco: não usar margin-left manual em layout flex
             if (mainContent && mainContent.style) {
                 mainContent.style.marginLeft = '';
             }
         }
+    }
+
+    // Mostra overlay quando sidebar está expandida (desktop)
+    function showSidebarOverlay() {
+        if (sidebarOverlay && window.innerWidth > 1024) {
+            sidebarOverlay.classList.add('active');
+            sidebarOverlay.setAttribute('aria-hidden', 'false');
+        }
+    }
+
+    // Esconde overlay quando sidebar está colapsada
+    function hideSidebarOverlay() {
+        if (sidebarOverlay) {
+            sidebarOverlay.classList.remove('active');
+            sidebarOverlay.setAttribute('aria-hidden', 'true');
+        }
+    }
+
+    // Clique no overlay fecha a sidebar (colapsa)
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', function() {
+            if (window.innerWidth > 1024 && !isCollapsed) {
+                toggleSidebar();
+            }
+        });
     }
 
     // Adiciona tooltips baseados em ícones para melhorar compreensão rápida
@@ -273,8 +305,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Atalho de teclado (desktop): Ctrl+M alterna sidebar para acesso rápido sem mouse
+    // ESC fecha a sidebar se estiver expandida com overlay ativo
     document.addEventListener('keydown', function (e) {
         if (e.ctrlKey && e.key === 'm' && window.innerWidth > 768) {
+            e.preventDefault();
+            toggleSidebar();
+        }
+        // ESC fecha sidebar quando overlay está visível
+        if (e.key === 'Escape' && window.innerWidth > 1024 && !isCollapsed) {
             e.preventDefault();
             toggleSidebar();
         }
