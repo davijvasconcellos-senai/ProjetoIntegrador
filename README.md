@@ -347,4 +347,4 @@ e Vicente Aparecido Orsino da Silva, assim como Nivaldo Batista Araújo, Gabriel
 (FabLab) e auxiliaram no desenvolvimento e resolução de problemas do projeto. Agradeço também aos meus amigos  Raphael Martins e Gabriel da Silva Andrade (Panelinha) e
 Isaque Gomes, que me forneceram ideias de funcionalidades e estilizações visuais para adicionar a plataforma. Por fim, agradeço à minha equipe designada para o projeto - 
 Guilerme de Goys (Design Gráfico), Vinícius Damas Lins (Multimídia) e Larissa Dantas (Jogos) - pela ajuda no desenvolvimento de todo o projeto. Agradeço ao Senai Maracanã
-por ne proporcionar grandes momentos durante a minha trajetória como aluno Sesi/Senai.
+por me proporcionar grandes momentos durante a minha trajetória como aluno Sesi/Senai.
