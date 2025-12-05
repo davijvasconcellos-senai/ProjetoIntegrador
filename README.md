@@ -340,3 +340,11 @@ Este projeto foi desenvolvido para fins educacionais.
 ---
 
 **PredictivePulse** © 2025 - Monitoramento Inteligente
+
+## Agradecimentos:
+Gostaria de agradecer aos instrutores e amigos que me ajudaram no desenvolvimento deste projeto. Agradeço, em primeiro lugar, aos instrutores Natália dos Santos Grillo
+e Vicente Aparecido Orsino da Silva, assim como Nivaldo Batista Araújo, Gabriel dos Santos Raimundo, que cederam o ambiente adequado para o desenvolvimento deste projeto 
+(FabLab) e auxiliaram no desenvolvimento e resolução de problemas do projeto. Agradeço também aos meus amigos  Raphael Martins e Gabriel da Silva Andrade (Panelinha) e
+Isaque Gomes, que me forneceram ideias de funcionalidades e estilizações visuais para adicionar a plataforma. Por fim, agradeço à minha equipe designada para o projeto - 
+Guilerme de Goys (Design Gráfico), Vinícius Damas Lins (Multimídia) e Larissa Dantas (Jogos) - pela ajuda no desenvolvimento de todo o projeto. Agradeço ao Senai Maracanã
+por ne proporcionar grandes momentos durante a minha trajetória como aluno Sesi/Senai.
