@@ -46,6 +46,7 @@
         {% endwith %}
 
         <form class="form-cadastro" id="cadastroForm" method="POST" action="{{ url_for('cadastro') }}" novalidate>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="campo">
                 <label for="nome">Nome Completo</label>
                 <input type="text" id="nome" name="nome" required autocomplete="name" autofocus>

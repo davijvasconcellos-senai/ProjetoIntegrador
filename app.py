@@ -1,20 +1,29 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask_wtf.csrf import CSRFProtect
+from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
+import mysql.connector
 import os
 import sys
 import webbrowser
 import threading
 import time
-from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
+from dotenv import load_dotenv
+
+load_dotenv()
 
 print('=== INICIANDO APP.PY (MODO SIMPLIFICADO) ===')
 
 app = Flask(__name__)
-app.secret_key = 'sua_chave_secreta_super_segura_aqui'  # Trocar em produção
+app.secret_key = os.environ.get('SECRET_KEY', 'chave-padrao-insegura-troque-no-env')
+
+csrf = CSRFProtect(app)
 
 # Serializer para tokens de redefinição de senha
 serializer = URLSafeTimedSerializer(app.secret_key)
 
 # Rastreamento simples de usuários logados (memória do processo)
+# Nota: não persiste entre reinicializações nem funciona com múltiplos workers.
 LOGGED_USERS = set()
 
 # Disponibiliza flags para controlar banners dependendo do ambiente
@@ -23,6 +32,20 @@ def inject_env_flags():
     is_vercel = bool(os.environ.get('VERCEL')) or bool(os.environ.get('VERCEL_ENV'))
     is_local = True  # Executando via app.py
     return dict(is_vercel=is_vercel, is_local=is_local)
+
+
+# ==================== CONEXÃO COM O BANCO ====================
+
+def get_db_connection():
+    """Retorna uma conexão MySQL usando variáveis de ambiente."""
+    return mysql.connector.connect(
+        host=os.environ.get('DB_HOST', 'localhost'),
+        user=os.environ.get('DB_USER', 'root'),
+        password=os.environ.get('DB_PASSWORD', ''),
+        database=os.environ.get('DB_NAME', 'predictivepulse'),
+        port=int(os.environ.get('DB_PORT', 3306))
+    )
+
 
 # ==================== TERMINAL STYLING ====================
 
@@ -36,14 +59,14 @@ class Colors:
     WHITE = '\033[97m'
     RESET = '\033[0m'
     BOLD = '\033[1m'
-    
+
 def print_startup_banner(success=True, host='0.0.0.0', port=5000):
     """Exibe um banner estilizado de startup da aplicação"""
     print("\n")
     print(f"{Colors.CYAN}{'='*70}{Colors.RESET}")
     print(f"{Colors.BOLD}{Colors.CYAN}  PREDICTIVE PULSE - SISTEMA DE MONITORAMENTO INTELIGENTE{Colors.RESET}")
     print(f"{Colors.CYAN}{'='*70}{Colors.RESET}")
-    
+
     if success:
         print(f"{Colors.GREEN}{Colors.BOLD}✓ SERVIDOR INICIADO COM SUCESSO!{Colors.RESET}")
         print(f"{Colors.WHITE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Colors.RESET}")
@@ -72,6 +95,7 @@ def open_browser(url):
     except Exception as e:
         print(f"{Colors.YELLOW}⚠️ Não foi possível abrir o navegador automaticamente: {e}{Colors.RESET}")
 
+
 # ==================== ROTAS DE NAVEGAÇÃO ====================
 
 @app.route('/')
@@ -79,8 +103,8 @@ def home():
     """Redireciona para login ou dashboard."""
     if session.get('user_id'):
         return redirect(url_for('dashboard'))
-    # Exibe página inicial limpa (welcome_clean)
     return render_template('welcome_clean.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -91,21 +115,14 @@ def login():
         if not email or not senha:
             flash('Preencha todos os campos.', 'error')
             return render_template('login.html')
-        import mysql.connector
         try:
-            conn = mysql.connector.connect(
-                host='localhost',
-                user='root',
-                password='alunolab',
-                database='predictivepulse',
-                port=3306
-            )
+            conn = get_db_connection()
             cursor = conn.cursor(dictionary=True)
-            cursor.execute('SELECT * FROM usuarios WHERE email=%s AND senha=%s', (email, senha))
+            cursor.execute('SELECT * FROM usuarios WHERE email=%s', (email,))
             user = cursor.fetchone()
             cursor.close()
             conn.close()
-            if user:
+            if user and check_password_hash(user['senha'], senha):
                 session['user_id'] = user['id_usuario']
                 session['user_nome'] = user['nome']
                 session['user_tipo'] = user['tipo']
@@ -123,6 +140,7 @@ def login():
             return render_template('login.html')
     return render_template('login.html')
 
+
 @app.route('/forgot', methods=['GET', 'POST'])
 def forgot_password():
     """Página para solicitar redefinição de senha via email ou matrícula."""
@@ -131,32 +149,32 @@ def forgot_password():
         if not identifier:
             flash('Informe seu email ou matrícula.', 'error')
             return render_template('forgot_password.html')
-        import mysql.connector
         try:
-            conn = mysql.connector.connect(
-                host='localhost',
-                user='root',
-                password='alunolab',
-                database='predictivepulse',
-                port=3306
-            )
+            conn = get_db_connection()
             cursor = conn.cursor(dictionary=True)
-            cursor.execute('SELECT id_usuario, email FROM usuarios WHERE email=%s OR matricula=%s', (identifier, identifier))
+            cursor.execute(
+                'SELECT id_usuario, email FROM usuarios WHERE email=%s OR matricula=%s',
+                (identifier, identifier)
+            )
             user = cursor.fetchone()
-            cursor.close(); conn.close()
+            cursor.close()
+            conn.close()
             if not user:
-                flash('Usuário não encontrado para o identificador informado.', 'error')
+                # Resposta genérica para não revelar se o usuário existe
+                flash('Se o identificador estiver cadastrado, um link de redefinição será enviado.', 'info')
                 return render_template('forgot_password.html')
             token = serializer.dumps({'uid': user['id_usuario']}, salt='reset-senha')
             reset_url = url_for('reset_password', token=token, _external=True)
-            # Observação: enviar email aqui se houver SMTP configurado.
-            flash('Link de redefinição gerado. Para testes, use o link abaixo.', 'info')
-            flash(reset_url, 'success')
-            return render_template('forgot_password.html', reset_url=reset_url)
+            # TODO: enviar reset_url por email via SMTP configurado no .env
+            # Por enquanto, exibe no terminal apenas (nunca na página).
+            print(f"{Colors.YELLOW}[RESET] Link para {user['email']}: {reset_url}{Colors.RESET}")
+            flash('Se o identificador estiver cadastrado, um link de redefinição será enviado.', 'info')
+            return render_template('forgot_password.html')
         except Exception as e:
             flash(f'Erro ao gerar link de redefinição: {e}', 'error')
             return render_template('forgot_password.html')
     return render_template('forgot_password.html')
+
 
 @app.route('/reset/<token>', methods=['GET', 'POST'])
 def reset_password(token):
@@ -180,21 +198,16 @@ def reset_password(token):
         if nova_senha != confirmar:
             flash('As senhas não conferem.', 'error')
             return render_template('reset_password.html', token=token)
-        import mysql.connector
         try:
-            conn = mysql.connector.connect(
-                host='localhost',
-                user='root',
-                password='alunolab',
-                database='predictivepulse',
-                port=3306
-            )
+            conn = get_db_connection()
             cursor = conn.cursor()
-            # Nota: Mantemos o padrão atual do projeto (senha em texto),
-            # mas em produção use hash (ex.: bcrypt).
-            cursor.execute('UPDATE usuarios SET senha=%s WHERE id_usuario=%s', (nova_senha, user_id))
+            cursor.execute(
+                'UPDATE usuarios SET senha=%s WHERE id_usuario=%s',
+                (generate_password_hash(nova_senha), user_id)
+            )
             conn.commit()
-            cursor.close(); conn.close()
+            cursor.close()
+            conn.close()
             flash('Senha redefinida com sucesso! Faça login com a nova senha.', 'success')
             return redirect(url_for('login'))
         except Exception as e:
@@ -202,6 +215,7 @@ def reset_password(token):
             return render_template('reset_password.html', token=token)
 
     return render_template('reset_password.html', token=token)
+
 
 @app.route('/cadastro', methods=['GET', 'POST'])
 def cadastro():
@@ -214,7 +228,6 @@ def cadastro():
         confirmar_senha = request.form.get('confirmarSenha', '').strip()
         tipo = request.form.get('tipoUsuario', '').strip().lower()
 
-        # Validações básicas (frontend já faz, mas reforçar no backend)
         if not nome or len(nome) > 100:
             flash('Nome inválido.', 'error')
             return redirect(url_for('cadastro'))
@@ -231,33 +244,27 @@ def cadastro():
             flash('Tipo de usuário inválido.', 'error')
             return redirect(url_for('cadastro'))
 
-        # Regra: só um administrador pode cadastrar outro administrador
         if tipo == 'administrador':
             if session.get('user_tipo', '').lower() != 'administrador':
                 flash('Apenas um administrador pode cadastrar outro administrador.', 'error')
                 return redirect(url_for('cadastro'))
 
-        # Conectar ao banco e inserir usuário
-        import mysql.connector
         try:
-            conn = mysql.connector.connect(
-                host='localhost',
-                user='root',
-                password='alunolab',
-                database='predictivepulse',
-                port=3306
-            )
+            conn = get_db_connection()
             cursor = conn.cursor()
-            # Verifica se matrícula ou email já existem
-            cursor.execute('SELECT id_usuario FROM usuarios WHERE matricula=%s OR email=%s', (matricula, email))
+            cursor.execute(
+                'SELECT id_usuario FROM usuarios WHERE matricula=%s OR email=%s',
+                (matricula, email)
+            )
             if cursor.fetchone():
                 flash('Matrícula ou email já cadastrados.', 'error')
                 cursor.close()
                 conn.close()
                 return redirect(url_for('cadastro'))
-            # Insere novo usuário
-            cursor.execute('INSERT INTO usuarios (nome, matricula, email, senha, tipo) VALUES (%s, %s, %s, %s, %s)',
-                           (nome, matricula, email, senha, tipo))
+            cursor.execute(
+                'INSERT INTO usuarios (nome, matricula, email, senha, tipo) VALUES (%s, %s, %s, %s, %s)',
+                (nome, matricula, email, generate_password_hash(senha), tipo)
+            )
             conn.commit()
             cursor.close()
             conn.close()
@@ -267,6 +274,7 @@ def cadastro():
             flash(f'Erro ao cadastrar usuário: {e}', 'error')
             return redirect(url_for('cadastro'))
     return render_template('cadastro.html')
+
 
 @app.route('/dashboard')
 def dashboard():
@@ -280,6 +288,7 @@ def dashboard():
                            falhas=[],
                            sensores=[])
 
+
 @app.route('/logout')
 def logout():
     """Logout do usuário"""
@@ -292,6 +301,7 @@ def logout():
     flash('Você saiu da sua conta.', 'info')
     return redirect(url_for('login'))
 
+
 @app.route('/demo')
 def demo():
     """Página de demonstração (sem autenticação, sem dados reais)."""
@@ -302,23 +312,33 @@ def demo():
                            sensores=[],
                            demo_mode=True)
 
+
 @app.route('/mensagens')
 def mensagens():
-    """Página de caixa de mensagens (acesso liberado)."""
+    """Página de caixa de mensagens."""
+    if not session.get('user_id'):
+        flash('Faça login para acessar as mensagens.', 'error')
+        return redirect(url_for('login'))
     return render_template('mensagens.html', usuario=session.get('user_nome', 'Usuário'))
 
 
 @app.route('/notificacoes')
 def notificacoes():
-    """Página de notificações (acesso liberado)."""
-    return render_template('notificacoes.html',
-                           usuario=session.get('user_nome', 'Usuário'))
+    """Página de notificações."""
+    if not session.get('user_id'):
+        flash('Faça login para acessar as notificações.', 'error')
+        return redirect(url_for('login'))
+    return render_template('notificacoes.html', usuario=session.get('user_nome', 'Usuário'))
+
 
 @app.route('/monitoramento')
 def monitoramento():
-    """Página de monitoramento (acesso liberado)."""
-    return render_template('monitoramento.html',
-                           usuario=session.get('user_nome', 'Usuário'))
+    """Página de monitoramento."""
+    if not session.get('user_id'):
+        flash('Faça login para acessar o monitoramento.', 'error')
+        return redirect(url_for('login'))
+    return render_template('monitoramento.html', usuario=session.get('user_nome', 'Usuário'))
+
 
 @app.route('/welcome')
 def welcome():
@@ -327,6 +347,7 @@ def welcome():
         flash('Faça login para acessar a página inicial.', 'error')
         return redirect(url_for('login'))
     return render_template('welcome_clean.html')
+
 
 # Página de controle (apenas administradores)
 @app.route('/controle')
@@ -337,22 +358,13 @@ def controle():
     if session.get('user_tipo', '').lower() != 'administrador':
         flash('Acesso restrito aos administradores.', 'error')
         return redirect(url_for('dashboard'))
-    # Garante que o usuário atual conste como logado
     try:
         LOGGED_USERS.add(session['user_id'])
     except Exception:
         pass
-    # Buscar usuários cadastrados e indicar quais estão logados
-    import mysql.connector
     usuarios = []
     try:
-        conn = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='alunolab',
-            database='predictivepulse',
-            port=3306
-        )
+        conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         cursor.execute('SELECT id_usuario, nome, matricula, email, tipo FROM usuarios ORDER BY nome ASC')
         usuarios = cursor.fetchall() or []
@@ -360,11 +372,11 @@ def controle():
         conn.close()
     except Exception as e:
         flash(f'Erro ao carregar usuários: {e}', 'error')
-    # Marcar flag de "logado" com base no conjunto em memória
     logged_ids = set(LOGGED_USERS)
     for u in usuarios:
         u['logado'] = u.get('id_usuario') in logged_ids
     return render_template('controle.html', usuario=session.get('user_nome', 'Administrador'), usuarios=usuarios)
+
 
 # Criar novo usuário (apenas administradores)
 @app.route('/controle/criar_usuario', methods=['POST'])
@@ -377,25 +389,33 @@ def controle_criar_usuario():
     email = request.form.get('email', '').strip()
     senha = request.form.get('senha', '').strip()
     tipo = request.form.get('tipo', '').strip().lower()
-    if not nome or not matricula or not email or not senha or tipo not in ['tecnico','supervisor','administrador']:
+    if not nome or not matricula or not email or not senha or tipo not in ['tecnico', 'supervisor', 'administrador']:
         flash('Dados inválidos para cadastro.', 'error')
         return redirect(url_for('controle'))
-    import mysql.connector
     try:
-        conn = mysql.connector.connect(host='localhost', user='root', password='alunolab', database='predictivepulse', port=3306)
+        conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute('SELECT id_usuario FROM usuarios WHERE matricula=%s OR email=%s', (matricula, email))
+        cursor.execute(
+            'SELECT id_usuario FROM usuarios WHERE matricula=%s OR email=%s',
+            (matricula, email)
+        )
         if cursor.fetchone():
             flash('Matrícula ou email já cadastrados.', 'error')
-            cursor.close(); conn.close()
+            cursor.close()
+            conn.close()
             return redirect(url_for('controle'))
-        cursor.execute('INSERT INTO usuarios (nome, matricula, email, senha, tipo) VALUES (%s, %s, %s, %s, %s)', (nome, matricula, email, senha, tipo))
+        cursor.execute(
+            'INSERT INTO usuarios (nome, matricula, email, senha, tipo) VALUES (%s, %s, %s, %s, %s)',
+            (nome, matricula, email, generate_password_hash(senha), tipo)
+        )
         conn.commit()
-        cursor.close(); conn.close()
+        cursor.close()
+        conn.close()
         flash('Usuário criado com sucesso.', 'success')
     except Exception as e:
         flash(f'Erro ao criar usuário: {e}', 'error')
     return redirect(url_for('controle'))
+
 
 # Excluir usuário (apenas administradores)
 @app.route('/controle/excluir_usuario', methods=['POST'])
@@ -406,21 +426,19 @@ def controle_excluir_usuario():
     user_id = request.form.get('user_id')
     try:
         user_id_int = int(user_id)
-    except:
+    except Exception:
         flash('ID de usuário inválido.', 'error')
         return redirect(url_for('controle'))
-    # Não permitir excluir a si mesmo
     if session.get('user_id') == user_id_int:
         flash('Você não pode excluir sua própria conta enquanto logado.', 'error')
         return redirect(url_for('controle'))
-    import mysql.connector
     try:
-        conn = mysql.connector.connect(host='localhost', user='root', password='alunolab', database='predictivepulse', port=3306)
+        conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute('DELETE FROM usuarios WHERE id_usuario=%s', (user_id_int,))
         conn.commit()
-        cursor.close(); conn.close()
-        # Remover de LOGGED_USERS caso exista
+        cursor.close()
+        conn.close()
         try:
             LOGGED_USERS.discard(user_id_int)
         except Exception:
@@ -429,6 +447,7 @@ def controle_excluir_usuario():
     except Exception as e:
         flash(f'Erro ao excluir usuário: {e}', 'error')
     return redirect(url_for('controle'))
+
 
 # Editar usuário (apenas administradores)
 @app.route('/controle/editar_usuario', methods=['POST'])
@@ -441,34 +460,38 @@ def controle_editar_usuario():
     matricula = request.form.get('matricula', '').strip().upper()
     email = request.form.get('email', '').strip()
     tipo = request.form.get('tipo', '').strip().lower()
-    if not user_id or not nome or not matricula or not email or tipo not in ['tecnico','supervisor','administrador']:
+    if not user_id or not nome or not matricula or not email or tipo not in ['tecnico', 'supervisor', 'administrador']:
         flash('Dados inválidos para edição.', 'error')
         return redirect(url_for('controle'))
     try:
         user_id_int = int(user_id)
-    except:
+    except Exception:
         flash('ID de usuário inválido.', 'error')
         return redirect(url_for('controle'))
-    import mysql.connector
     try:
-        conn = mysql.connector.connect(host='localhost', user='root', password='alunolab', database='predictivepulse', port=3306)
+        conn = get_db_connection()
         cursor = conn.cursor()
-        # Verificar conflitos de matrícula/email com outros usuários
-        cursor.execute('SELECT id_usuario FROM usuarios WHERE (matricula=%s OR email=%s) AND id_usuario<>%s', (matricula, email, user_id_int))
+        cursor.execute(
+            'SELECT id_usuario FROM usuarios WHERE (matricula=%s OR email=%s) AND id_usuario<>%s',
+            (matricula, email, user_id_int)
+        )
         if cursor.fetchone():
             flash('Matrícula ou email já utilizados por outro usuário.', 'error')
-            cursor.close(); conn.close()
+            cursor.close()
+            conn.close()
             return redirect(url_for('controle'))
-        cursor.execute('UPDATE usuarios SET nome=%s, matricula=%s, email=%s, tipo=%s WHERE id_usuario=%s', (nome, matricula, email, tipo, user_id_int))
+        cursor.execute(
+            'UPDATE usuarios SET nome=%s, matricula=%s, email=%s, tipo=%s WHERE id_usuario=%s',
+            (nome, matricula, email, tipo, user_id_int)
+        )
         conn.commit()
-        cursor.close(); conn.close()
+        cursor.close()
+        conn.close()
         flash('Usuário atualizado com sucesso.', 'success')
     except Exception as e:
         flash(f'Erro ao editar usuário: {e}', 'error')
     return redirect(url_for('controle'))
 
-
-# (APIs removidas na versão simplificada)
 
 # Perfil do usuário logado
 @app.route('/perfil')
@@ -476,17 +499,13 @@ def perfil():
     if not session.get('user_id'):
         flash('Faça login para acessar o perfil.', 'error')
         return redirect(url_for('login'))
-    import mysql.connector
     try:
-        conn = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='alunolab',
-            database='predictivepulse',
-            port=3306
-        )
+        conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT nome, matricula, email, tipo FROM usuarios WHERE id_usuario=%s', (session['user_id'],))
+        cursor.execute(
+            'SELECT nome, matricula, email, tipo FROM usuarios WHERE id_usuario=%s',
+            (session['user_id'],)
+        )
         usuario = cursor.fetchone()
         cursor.close()
         conn.close()
@@ -498,6 +517,7 @@ def perfil():
         flash(f'Erro ao buscar dados do usuário: {e}', 'error')
         return redirect(url_for('dashboard'))
 
+
 # ==================== TRATAMENTO DE ERROS ====================
 
 @app.errorhandler(404)
@@ -507,6 +527,7 @@ def page_not_found(e):
 @app.errorhandler(500)
 def internal_error(e):
     return render_template('500.html'), 500
+
 
 # ==================== EXECUÇÃO ====================
 

@@ -206,6 +206,7 @@
                         <p>Preencha os campos para cadastrar um novo usuário.</p>
                     </div>
                     <form action="{{ url_for('controle_criar_usuario') }}" method="POST" class="grid-form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <div class="field">
                             <label for="nome">Nome</label>
                             <input type="text" id="nome" name="nome" required placeholder="Nome completo" />
@@ -265,6 +266,7 @@
                                         class="inline-form"
                                         onsubmit="return confirm('Confirmar exclusão de {{ u.nome }}?');">
                                         <input type="hidden" name="user_id" value="{{ u.id_usuario }}" />
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <button type="submit" class="btn btn-danger btn-soft" {% if
                                             u.id_usuario==session.get('user_id') %}disabled
                                             title="Não é possível excluir a própria conta." {% endif %}>Excluir</button>
